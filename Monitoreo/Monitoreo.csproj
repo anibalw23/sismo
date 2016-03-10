@@ -632,6 +632,9 @@
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\D3\d3.js" />
+    <Content Include="Scripts\D3\d3.min.js" />
+    <Content Include="Scripts\Dimple\dimple.v2.1.6.min.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\jquery-2.1.3.min.map" />
@@ -1199,6 +1202,8 @@
     <Content Include="Views\Acompanante\CreateModal.cshtml" />
     <Content Include="Views\Docente\DocentesFilterByCriteria.cshtml" />
     <Content Include="Views\CicloFormativo\CicloInscripcionesVerificarDuplicado.cshtml" />
+    <Content Include="Views\InscripcionActividadAcompanamiento\MisInscripcionesAcompanamiento.cshtml" />
+    <Content Include="Views\InscripcionActividadAcompanamiento\InscripcionesPorFecha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

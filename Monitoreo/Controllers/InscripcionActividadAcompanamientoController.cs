@@ -30,6 +30,95 @@ namespace Monitoreo.Controllers
             return View();
         }
 
+
+        public ActionResult InscripcionesPorFecha() {
+
+            Acompanante acompanante = new Acompanante();
+            int centroID = 0;
+            if (User.Identity.IsAuthenticated) {
+                Persona persona = db.Personas.Where(c => c.Cedula == User.Identity.Name).FirstOrDefault();
+                if (persona != null) {
+                    acompanante = db.Acompanantes.Where(p => p.PersonaId == persona.Id).FirstOrDefault();
+                    if (acompanante != null) {
+                        centroID = acompanante.centroId;
+                        ViewBag.centroID = centroID; 
+                    }                   
+                }               
+            }
+            if (centroID == 0) {
+                ViewBag.centroList = db.Centros.Select(x => new { x.Id, x.Nombre }).ToList();
+            }
+
+            return View();
+        }
+
+
+        public ActionResult MisInscripcionesAcompanamiento() {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetInscripcionesAcompanamientoPorFecha(DateTime fecha1, DateTime fecha2, int centroId)
+        {
+
+            var inscripciones = await db.InscripcionesActividadesAcompanamiento.Where(p => p.Personal.CentroId == centroId).Where(f => f.fecha > fecha1).Where(f => f.fecha < fecha2).ToListAsync();
+            int recordsTotal = inscripciones.Count();
+            var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.Fecha) ;
+            var jsonData = new
+            {
+                data = data.ToList()
+            };
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> GetMisAcompanaminetos(DatatablesParams values)
+        {
+            var recordsTotal = 0; // inscripcionesactividadesacompanamiento.Count();
+            var recordsFiltered = 0; //recordsTotal;
+            var limit = 0;//values.length > 0 ? values.length : recordsTotal;
+            var from = 0; //values.start;
+
+
+             Persona persona =  db.Personas.Where(c => c.Cedula == User.Identity.Name).FirstOrDefault();
+             Acompanante acompanante = new Acompanante();      
+             Centro centro = new Centro();
+             List<InscripcionActividadAcompanamiento> inscripciones = new List<InscripcionActividadAcompanamiento>();
+
+             if(persona != null){
+                 acompanante = db.Acompanantes.Where(p => p.PersonaId == persona.Id).FirstOrDefault();
+                 if (acompanante != null) {
+                     centro = acompanante.Centro;
+                     if (centro != null) {
+                         inscripciones = await db.InscripcionesActividadesAcompanamiento.Where(p => p.Personal.CentroId == centro.Id).ToListAsync();
+                         recordsTotal = inscripciones.Count();
+                         recordsFiltered = recordsTotal;
+                         limit =  values.length > 0 ? values.length : recordsTotal;
+                         from = values.start;
+                     }                     
+                 }
+                
+             }
+             var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.Fecha).Skip(from).Take(limit);
+
+            var jsonData = new
+            {
+                draw = values.raw,
+                recordsTotal = recordsTotal,
+                recordsFiltered = recordsFiltered,
+                data = data.ToList()
+            };
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        
+        
+        }
+
+
         // POST: InscripcionActividadAcompanamientos
         [Route("InscripcionActividadAcompanamientos/GetDataJson")]
         [HttpPost]

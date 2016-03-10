@@ -1,0 +1,241 @@
+﻿
+<style type="text/css">
+
+      #loadingDiv {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: #666;
+        background-image: url('../../Content/img/hex-loader2.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 10000000;
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+    }
+
+</style>
+
+<div class="panel-heading">
+    <h3 style="text-align:center;">Acompanamientos por fecha</h3>
+</div>
+
+
+<div id="loadingDiv" style="margin: 0 auto;">
+</div>
+
+<div class="panel-body">
+
+
+
+    <div class="form-horizontal">
+
+        <input id="centroId" name="centroId" type="hidden" value="@ViewBag.centroID" />
+        <div class="form-group">
+            <div class="col-sm-4">
+                @Html.Label("Fecha Inicial")
+                <input id="fechaInicial" type="text" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-4">
+                @Html.Label("Fecha Final")
+                <input id="fechaFinal" type="text" class="form-control" />
+            </div>
+        </div>
+        @if (ViewBag.centroID == 0)
+        {
+            <div class="form-group">
+                <div class="col-sm-4">
+                    @Html.Label("Centro Educativo");
+                    @Html.DropDownList("CentroDropDown", (IEnumerable<SelectListItem>)ViewBag.centroList, new { @class = "form-control" })
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-sm-4">
+                <button id="btnVer" class="btn btn-info"> Ver Acompañamientos</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">       
+        <div class="col-sm-4" style="height:200px;">
+            <h3 style=""> Horas Acompañadas</h3>
+            <span id="counterHorasTotal" class="counter" style="font-weight:bold;display: inline-block; font-size:4em;width: 32%;color:black">0</span>
+        </div>
+        <div class="col-sm-4" style="height:200px;">
+            <h3 style=""> Horas de Acompañamiento en Aula</h3>
+            <span id="counterAula" class="counter" style="font-weight:bold;display: inline-block;font-size:4em; width: 32%;color:black">0</span>
+        </div>
+        <div class="col-sm-4" style="height:200px;">
+            <h3 style=""> Horas de Acompañamiento Tutorial</h3>
+            <span id="countertutorial" class="counter" style="font-weight:bold;display: inline-block;font-size:4em; width: 32%;color:black">0</span>
+        </div>
+        <div class="col-sm-4" style="height:200px;">
+            <h3 style=""> Horas de Grupos Pedagogicos</h3>
+            <span id="counterGrupoPedagogico" class="counter" style="font-weight:bold;display: inline-block;font-size:4em; width: 32%;color:black">0</span>
+        </div>
+        <div class="col-sm-4" style="height:200px;">
+            <h3 style=""> Horas de Clases Modelos</h3>
+            <span id="counterClaseModelo" class="counter" style="font-weight:bold;display: inline-block;font-size:4em; width: 32%;color:black">0</span>
+        </div>
+    </div>
+
+
+    <div id="chartsDiv" class="col-md">
+        <h3> Acompañamientos</h3>
+        <div id="acompanamientosChart">
+
+        </div>
+
+    </div>
+
+
+
+
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        
+        <thead>
+            <tr>
+                <th>Centro</th>
+                <th>Ciclo Formativo</th>
+                <th>Persona</th>
+                <th>Cedula</th>
+                <th>Actividad Acompañamiento</th>
+                <th>Area</th>
+                <th>Fecha</th>
+                <th>Horas</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+    @Styles.Render("~/bundles/bootstrap-datetimepicker/css/styles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+    @Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+    <script src="~/Scripts/jquery.counterup.min.js"></script>
+    <script src="~/Scripts/D3/d3.min.js"></script>
+    <script src="~/Scripts/Dimple/dimple.v2.1.6.min.js"></script>
+
+
+    <script type="text/javascript">
+        (function ($) {
+            $("#loadingDiv").hide();
+            $('#fechaInicial').datetimepicker();
+            $('#fechaFinal').datetimepicker();
+            $('.counter').counterUp({
+                delay: 10,
+                time: 1000
+            });
+
+            var svg = dimple.newSvg("#acompanamientosChart", 600, 480);
+            var chart = new dimple.chart(svg, null);
+            chart.addCategoryAxis("x", ["fecha", "tipo"]);
+            chart.addMeasureAxis("y", "horas");
+            chart.addSeries("tipo", dimple.plot.bar);
+            chart.defaultColors = [
+            new dimple.color("#357EC7"),
+            new dimple.color("#C77E36"),
+            new dimple.color("#36C7AF"),
+            new dimple.color("#C7364E"),
+            new dimple.color("#C7AF36")
+            ];
+            chart.draw();
+
+
+            $("#btnVer").on('click', function () {
+                $("#loadingDiv").show();
+                var fecha1 = $('#fechaInicial').val();
+                var fecha2 = $('#fechaFinal').val();
+                var centroID = $('#centroId').val();
+                console.log("fehcha1 = " + fecha1 + " fecha2 = " + fecha2 + " centroID = " + centroID);
+                if (centroID == 0) {
+                    centroID = $('#CentroDropDown').val();
+                }
+                if (fecha1 != "" && fecha2 != "" && centroId != 0) { //validacion
+                    $("#dataTable > tbody").html("");
+                     $.ajax({
+                         url: '@Url.Action("GetInscripcionesAcompanamientoPorFecha")' + "?fecha1=" + fecha1 + "&fecha2=" + fecha2 + "&centroId=" + centroID,
+                         type: "POST",
+                         contentType: "application/json; charset=utf-8",
+                         dataType: "json",
+                         success: function (data) {
+                             $("#loadingDiv").hide();
+                             var counterAula = 0;
+                             var counterPedagogico = 0;
+                             var counterTutorial = 0;
+                             var counterModelo = 0;
+                             var counterTotal = 0;
+                             dataAjax = [];                             sumarizedData = [];
+                             $(data.data).each(function (k, v) {
+                                 $("#dataTable").append("<tr><td>" + v.CentroNombre + " </td> <td>" + v.CicloFormativo + "</td> <td>" + v.PersonaNombre + " </td> <td> " + v.Cedula + "</td> <td>" + v.ActividadAcompanamiento + "</td> <td> " + v.AreaAcomp + "</td> <td>" + v.Fecha + " </td> <td>" + v.Horas + " </td>   </tr>");
+                                 if (v.ActividadAcompanamiento == "AcompanamientoAula") {
+                                     counterAula = v.Horas + counterAula;
+                                 }
+                                 if (v.ActividadAcompanamiento == "AcompanamientoTutorial") {
+                                     counterTutorial = v.Horas + counterTutorial;
+                                 }
+                                 if (v.ActividadAcompanamiento == "ClaseModelo") {
+                                     counterModelo = v.Horas + counterModelo;
+                                 }
+                                 if (v.ActividadAcompanamiento == "GrupoPedagogico") {
+                                     counterPedagogico = v.Horas + counterPedagogico;
+                                 }
+                                 counterTotal = v.Horas + counterTotal;
+                                 dataAjax.push({ tipo: v.ActividadAcompanamiento, horas: v.Horas, fecha: v.Fecha });
+                             });
+
+                             var horasPorTipo = d3.nest()
+                                .key(function (d) { return d.fecha; })
+                                .key(function (d) { return d.tipo; })
+                                .rollup(function (v) { return d3.sum(v, function (d) { return d.horas; }); })
+                                .entries(dataAjax);
+                             $(horasPorTipo).each(function (index) {
+                                 console.log("horasPorTipo " + horasPorTipo[index].key);
+                                 $(horasPorTipo[index].values).each(function (n) {
+                                     sumarizedData.push({ fecha: horasPorTipo[index].key, tipo: horasPorTipo[index].values[n].key, horas: horasPorTipo[index].values[n].values });
+                                 })
+                             });
+                             chart.data = sumarizedData;
+                             chart.draw(1500);
+
+
+                             $("#counterAula").text(counterAula);
+                             $("#countertutorial").text(counterTutorial);
+                             $("#counterGrupoPedagogico").text(counterPedagogico);
+                             $("#counterClaseModelo").text(counterModelo);
+                             $("#counterHorasTotal").text(counterTotal);
+
+                         }
+                     });
+                }
+
+               
+
+
+            
+            });
+
+
+            function validate() {
+
+
+            }
+
+        })(jQuery);
+    </script>
+}
+

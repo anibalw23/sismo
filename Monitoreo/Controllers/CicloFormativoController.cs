@@ -303,12 +303,25 @@ namespace Monitoreo.Controllers
         public ActionResult CicloInscripcionesVerificarDuplicado(int[] docentesIds)
         {
             ViewBag.ciclos = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
+            ViewBag.DocentesIds = docentesIds;
             return PartialView();
         }
 
         [HttpPost]
-        public ActionResult CicloInscripcionesVerificarDuplicados(int[] ciclosIds){
-            return Json("OK", JsonRequestBehavior.AllowGet);
+        public async Task<ActionResult> CicloInscripcionesVerificarDuplicados(int[] ciclosIds, int[] docentesIds){
+
+           List<Docente> docentesRepeated = new List<Docente>();
+           foreach(var docente in docentesIds){
+               Docente docenteTemp = await db.Docentes.FindAsync(docente);
+               int participanteId = docenteTemp.PersonaId;
+               bool isRepeated = await db.Inscripciones.Select(x => new { x.Id, x.CicloFormativoId, x.ParticipanteId, x.Participante.Cedula }).Where(c => ciclosIds.Contains(c.CicloFormativoId)).AnyAsync(p => p.ParticipanteId ==  participanteId);
+               if (isRepeated)
+               {
+                   docentesRepeated.Add(docenteTemp);
+               }              
+           }
+
+           return Json(docentesRepeated.Select(x => new {Id =  x.Id, Cedula = x.Persona.Cedula }), JsonRequestBehavior.AllowGet);
         }
 
 

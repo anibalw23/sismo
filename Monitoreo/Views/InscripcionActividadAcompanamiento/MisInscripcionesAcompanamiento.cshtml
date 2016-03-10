@@ -1,0 +1,62 @@
+﻿
+
+
+<div class="panel-heading">
+    <h3 style="text-align:center;">Mis Acompanamientos Recientes</h3>
+</div>
+
+<div class="panel-body">
+
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Centro</th>
+                <th>Ciclo Formativo</th>
+                <th>Persona</th>
+                <th>Cedula</th>
+                <th>Actividad Acompañamiento</th>
+                <th>Area</th>
+                <th>Fecha</th>
+                <th>Horas</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+
+
+            $('#dataTable').dataTable(
+                {
+                    autoWidth: false,
+                    processing: true,
+                    serverSide: true,
+                    ordering: false,
+                    stateSave: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    language: { url: '/Content/js/dataTables.Spanish.txt' },
+                    ajax: { url: '@Url.Action("GetMisAcompanaminetos")', type: 'POST' },
+                    columns: [
+                        { data: 'CentroNombre' },
+                        { data: 'CicloFormativo' },
+                        { data: 'PersonaNombre' },
+                        { data: 'Cedula' },
+                        { data: 'ActividadAcompanamiento' },
+                        { data: 'AreaAcomp' },
+                        { data: 'Fecha' },
+                        { data: 'Horas' },
+                    ],
+
+                }
+        );
+        })(jQuery);
+    </script>
+}

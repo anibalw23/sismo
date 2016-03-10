@@ -8,7 +8,7 @@
             <div class="col-lg-offset-2">
                 @Html.Label("Ciclos Formativo")
                 @Html.DropDownList("ciclo", (IEnumerable<SelectListItem>)ViewBag.ciclos, new { @class = "form-control", multiple = "multiple" })
-                
+
             </div>
         </div>
         <div class="row" style="margin-top:20px;">
@@ -16,6 +16,12 @@
                 <button id="btnIVerifyDuplicados" type="button" class="btn btn-success">Revisar</button>
             </div>
         </div>
+        @foreach (var docenteID in ViewBag.DocentesIds)
+        {
+            <input type="hidden" id="docenteId_@docenteID" value="@docenteID" />
+        }
+
+
 
 
     </div>
@@ -28,11 +34,17 @@
 <script src="~/Content/js/bootstrap-multiselect.js"></script>
 <link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
 
-<script>  
+<script>
     var selectedCiclos;
-      
+    var selectedDocentes = [];
     $(function () {
         console.log("Ciclo Inscripciones Duplicado");
+        docentesInput = $("input[id^='docenteId_']");
+        $(docentesInput).each(function (k, v) {
+            var docenteId = $(this).attr('value');
+            selectedDocentes.push(docenteId);
+        });
+
         $('#ciclo').multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
@@ -42,6 +54,23 @@
                 selectedCiclos = $('#ciclo').val();
             },
         });
+
+
+        $("#btnIVerifyDuplicados").on('click', function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CicloInscripcionesVerificarDuplicados", "CicloFormativo")',
+                data: JSON.stringify({ ciclosIds: selectedCiclos, docentesIds: selectedDocentes }),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //$('#modalBody').html(data);
+                    //$('#CreateModal').modal({ show: true, backdrop: true });
+                }
+            });
+
+        });
+
+
 
     });
 </script>
