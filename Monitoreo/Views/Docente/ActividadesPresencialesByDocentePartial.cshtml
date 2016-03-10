@@ -1,0 +1,63 @@
+﻿
+<table id="dataTable" class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                Actividad Presencial
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Horas
+            </th>
+            <th>
+
+            </th>
+            <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+
+                    </td>
+
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+
+                </tr>
+            }*@
+    </tbody>
+
+</table>
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+            (function ($) {
+
+                $('#dataTable').dataTable(
+                    {
+                        autoWidth: false,
+                        serverSide: false,
+                        ordering: true,
+                        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    }
+            );
+            })(jQuery);
+    </script>
+}
+

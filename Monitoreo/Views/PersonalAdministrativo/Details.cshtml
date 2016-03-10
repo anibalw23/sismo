@@ -1,0 +1,58 @@
+﻿@model Monitoreo.Models.PersonalAdministrativo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("PersonalAdministrativo"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Centro)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Persona)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Persona.Cedula)
+        </dd>
+       
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaContratacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaContratacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FuncionesEjerce)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FuncionesEjerce)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanda)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tanda)
+        </dd>
+    </dl>
+</div>
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

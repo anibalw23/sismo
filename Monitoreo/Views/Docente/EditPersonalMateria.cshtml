@@ -1,0 +1,223 @@
+﻿@model Monitoreo.Models.Docente
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("EditandoX"), Resources.T.ResourceManager.GetString("Docente"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PersonaId, Resources.T.ResourceManager.GetString("Persona"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(x => x.PersonaId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PersonaId)
+                </div>
+            </div>
+            @Html.EditorFor(model => model.FormacionAcademica)
+            @Html.EditorFor(model => model.AnosDeEjercicio)
+            @if (@Request.Params["MasterType"] == "Centro")
+            {
+                @Html.Hidden("CentroId", Request.Params["MasterId"]);
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CentroId, Resources.T.ResourceManager.GetString("Centro"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CentroId, (IEnumerable<SelectListItem>)ViewBag.Centro, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CentroId)
+                    </div>
+                </div>
+            }
+            @Html.EditorFor(model => model.FechaContratacion)
+            @{
+                var materiaTemplate = new Monitoreo.Models.BO.PersonalMateria();
+                var centroGrado = new Monitoreo.Models.BO.CentroGrado();
+                var seccionAula = new Monitoreo.Models.BO.SeccionAula();
+                materiaTemplate.DocenteId = Model.Id;
+            }
+            <table id="@Html.IdFor(model => model.Materias)" class="table table-bordered table-striped table-hover">
+                <caption><h3>@Html.DisplayNameFor(model => model.Materias)</h3></caption>
+                <thead>
+                    <tr>                       
+                        <th>@Html.DisplayNameFor(model => materiaTemplate.Materia.nombreMateria)</th>
+                        <th>@Html.DisplayNameFor(model => centroGrado.GradoLookup.grado)</th>
+                        <th>@Html.DisplayNameFor(model => seccionAula.Seccion.Numero)</th>
+                        <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @*<tr id="materiaTemplate" style="display: none;">
+                        <td>
+                            @Html.HiddenFor(model => materiaTemplate.DocenteId)                          
+                        </td>                       
+
+                        <td>
+                            @Html.DropDownListFor(model => model.PersonalMaterias.Select(p => p.MateriaId), new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => materiaTemplate.Area)
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(model =>  materiaTemplate.Materia.nombreMateria, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => materiaTemplate.Grados)
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(model => materiaTemplate.SeccionId, (IEnumerable<SelectListItem>)ViewBag.Seccion, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => materiaTemplate.SeccionId)
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-danger" onclick="return removeMateria('materiaTemplate');">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                            </a>
+                        </td>
+                    </tr>*@
+    
+                    @foreach (var materia in Model.PersonalMaterias)
+                    {
+                        <tr>
+                            <td>  
+                               
+                                @Html.DropDownListFor(x => x.PersonalMaterias, (IEnumerable<SelectListItem>)ViewBag.Areas, new { })
+                   
+                                @*@Html.DropDownListFor(model => materia.MateriaId, (IEnumerable<SelectListItem>)ViewBag.Areas, new { @class = "form-control" })*@
+                            </td>
+                            <td>
+                                @foreach (var m in materia.SeccionesPersonalMateria)
+                                {
+
+                                }
+
+
+
+                                @Html.DropDownListFor(model => materia.SeccionesPersonalMateria, (IEnumerable<SelectListItem>)ViewBag.Grados, new { @class = "form-control" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(model => materia.SeccionesPersonalMateria, (IEnumerable<SelectListItem>)ViewBag.Seccion, new { @class = "form-control" })
+                            </td>
+
+                        </tr>
+                       
+                    }
+
+
+
+                    @*@for (int i = 0; i < Model.PersonalMaterias.Count; i++)
+                    {
+                        <tr id="Materias_@(i)_">
+                            <td>
+                                @Html.HiddenFor(model => Model.Materias[i].Id)
+                                @Html.HiddenFor(model => Model.Materias[i].DocenteId)
+                                @Html.DropDownListFor(model => Model.PersonalMaterias[i].MateriaId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].Nivel)
+                            </td>
+                            <td>
+                                @Html.EnumDropDownListFor(model => Model.Materias[i].Ciclo, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].Ciclo)
+                            </td>
+                            <td>
+                                @Html.EnumDropDownListFor(model => Model.Materias[i].Tanda, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].Tanda)
+                            </td>
+                            <td>
+                                @Html.EnumDropDownListFor(model => Model.Materias[i].Area, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].Area)
+                            </td>
+                            <td>
+                                @Html.EnumDropDownListFor(model => Model.Materias[i].Grados, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].Grados)
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(model => Model.Materias[i].SeccionId, (IEnumerable<SelectListItem>)ViewBag.Seccion, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => Model.Materias[i].SeccionId)
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-danger" onclick="return removeMateria('Materias[@i]');">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                                </a>
+                            </td>
+                        </tr>
+                    }*@
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <a href="#" class="btn btn-default" onclick='return addMateria();'>
+                                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Agregar")
+                            </a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")</a>');
+        </script>
+        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>
+    </div>
+}
+
+<script type="text/javascript" src="~/Content/js/personaSelect2imp.js"></script>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+    var cantidadMateria = 0;
+
+    @if (Model.Materias != null) {
+        <text>cantidadMateria = </text>@Model.Materias.Count;
+    }
+
+    function addMateria() {
+        var clonned = $("#materiaTemplate")
+            .clone()
+            .attr({ id: "Materias_" + cantidadMateria + "_", style: "display: table-row" })
+            .appendTo("#@Html.IdFor(model => model.Materias)");
+
+        var contenido = clonned.html().replace(/materiaTemplate/g, "Materias[" + cantidadMateria + "]");
+        clonned.html(contenido);
+
+        cantidadMateria++;
+
+        return false;
+    };
+
+    function removeMateria(id) {
+        newId = id.replace(/[\[\]]/g, "_");
+        materiaTr = $('#' + newId);
+        materiaId = $('#' + newId + '_Id');
+
+        if (materiaId != undefined) {
+            value = materiaId.val();
+            materiaId.val(value * -1);
+        }
+
+        materiaTr.hide();
+
+        return false;
+    }
+</script>
+
+

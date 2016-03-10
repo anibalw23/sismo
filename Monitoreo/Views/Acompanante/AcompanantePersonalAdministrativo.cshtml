@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Monitoreo.Models.PersonalAdministrativo>
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("Docentes");
+}
+<style type="text/css">
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
+
+<script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>
+
+
+<div class="panel-heading">
+    <h3>Personal Administratvo del Centro @ViewBag.Centro.Nombre</h3>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Cédula
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Función
+                </th>
+
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Persona.Cedula)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FuncionesEjerce)
+                    </td>
+                   
+                    <td class="row-actions">
+                        <a href="@Url.Action("DocenteDetailsAcompanante", "Docente", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @*@Scripts.Render("~/bundles/dataTables/js")*@
+
+    <script type="text/javascript">
+        (function ($) {
+
+
+            var table = $('#dataTable').dataTable(
+                {
+                    autoWidth: false,
+                    serverSide: false,
+                    ordering: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    'iDisplayLength': 100,
+                    paging: false
+                }
+            ).columnFilter();
+
+        })(jQuery);
+    </script>
+}
+
+
+
+

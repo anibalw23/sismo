@@ -1,0 +1,21 @@
+﻿
+DELETE FROM Regional;
+SET IDENTITY_INSERT Regional ON
+insert into Regional( Id, Codigo, Nombre) values ('1', '1', 'Regional 1 - Barahona')
+insert into Regional( Id, Codigo, Nombre) values ('2', '2', 'Regional 2 - San Juan de la Maguana')
+insert into Regional( Id, Codigo, Nombre) values ('3', '3', 'Regional 3 - Azua')
+insert into Regional( Id, Codigo, Nombre) values ('4', '4', 'Regional 4 - San Cristobal')
+insert into Regional( Id, Codigo, Nombre) values ('5', '5', 'Regional 5 - San Pedro de Macoris')
+insert into Regional( Id, Codigo, Nombre) values ('6', '6', 'Regional 6 - La Vega')
+insert into Regional( Id, Codigo, Nombre) values ('7', '7', 'Regional 7 - San Francisco de Macoris')
+insert into Regional( Id, Codigo, Nombre) values ('8', '8', 'Regional 8 - Santiago')
+insert into Regional( Id, Codigo, Nombre) values ('9', '9', 'Regional 9 - Mao')
+insert into Regional( Id, Codigo, Nombre) values ('10', '10', 'Regional 10 - Santo Domingo II')
+insert into Regional( Id, Codigo, Nombre) values ('11', '11', 'Regional 11 - Puerto Plata')
+insert into Regional( Id, Codigo, Nombre) values ('12', '12', 'Regional 12 - Higuey')
+insert into Regional( Id, Codigo, Nombre) values ('13', '13', 'Regional 13 - Monte Cristi')
+insert into Regional( Id, Codigo, Nombre) values ('14', '14', 'Regional 14 - Nagua')
+insert into Regional( Id, Codigo, Nombre) values ('15', '15', 'Regional 15 - Santo Domingo III')
+insert into Regional( Id, Codigo, Nombre) values ('16', '16', 'Regional 16 - Cotui')
+insert into Regional( Id, Codigo, Nombre) values ('17', '17', 'Regional 17 - Monte Plata')
+insert into Regional( Id, Codigo, Nombre) values ('18', '18', 'Regional 18 - Neyba')

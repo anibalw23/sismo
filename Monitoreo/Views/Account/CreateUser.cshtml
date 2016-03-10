@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Crear Nuevo Usuario";
+}
+
+<link href="~/Content/css/chosen.css" rel="stylesheet" />
+<script src="~/Content/js/chosen.jquery.js"></script>
+<script src="~/Content/js/chosen.proto.js"></script>
+
+<div class="panel-heading">
+    <h3> @ViewBag.Title</h3>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @*@Html.Label("Nombre  de Usuario", new { @class = "control-label col-sm-3" })*@
+            @*@Html.Editor("Nombre de Usuario", new { @Id = "NombreUsuario" })*@
+
+            <div class="form-group">
+                @Html.Label("Usuario", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Persona", (IEnumerable<SelectListItem>)ViewBag.Personas, new { @class = "form-control", @Id = "NombreUsuario" })
+                </div>
+            </div>
+
+
+
+            @Html.Label("Contraseña", new { @class = "control-label col-sm-3" })
+            @Html.Editor("Contraseña", new { @Id = "Contrasena" })
+
+
+            <div class="form-group">
+                @Html.Label("Rol", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Roles", (IEnumerable<SelectListItem>)ViewBag.Roles, null, new { @class = "form-control", @Id ="Drol" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+<div class="panel-footer">
+    <button type="submit" id="btnSubmit" value="Create" class="btn btn-primary">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+    </button>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#NombreUsuario").chosen();
+
+        $('#btnSubmit').button().click(function () {
+            userName = $('.chosen-single').text();
+            pass = $('#Contrase_a').val();
+            rol = $('#Drol').find('option:selected').text();
+
+            $.post('@Url.Action("CreateNewUser", "Account")' + "?UserName=" + userName + "&Password=" + pass + "&roleName="+rol, function (data) {
+            }).done(function (data) {
+                $("form").attr('action', '@Url.Action("Users", "Account")').off('submit').submit();
+                //alert("Usuario Creado!");
+            });;
+
+        });
+    });
+
+</script>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}

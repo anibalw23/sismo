@@ -1,0 +1,220 @@
+﻿@model IEnumerable<Monitoreo.Models.Inscripcion>
+
+<script src="~/Content/js/tableExport/tableExport.js"></script>
+<script src="~/Content/js/tableExport/jspdf/jspdf.js"></script>
+<script src="~/Content/js/tableExport/jquery.base64.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<div class="panel-body">
+
+
+    <input type="hidden" id="cicloId" value="@ViewBag.MasterId" />
+    <div class="form-group">
+        @Html.Label("Fecha", new { @class = "control-label col-sm-3" })
+        <div class="col-sm-4" style="margin-bottom:50px;">
+            @Html.DropDownList("Fecha", (IEnumerable<SelectListItem>)ViewBag.CalendarioId, "Eliga una fecha...", new { @id = "fechaDropDownList", @class = "form-control" })
+        </div>
+    </div>
+ 
+    <table id="dataTableAsistencia" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Participante.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Participante.Cedula)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Participante.NombreCompleto)
+                </th>
+                <th>
+                    Asistió
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="panel-footer">
+        <a id="excelAsistencia" onclick="showBLPopup('/CicloFormativo/CicloAsistenciaExcel?id=@ViewBag.MasterId', 'Verificar Asistencia')" class="btn btn-default">
+            <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Registrar Asistencia desde Excel
+        </a>
+
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table;
+        $('#fechaDropDownList').on('change', function () {
+            var calendarioCicloId = $("#fechaDropDownList option:selected").val();
+            var cicloId = $("#cicloId").val();
+            console.log("cicloId" + cicloId);
+            $("#excelAsistencia").attr('onclick', 'showBLPopup("/CicloFormativo/CicloAsistenciaExcel?id=' + cicloId + '&calendarioId=' +calendarioCicloId +' ","Registrar Asistencia desde Excel")');
+
+             table = $('#dataTableAsistencia').DataTable(
+                {
+                    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                        if (aData.Asistio == true) {
+                            console.log("Asistio!!!");
+                            $("td:eq(2)", nRow).html('<i style="font-size=5em; color:green;" class="fa fa-check"></i>');
+                            $(nRow).css('background-color', 'white');
+                        }
+                        else {
+                            $("td:eq(2)", nRow).html('<i class="fa fa-times"></i>');
+                            $(nRow).css('background-color', '#9F9E9C');
+                            $(nRow).css('color', 'white');
+                        }
+
+                    },
+
+                    autoWidth: false,
+                    processing: true,
+                    serverSide: true,
+                    paging:true,
+                    ordering: true,
+                    stateSave: true,
+                    bDestroy: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    language: { url: '/Content/js/dataTables.Spanish.txt' },
+                    ajax: { url: "/Ausencia/GetAsistenciaPersonasActividadFormativa?CicloFormativoId=" + cicloId + "&calendarioCicloId=" + calendarioCicloId, type: 'GET' },
+                    columns: [
+                        { data: 'partcicipanteId' },
+                        { data: 'Nombre' },
+                        { data: 'Cedula' },
+                        { data: 'Asistio' },
+                    ],
+                    "columnDefs": [
+                       {
+                           "targets": [0],
+                           "visible": false,
+                           "searchable": false
+                       }
+
+                    ],
+
+                    createdRow: function (row, data, index) {
+
+                    }
+                }
+            );
+
+
+        });
+
+
+
+          $('#dataTableAsistencia tbody').on('click', 'tr', function () {
+                   var data = table.row(this).data();
+                   var calendarioCicloId = $("#fechaDropDownList option:selected").val();
+                   //$("td:eq(3)", table.row(this).index()).html('<i class="fa fa-times"></i>');
+                   //$(table.row(this)).css('background-color', 'red');
+                   //console.log(table.row(this).index());
+                   if (data.Asistio == true) {
+                       $.ajax({
+                           type: "POST",
+                           url: "/Ausencia/CreateAusenciaPersonal?calendarioCicloId=" + calendarioCicloId + "&personalId=" + data.partcicipanteId,
+                           contentType: "application/json; charset=utf-8",
+                           dataType: "json",
+                           success: function (data) {
+                               if (data.response == "OK") {
+                                   $("td:eq(3)", table.row(this).index()).html('<i class="fa fa-times"></i>');
+                                   table.draw();
+                                   alert("Insasistencia Creada!");
+                               }
+                               if (data.response == "ERROR") {
+                                   console.log(data.response);
+                                   alert("No se pudo crear la ausencia!");
+                               }
+                           }
+                       });
+
+                   }
+                   else {
+
+                       $.ajax({
+                           type: "POST",
+                           url: "/Ausencia/DeleteAusenciaPersonal?calendarioCicloId=" + calendarioCicloId + "&personalId=" + data.partcicipanteId,
+                           contentType: "application/json; charset=utf-8",
+                           dataType: "json",
+                           success: function (data) {
+                               if (data.response == "OK") {
+                                   $("td:eq(3)", table.row(this).index()).html('<i style="font-size=2em" class="fa fa-check"></i>');
+                                   table.draw();
+                                   alert("Ausencia Borrada!");
+                               }
+                               if (data.response == "ERROR") {
+                                   console.log(data.response);
+                                   alert("No se pudo borrar la ausencia!");
+                               }
+                           }
+                       });
+                   }
+
+                });
+
+
+    });
+
+
+
+    function reloadTable()
+    {
+            var calendarioCicloId = $("#fechaDropDownList option:selected").val();
+            var cicloId = $("#cicloId").val();
+            $('#dataTableAsistencia').dataTable().fnDestroy();
+             table = $('#dataTableAsistencia').DataTable(
+               {
+                   "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                       if (aData.Asistio == true) {
+                           //console.log(aData.Asistio + "index" + iDisplayIndex);
+                           $("td:eq(3)", nRow).html(' <i style="font-size=2em" class="fa fa-check"></i>');
+                           $(nRow).css('background-color', 'white');
+                       }
+                       else {
+                           //console.log(aData.Asistio + "index" + iDisplayIndex);
+                           $("td:eq(3)", nRow).html('<i class="fa fa-times"></i>');
+                           $(nRow).css('background-color', '#9F9E9C');
+                       }
+
+                   },
+
+                   autoWidth: false,
+                   processing: true,
+                   serverSide: true,
+                   ordering: true,
+                   stateSave: true,
+                   bDestroy: true,
+                   lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                   language: { url: '/Content/js/dataTables.Spanish.txt' },
+                   ajax: { url: "/Ausencia/GetAsistenciaPersonasActividadFormativa?CicloFormativoId=" + cicloId + "&calendarioCicloId=" + calendarioCicloId, type: 'GET' },
+                   columns: [
+                       { data: 'partcicipanteId' },
+                       { data: 'Nombre' },
+                       { data: 'Cedula' },
+                       { data: 'Asistio' },
+                   ],
+                   "columnDefs": [
+                      {
+                          "targets": [0],
+                          "visible": false,
+                          "searchable": false
+                      }
+
+                   ],
+
+                   createdRow: function (row, data, index) {
+
+                   }
+               }
+            );
+
+    }
+
+
+</script>

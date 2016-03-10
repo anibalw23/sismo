@@ -1,0 +1,117 @@
+﻿@model Monitoreo.Models.BO.EvaluacionAcompanamiento.EvaluacionAcompanamiento
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("EvaluacionAcompanamiento"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Titulo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Titulo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoEvaluacionAcomp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoEvaluacionAcomp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.creadoPor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.creadoPor)
+        </dd>
+    </dl>
+</div>
+
+
+
+
+
+
+
+
+
+<div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#preguntas" aria-controls="preguntas" role="tab" data-toggle="tab">Preguntas</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        @{
+
+            <div role="tabpanel" class="tab-pane active fade in" id="preguntas">
+                <div class="panel">
+                    <div class="panel-body">
+                        <table class="table table-bordered table-striped table-hover" id="datatablePreguntas">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Descripción
+                                    </th>
+
+                                    <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PreguntasAcomp.Where(e => e.EvaluacionAcompId == Model.Id))
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(model => item.Descripcion)</td>
+
+                                        <td class="row-actions">
+                                            <a href="@Url.Action("Details", "EvaluacionAcompanamientoPregunta", new { id = item.Id })" class="btn btn-default">
+                                                <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                                            </a>
+                                            <a href="@Url.Action("EditByEvaluacion", "EvaluacionAcompanamientoPregunta", new { id = item.Id })" class="btn btn-default">
+                                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                                            </a>
+                                            <a href="@Url.Action("Delete", "EvaluacionAcompanamientoPregunta", new { id = item.Id })" class="btn btn-danger">
+                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="panel-footer">
+                            <a href="@Url.Action("CreateByEvaluacion", "EvaluacionAcompanamientoPregunta", new { @evaluacionId = Model.Id })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar Pregunta
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+
+
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

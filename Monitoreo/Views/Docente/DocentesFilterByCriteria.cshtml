@@ -1,0 +1,301 @@
+﻿
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+    
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+    
+}
+
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<style type="text/css">
+    #loadingDiv {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: #666;
+        background-image: url('../../Content/img/hex-loader2.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 10000000;
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+    }
+</style>
+
+
+@Html.AntiForgeryToken()
+<div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+
+
+        <div class="form-group">
+            @Html.Label("Distrito", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("distritoId", (IEnumerable<SelectListItem>)ViewBag.Distrito, "Seleccione el Distrito..", new { @class = "form-control", @id = "distritoId", @name = "distritoId" })
+            </div>
+        </div>
+
+
+        <div class="form-group" id="redDiv">
+            @Html.Label("Red", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select name="redesId" id="redesId" class="form-control" multiple="multiple" style="display: none;"></select>
+            </div>
+        </div>
+
+        <div class="form-group" id="centroDiv">
+            @Html.Label("Centros", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select name="centrosId" id="centrosId" class="form-control" multiple="multiple" style="display: none;"></select>
+            </div>
+        </div>
+
+        <div class="form-group" id="areaDiv">
+            @Html.Label("Area", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("areaId", (SelectList)ViewBag.Arealist, new { @class = "form-control", @id = "areaId", @name = "areaId", multiple = "multiple" })
+            </div>
+        </div>
+
+        <div class="form-group" id="gradoDiv">
+            @Html.Label("Grado", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("gradoId", (IEnumerable<SelectListItem>)ViewBag.Gradolist, new { @class = "form-control", @id = "gradoId", @name = "gradoId", multiple = "multiple" })
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin: 0 auto;text-align:center;">
+        <button style="text-align:center" id="btnSubmit" type="submit" value="CicloInscripcionesBatchImport" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Ver Docentes..
+        </button>
+
+    </div>
+
+    <table id="tblDocentes" cellspacing="0" width="100%" style="margin-left:10px; margin-right:10px;margin-top:30px;margin-bottom:30px;">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll" /> </th>
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>Areas</th>
+                <th>Grados</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+
+    </table>
+    <div>
+        <button id="btnSelectAll" type="button" class="btn btn-default">Des/Seleccionar todos</button>
+    </div>
+
+    
+    <div id="loadingDiv" style="margin: 0 auto; ">
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+
+    var selectedRedes;
+    var selectedCentros;
+    var selectedAreas;
+    var selectedGrados;
+    var checkStatus = false;
+
+    $(document).ready(function () {
+        $("#loadingDiv").hide();
+
+
+        $("#btnSubmit").on('click', function () {
+            $("#loadingDiv").show();
+
+            //Centros Seleccionados
+            var centrosIDs = [];
+            $(selectedCentros).each(function (index) {
+                centrosIDs.push(selectedCentros[index]);
+            });
+            //Areas Seleccionadas
+            var areasIDs = [];
+            $(selectedAreas).each(function (index) {
+                areasIDs.push(selectedAreas[index]);
+            });
+            //Areas Seleccionadas
+            var gradosIDs = [];
+            $(selectedGrados).each(function (index) {
+                gradosIDs.push(selectedGrados[index]);
+            });
+
+            //Llama a DocenteController/GetDocenteByCentrosAreasGrados
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetDocenteByCentrosAreasGrados", "Docente")',
+                data: JSON.stringify({ centrosIds: centrosIDs, areasIds: areasIDs, gradosIDs: gradosIDs }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#loadingDiv").hide();
+                    $.each(data.data, function (i, data) {
+                        $("#tblDocentes").append("<tr><td>   <input type='checkbox' id='participante_'" + data.id + " value=" + data.id + " /> </td> <td>" + data.cedula + "</td> <td> " + data.nombre + "</td> <td>" + data.areas + "</td> <td>" + data.grados + " </td>  </tr>");
+                    });
+                }
+            });
+
+
+
+        });
+
+       
+
+
+        $("#btnSelectAll").on('click', function () {
+            if (checkStatus == true) {
+                checkStatus = false;
+            }
+            else {
+                checkStatus = true;
+            }
+            $('tbody tr td input[type="checkbox"]').each(function () {
+                var checked = $(this).prop('checked');
+                $(this).prop('checked', checkStatus);
+            });
+        });
+
+
+        $("#redDiv").hide();
+        $("#centroDiv").hide();
+        $("#areaDiv").hide();
+        $("#gradoDiv").hide();
+        $("#btnSubmit").hide();
+
+        $('#centrosId').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            selectAllText: 'Seleccionar Todos',
+            onChange: function (option, checked, select) {
+                selectedCentros = $('#centrosId').val();
+            },
+        });
+        $('#areaId').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            selectAllText: 'Seleccionar Todos',
+            onChange: function (option, checked, select) {
+                selectedAreas = $('#areaId').val();
+            },
+        });
+        $('#gradoId').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            selectAllText: 'Seleccionar Todos',
+            onChange: function (option, checked, select) {
+                selectedGrados = $('#gradoId').val();
+         },
+        });
+
+
+
+        $("#distritoId").on('change', function () {
+            var distritoId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetRedesByDistritoId", "Reporte")' + "?distritoId=" + distritoId,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var optionsGrupos = [];
+                    $.each(data.data, function (i, data) {
+                        optionsGrupos.push({ label: data.Nombre, title: data.Nombre, value: data.Id });
+                    });
+                    $('#redesId').multiselect('dataprovider', optionsGrupos);
+                    $("#redDiv").show();
+                }
+            });
+
+
+            //Obtiene los ids de las redes seleccionadas
+            $('#redesId').multiselect({
+                includeSelectAllOption: true,
+                enableFiltering: true,
+                selectAllText: 'Seleccionar Todos',
+                onChange: function (option, checked, select) {
+                    selectedRedes = $('#redesId').val();
+                },
+                onDropdownHide: function (event) {
+                    var redesIDs = [];
+                    $(selectedRedes).each(function (index) {
+                        redesIDs.push(selectedRedes[index]);
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetCentrosByRedesIds", "Centro")',
+                        data: JSON.stringify(redesIDs),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            var optionsGrupos = [];
+                            $.each(data.data, function (i, data) {
+                                optionsGrupos.push({ label: data.Nombre, title: data.Nombre, value: data.Id });
+                            });
+                            $('#centrosId').multiselect('dataprovider', optionsGrupos);
+                            $("#centroDiv").show();
+                            $("#areaDiv").show();
+                            $("#gradoDiv").show();
+                            $("#btnSubmit").show();
+
+
+                        }
+                    });
+
+
+
+
+                }
+            });
+
+
+
+
+
+        });
+
+    });
+
+
+    function getParticipantesIdsChecked() {
+        var result = [];
+        $('tbody tr td input[type="checkbox"]').each(function () {
+            var checked = $(this).prop('checked');
+            if (checked == true) {
+                result.push($(this).val());
+                console.log("checkbox Selected = " + $(this).val());
+            }
+        });
+        return result;
+    }
+
+</script>
+
+

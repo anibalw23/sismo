@@ -1,0 +1,105 @@
+﻿@model Monitoreo.Models.Persona
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("Persona"));
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("#ProvinciaId").change(function () {
+            var selectedItem = $(this).val();
+            var ddlMunicipio = $("#MunicipioId");
+            var MunicipioProgress = $("#states-loading-progress");
+            ddlMunicipio.html('');
+            ddlMunicipio.append($('<option></option>').val(-1).html('Cargando...'));
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.Action("GetMunicipios", "Provincia"))",
+                data: { "Id": selectedItem },
+                success: function (data) {
+                    ddlMunicipio.html('');
+                    $.each(data, function (id, option) {
+                        ddlMunicipio.append($('<option></option>').val(option.id).html(option.name));
+                    });
+                    MunicipioProgress.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve Municipios.');
+                    MunicipioProgress.hide();
+                }
+            });
+        });
+    });
+</script>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+            @Html.EditorFor(model => model.Cedula)
+            @Html.EditorFor(model => model.Nombres)
+            @Html.EditorFor(model => model.PrimerApellido)
+            @Html.EditorFor(model => model.SegundoApellido)
+            @Html.EditorFor(model => model.FechaNacimiento)
+            @Html.EditorFor(model => model.LugarNacimiento)
+            @Html.EditorFor(model => model.Sexo)
+            <div class="form-group">
+                @Html.LabelFor(model => model.GrupoEtnicoId, Resources.T.ResourceManager.GetString("GrupoEtnico"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.GrupoEtnicoId, (IEnumerable<SelectListItem>)ViewBag.GrupoEtnicoId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.GrupoEtnicoId)
+                </div>
+            </div>
+            @Html.EditorFor(model => model.Discapacidades)
+            @Html.EditorFor(model => model.Telefono)
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProvinciaId, Resources.T.ResourceManager.GetString("Provincia"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.ProvinciaId, (IEnumerable<SelectListItem>)ViewBag.ProvinciaId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ProvinciaId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MunicipioId, Resources.T.ResourceManager.GetString("Municipio"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.MunicipioId, (IEnumerable<SelectListItem>)ViewBag.MunicipioId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MunicipioId)
+                </div>
+            </div>
+            @Html.EditorFor(model => model.Sector)
+            @Html.EditorFor(model => model.Calle)
+            @Html.EditorFor(model => model.Comentarios)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/bootstrap-datetimepicker/css")
+}

@@ -1,0 +1,216 @@
+﻿@model IEnumerable<Monitoreo.Models.Docente>
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("Docentes");
+}
+<script src="~/Content/js/boostrapTable/bootstrap-table.js"></script>
+<link href="~/Content/js/boostrapTable/bootstrap-table.css" rel="stylesheet" />
+@*<link href="~/Content/js/bootstrap-table-filter.css" rel="stylesheet" />
+<script src="~/Content/js/bootstrap-table-filter.js"></script>
+<script src="~/Content/js/boostrapTable/extensions/export/bootstrap-table-export.js"></script>*@
+<link href="~/Content/js/bs-grid/jquery.bs_grid.css" rel="stylesheet" />
+<script src="~/Content/js/bs-grid/jquery.bs_grid.js"></script>
+<link href="~/Content/js/bs-grid/jquery.jui_filter_rules.css" rel="stylesheet" />
+<script src="~/Content/js/bs-grid/jquery.jui_filter_rules.js"></script>
+<script src="~/Content/js/jquery-ui-filter/en.js"></script>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+<div class="panel-body">
+
+    <div id="demo_grid1"></div>
+
+    <div id="filter-bar"> </div>
+    @*<table id="tableData" data-toggle="table" data-show-columns="true" data-show-filter="true" data-search="true" data-toolbar="#filter-bar" data-show-refresh="true" data-show-toggle="true" data-show-export="true" data-pagination="true" data-height="299">
+        <thead>
+            <tr>
+                <th data-field="Centro" data-align="right" > Centro</th>
+                <th data-field="Persona" data-align="center" >Persona</th>
+                <th data-field="Funciones" data-align="right" >Funciones</th>
+                <th data-field="Tanda" data-align="right" >Tanda</th>
+                <th data-field="Nivel" data-align="right" >Nivel</th>
+                <th data-field="Area" data-align="right" >Area</th>
+                <th data-field="Ciclo" data-align="right">Ciclo</th>
+                <th> Acciones </th>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model)
+        {
+
+            <tr data-index="@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Centro.Codigo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Persona.Cedula)
+                </td>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.FuncionesEjerce)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tanda)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nivel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Area)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciclo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Grados)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+
+            </tr>
+        }
+
+    </table>*@
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#demo_grid1").bs_grid({
+ 
+            ajaxFetchDataURL: "ajax_fetch_page_data.php",
+            row_primary_key: "customer_id",
+ 
+            columns: [
+                {field: "customer_id", header: "Code", visible: "no"},
+                {field: "lastname", header: "Lastname"},
+                {field: "firstname", header: "Firstname"},
+                {field: "email", header: "Email", visible: "no", "sortable": "no"},
+                {field: "gender", header: "Gender"},
+                {field: "date_updated", header: "Date updated"}
+            ],
+ 
+            sorting: [
+                {sortingName: "Code", field: "customer_id", order: "none"},
+                {sortingName: "Lastname", field: "lastname", order: "ascending"},
+                {sortingName: "Firstname", field: "firstname", order: "ascending"},
+                {sortingName: "Date updated", field: "date_updated", order: "none"}
+            ],
+ 
+            filterOptions: {
+                filters: [
+                    {
+                        filterName: "Lastname", "filterType": "text", field: "lastname", filterLabel: "Last name",
+                        excluded_operators: ["in", "not_in"],
+                        filter_interface: [
+                            {
+                                filter_element: "input",
+                                filter_element_attributes: {"type": "text"}
+                            }
+                        ]
+                    },
+                    {
+                        filterName: "Gender", "filterType": "number", "numberType": "integer", field: "lk_genders_id", filterLabel: "Gender",
+                        excluded_operators: ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal"],
+                        filter_interface: [
+                            {
+                                filter_element: "input",
+                                filter_element_attributes: {type: "checkbox"}
+                            }
+                        ],
+                        lookup_values: [
+                            {lk_option: "Male", lk_value: "1"},
+                            {lk_option: "Female", lk_value: "2", lk_selected: "yes"}
+                        ]
+                    },
+                    {
+                        filterName: "DateUpdated", "filterType": "date", field: "date_updated", filterLabel: "Datetime updated",
+                        excluded_operators: ["in", "not_in"],
+                        filter_interface: [
+                            {
+                                filter_element: "input",
+                                filter_element_attributes: {
+                                    type: "text",
+                                    title: "Set the date and time using format: dd/mm/yyyy hh:mm:ss"
+                                },
+                                filter_widget: "datetimepicker",
+                                filter_widget_properties: {
+                                    dateFormat: "dd/mm/yy",
+                                    timeFormat: "HH:mm:ss",
+                                    changeMonth: true,
+                                    changeYear: true,
+                                    showSecond: true
+                                }
+                            }
+                        ],
+                        validate_dateformat: ["DD/MM/YYYY HH:mm:ss"],
+                        filter_value_conversion: {
+                            function_name: "local_datetime_to_UTC_timestamp",
+                            args: [
+                                {"filter_value": "yes"},
+                                {"value": "DD/MM/YYYY HH:mm:ss"}
+                            ]
+                        }
+                    }
+                ]
+            }
+        });
+ 
+    });
+
+
+
+
+
+
+
+
+
+
+        //$('#filter-bar').bootstrapTableFilter({
+        //    filters: [
+        //        {
+        //            field: 'Centro',    // field identifier
+        //            label: 'Centro',    // filter label
+        //            type: 'search',   // filter type
+        //        },
+        //        {
+        //            field: 'Persona',
+        //            label: 'Persona',
+        //            type: 'search',
+        //            enabled: true   // filter is visible by default
+        //        },
+
+        //    ],
+        //    onSubmit: function () {
+        //        var data = $('#filter-bar').bootstrapTableFilter('getData');
+        //        console.log(data);
+        //    }
+        //});
+
+    });
+</script>
+
+
+
+
+
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Create")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+</div>
+
+

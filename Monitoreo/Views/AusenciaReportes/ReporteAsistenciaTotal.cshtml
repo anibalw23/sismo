@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "ReporteAsistenciaTotal";
+}
+
+<style type="text/css">
+    #loading-indicator {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+    }
+
+    * {font-family: Verdana;}
+            .node {
+              border: solid 1px white;
+              font: 10px sans-serif;
+              line-height: 12px;
+              overflow: hidden;
+              position: absolute;
+              text-indent: 2px;
+     }
+
+</style>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+
+<link href="~/Content/js/pivottable-master/dist/pivot.css" rel="stylesheet" />
+<script src="~/Content/js/pivottable-master/dist/pivot.js"></script>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+<div class="panel-body">
+    <div id="output" style="margin: 10px; max-width:400px;"></div>
+    <img src="~/Content/img/ajax-loader.gif" id="loading-indicator" style="display:none;" />
+
+    <a href="#" class="btn btn-default" onclick="cargarDatosCentros()">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Cargar Datos de Centros
+    </a>
+
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {        
+        $('#loading-indicator').show();
+        $.getJSON("/AusenciaReportes/getReporteAsistenciaTotal", function (data) {
+            $("#output").pivotUI(data.Records, { rows: ["cedula", "cicloTema", "cicloSeccion", "porcentajeAsistencia", "horasAsistidas"] });
+        }).done(function () {
+            $('#loading-indicator').hide();
+        });
+        
+    });
+
+    function cargarDatosCentros() {
+        $('#loading-indicator').show();
+        $.getJSON("/AusenciaReportes/getReporteAsistenciaTotal", function (data) {            
+        }).done(function () {
+            $('#loading-indicator').hide();
+        });
+
+    }
+
+
+</script>

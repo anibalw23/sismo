@@ -1,0 +1,49 @@
+﻿@model Monitoreo.Models.BO.Indicador
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("EditandoX"), Resources.T.ResourceManager.GetString("Indicador"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+
+                @Html.EditorFor(model => model.nombre)
+                @Html.EditorFor(model => model.codigo)
+                @Html.EditorFor(model => model.tipo)
+                @Html.EditorFor(model => model.valorLineaBase)
+                @Html.EditorFor(model => model.descripcion)
+                @Html.EditorFor(model => model.formula)
+                @Html.EditorFor(model => model.Frecuencia)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")</a>');
+        </script>
+        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>
+    </div>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

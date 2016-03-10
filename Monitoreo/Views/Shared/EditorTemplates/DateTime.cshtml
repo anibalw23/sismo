@@ -1,0 +1,38 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model DateTime?
+
+@{
+    string controlsClass = ViewBag.controlsClass;
+    if (controlsClass == null) { controlsClass = "col-sm-4"; }
+    DateTime dt;
+    if (Model.HasValue)
+    {
+        dt = (DateTime)Model;
+    }
+    else
+    {
+        dt = DateTime.Now;
+    }
+
+    var format = System.Threading.Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper();
+}
+
+<div class="form-group@(Html.ValidationErrorFor(m => m, " error has-error"))">
+    @Html.LabelFor(m => m, new { @class = "col-sm-3 control-label" })
+    <div class="@controlsClass controls">
+        <div class="input-group datepicker">
+            @Html.TextBoxFor(m => m, new { Value = dt.ToString("d"), @class = "form-control", data_date = dt, data_date_format = format, data_date_today_highlight = "true" })
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+        @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
+<script type="text/javascript">
+        (function () {
+            $('#@Html.IdFor(m => m)').datetimepicker({ format: '@(format)' });
+        })(jQuery);
+</script>

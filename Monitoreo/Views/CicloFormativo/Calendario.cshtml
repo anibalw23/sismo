@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Monitoreo.Models.CicloFormativo>
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("CicloFormativos");
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+   
+</div>
+
+<div class="panel-footer">
+    <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Volver")</a>');
+    </script>
+</div>

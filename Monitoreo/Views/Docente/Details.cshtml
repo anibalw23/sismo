@@ -1,0 +1,310 @@
+﻿@model Monitoreo.Models.Docente
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Docente"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Centro)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Centro.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Persona.Cedula)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Persona.Cedula)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FormacionAcademica)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FormacionAcademica)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.AnosDeEjercicio)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AnosDeEjercicio)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.FuncionesEjerce)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FuncionesEjerce)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaContratacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaContratacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FuncionesEjerce)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FuncionesEjerce)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanda)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tanda)
+        </dd>
+    </dl>
+</div>
+
+<div class="panel-body">
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+
+            <li role="presentation" class="active">
+                <a href="#materias" aria-controls="materias" role="tab" data-toggle="tab">Materias</a>
+            </li>
+            <li role="presentation">
+                <a href="#actividadesFormativas" aria-controls="actividadesFormativas" role="tab" data-toggle="tab">Actividades Formativas</a>
+            </li>
+            <li role="presentation">
+                <a href="#evaluaciones" aria-controls="evaluaciones" role="tab" data-toggle="tab">Evaluaciones</a>
+            </li>
+            <li role="presentation">
+                <a href="#grupos" aria-controls="grupos" role="tab" data-toggle="tab">Asistencia</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+
+            <div role="tabpanel" class="tab-pane active" id="materias">
+                <div class="panel">
+                    @{
+                        var materiaTemplate = new Monitoreo.Models.DocenteMateria();
+                        materiaTemplate.DocenteId = Model.Id;
+                    }
+                    <table id="@Html.IdFor(model => model.Materias)" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Nivel)</th>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Ciclo)</th>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Tanda)</th>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Area)</th>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Grados)</th>
+                                <th>@Html.DisplayNameFor(model => materiaTemplate.Seccion)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="materiaTemplate" style="display: none;">
+                                <td>
+                                    @Html.HiddenFor(model => materiaTemplate.DocenteId)
+
+                                    @Html.LabelFor(model => materiaTemplate.Nivel, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Nivel)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => materiaTemplate.Ciclo, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Ciclo)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => materiaTemplate.Tanda, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Tanda)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => materiaTemplate.Area, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Area)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => materiaTemplate.Grados, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Grados)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => materiaTemplate.Seccion, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => materiaTemplate.Seccion)
+                                </td>
+
+                                <td>
+                                    <a href="#" class="btn btn-danger" onclick="return removeMateria('materiaTemplate');">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                                    </a>
+                                </td>
+                            </tr>
+                            @for (int i = 0; i < Model.Materias.Count; i++)
+                            {
+                                <tr id="Materias_@(i)_">
+                                    <td>
+                                        @Html.HiddenFor(model => Model.Materias[i].Id)
+                                        @Html.HiddenFor(model => Model.Materias[i].DocenteId)
+                                        @Html.DisplayFor(model => Model.Materias[i].Nivel, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => Model.Materias[i].Nivel)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Materias[i].Ciclo, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => Model.Materias[i].Ciclo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Materias[i].Tanda, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => Model.Materias[i].Tanda)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Materias[i].Area, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => Model.Materias[i].Area)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Materias[i].Grados, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => Model.Materias[i].Grados)
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Materias[i].Seccion.Numero, new { @class = "form-control" })
+                                    </td>
+
+
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+
+            <div role="tabpanel" class="tab-pane" id="actividadesFormativas">
+                <div class="panel">
+                  
+                        @{
+
+                            var ciclos = (List<Monitoreo.Models.CicloFormativo>)ViewBag.ciclosFormativos;
+                        }
+                        <table id="dataTableCiclos" class="table table-bordered table-striped table-hover">
+
+                            <thead style="">
+                                <tr>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        Fecha Inicio
+                                    </th>
+                                    <th>
+                                        Area
+                                    </th>
+
+                                </tr>
+                            </thead>
+
+                            @foreach (var item in ciclos)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @item.Tema.ToString()
+                                    </td>
+                                    <td>
+                                        @item.FechaInicio.ToString()
+                                    </td>
+                                    <td>
+                                        @item.Area.ToString()
+                                    </td>
+
+                                </tr>
+                            }
+                        </table>
+
+                    
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="grupos">
+                <div class="panel">
+                    @*@{
+
+                        var evaluaciones = (List<Monitoreo.Models.BO.Evaluacion>)ViewBag.evaluaciones;
+                    }
+                    <table id="dataTableEvaluaciones" class="table table-bordered table-striped table-hover">
+
+                        <thead style="">
+                            <tr>
+                                <th>
+                                    Nombre
+                                </th>
+                                <th>
+                                    Fecha Inicio
+                                </th>
+                                <th>
+                                    Nota
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        @foreach (var item in evaluaciones)
+                        {
+
+                            <tr>
+                                <td>
+                                    @item.Titulo.ToString()
+                                </td>
+                                <td>
+                                    @item.Fecha.ToString()
+                                </td>
+                                <td>
+                                    @item.EvaluacionNotaRaw.ToString()
+                                </td>
+
+                            </tr>
+                        }
+                    </table>*@
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="panel-footer">
+    @{
+        if (User.IsInRole("Administrador"))
+        {
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+            </a>
+            <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+            </a>
+
+        }
+
+    }
+
+
+   
+</div>
+
+   
+    @section Actions {
+        <ul class="nav nav-stacked">
+            <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+        </ul>
+    }
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        
+
+        (function ($) {
+            var actionsTemplate = ""; @*'<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';*@          
+            $('#dataTableCiclos').dataTable( { });
+        })(jQuery);
+    </script>
+}

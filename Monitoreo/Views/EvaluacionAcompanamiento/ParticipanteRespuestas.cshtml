@@ -1,0 +1,105 @@
+﻿@model Monitoreo.Models.BO.EvaluacionAcompanamiento.EvaluacionAcompanamiento
+
+<div class="panel-heading">
+    <h3 style="background-color:black; color:white; padding-top:5px; padding-bottom:5px;text-align:center">Cuestionario para @ViewBag.ParticipanteNombre</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(modelItem => modelItem.Id)
+
+    @Html.HiddenFor(modelItem => modelItem.Titulo)
+
+
+
+    <div class="panel-body">
+        @{
+            Monitoreo.Models.BO.EvaluacionAcompanamiento.EvaluacionAcompanamientoRespuesta resp = new Monitoreo.Models.BO.EvaluacionAcompanamiento.EvaluacionAcompanamientoRespuesta();
+        }
+        <table id="dataTable" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => resp.PreguntaAcomp)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => resp.Valor)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                 int i = 0;                 
+                }
+
+                @foreach (var item in Model.RespuestasAcomp)
+                {
+                    //if (ViewBag.ParticipanteId == ViewBag.Participante.Id)
+                    //{
+                        <tr>
+                            @Html.HiddenFor(modelItem => Model.RespuestasAcomp[i].InscripcionActividadAcompanamientoId)
+                            @Html.HiddenFor(modelItem => Model.RespuestasAcomp[i].EvaluacionAcompId, new {@Value = Model.Id})
+                            @Html.HiddenFor(modelItem => Model.RespuestasAcomp[i].InscripcionActividadAcompanamiento.personalID, new { Value = @ViewBag.ParticipanteId })
+                            @Html.HiddenFor(modelItem => Model.RespuestasAcomp[i].PreguntaAcompId, new { @Value = Model.RespuestasAcomp[i].PreguntaAcompId })
+                            @Html.HiddenFor(modelItem => Model.RespuestasAcomp[i].Id)
+
+                            <td>
+                                @*(@Html.DisplayFor(modelItem => Model.Respuestas[i].Pregunta.Id)) -*@
+                                @Html.DisplayFor(modelItem => Model.RespuestasAcomp[i].PreguntaAcomp.Descripcion)
+                            </td>
+                            <td>
+                                @*@Html.TextBoxFor(modelItem => Model.Respuestas[i].Valor)*@ @*dejar esto si se reuquieren preguntas abiertas*@
+
+                                @{
+                                     var opcionesRespuestas2 = Model.RespuestasAcomp[i].PreguntaAcomp.Opciones.Select(c => new SelectListItem { Value = c.Valor.ToString(), Text = c.Titulo, Selected = c.Valor.Equals(Model.RespuestasAcomp[i].Valor) });
+                                    
+                                }
+
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        @{
+                                            @Html.DropDownListFor(modelItem => Model.RespuestasAcomp[i].Valor, (IEnumerable<SelectListItem>)opcionesRespuestas2, " " , null)
+                                        }
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        i++;
+                    @*}*@
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    <button type="submit" value="Save" class="btn btn-primary" style="margin-left:40%; height:50px; width:150px;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+    </button>
+}
+
+
+
+<script type="text/javascript">
+    (function ($) {
+        $('form').submit(function () {
+            if ($(this).valid()) {
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#CreateModal').modal('toggle');
+                    }
+                });
+            }
+            return false;
+        });
+    })(jQuery);
+</script>

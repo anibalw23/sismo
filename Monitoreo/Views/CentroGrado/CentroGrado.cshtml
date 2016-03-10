@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Monitoreo.Models.BO.CentroGrado>
+
+
+<div class="panel-body">
+    <table class="table table-bordered table-striped table-hover" id="datatableDocentes">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.GradoLookup.grado)
+                </th>
+                <th>
+                    @Html.DisplayName("Secciones")
+                </th>
+
+
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GradoLookup.grado)
+                    </td>
+                    <td>
+                        @foreach (var secc in item.SeccionesAulas)
+                        {
+                            <span style="color:black; font-weight:bold;"> @secc.Seccion.Numero - </span>
+                        }
+                    </td>
+
+                    <td class="row-actions">
+                        <a href="@Url.Action("Details", new { id = item.ID })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                        </a>
+                        <a href="@Url.Action("Edit", new { id = item.ID })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.ID })" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <a href="@Url.Action("Create")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+</div>

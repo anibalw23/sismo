@@ -1,0 +1,52 @@
+﻿@model Monitoreo.Models.BO.Evaluacion
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("Evaluacion"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            @Html.EditorFor(model => model.Titulo)
+                @Html.EditorFor(model => model.Fecha)
+                @Html.EditorFor(model => model.ModoEntradaEvaluacion)
+                @Html.EditorFor(model => model.TipoEvaluacion)
+                @*@Html.EditorFor(model => model.FormaEvaluacion)*@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CicloFormativoId,"Actividad Formativa", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CicloFormativoId, (IEnumerable<SelectListItem>)ViewBag.CicloFormativoList, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CicloFormativoId)
+                    </div>
+                </div>
+                @*@Html.EditorFor(model => model.TipoDeObjeto)*@
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

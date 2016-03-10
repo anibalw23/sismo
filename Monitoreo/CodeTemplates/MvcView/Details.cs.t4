@@ -1,0 +1,172 @@
+﻿<#@ template language="C#" HostSpecific="True" #>
+<#@ output extension=".cshtml" #>
+<#@ include file="Imports.include.t4" #>
+@model <#= ViewDataTypeName #>
+<#
+// The following chained if-statement outputs the file header code and markup for a partial view, a view using a layout page, or a regular view.
+if(IsPartialView) {
+#>
+
+<#
+} else if(IsLayoutPageSelected) {
+#>
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("<#= ViewDataTypeShortName #>"));
+<#
+if (!String.IsNullOrEmpty(LayoutPageFile)) {
+#>
+    Layout = "<#= LayoutPageFile#>";
+<#
+}
+#>
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<#
+} else {
+#>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title><#= ViewName #></title>
+</head>
+<body>
+<#
+    PushIndent("    ");
+}
+#>
+<div class="panel-body">
+    <dl class="dl-horizontal">
+<#
+var haveAssociations = false;
+
+foreach (PropertyMetadata property in ModelMetadata.Properties) {
+    if (property.Scaffold && !property.IsPrimaryKey && !property.IsForeignKey) {
+        if (property.IsAssociation) {
+            haveAssociations = true;
+        }
+#>
+<#
+        // This is a temporary work around until core scaffolding provides support for independent associations.
+        if (property.IsAssociation && GetRelatedModelMetadata(property) == null) {
+            continue;
+        }
+#>
+        <dt>
+            @Html.DisplayNameFor(model => model.<#= property.PropertyName #>)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.<#= GetValueExpression(property) #>)
+        </dd>
+<#
+    }
+}
+#>
+    </dl>
+</div>
+
+<#
+    if (false && haveAssociations) {
+#>
+<div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+<#
+        var order = 0;
+        foreach (PropertyMetadata property in ModelMetadata.Properties) {
+            if (property.Scaffold && property.IsAssociation && property.AssociationDirection == AssociationDirection.OneToMany) {
+                RelatedModelMetadata related = GetRelatedModelMetadata(property);
+                if (related != null) {
+#>
+        <li role="presentation"<#= order == 0 ? " class=\"active\"" : "" #>>
+            <a href="#<#= property.PropertyName #>" aria-controls="<#= property.PropertyName #>" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("<#= related.EntitySetName #>")</a>
+        </li>
+<#
+                    order++;
+                } else {
+#>
+        <li><#= property.PropertyName #></li>
+<#
+                }
+            }
+        }
+#>
+    </ul>
+    <div class="tab-content">
+<#
+        order = 0;
+        foreach (PropertyMetadata property in ModelMetadata.Properties) {
+            if (property.Scaffold && !property.IsPrimaryKey && property.IsForeignKey) {
+                RelatedModelMetadata related = GetRelatedModelMetadata(property);
+                if (related != null) {
+#>
+        <div role="tabpanel" class="tab-pane<#= order == 0 ? " active" : "" #>" id="<#= related.ShortTypeName #>">
+            <div class="panel">
+                @Html.Action("<#= ViewDataTypeShortName #><#= related.EntitySetName #>", "<#= property.PropertyName #>", new { <#= related.ForeignKeyPropertyNames[0] #> = Model.Id })
+            </div>
+        </div>
+<#
+                    order++;
+                }
+            }
+        }
+#>
+    </div>
+</div>
+<#
+    }
+#>
+
+<div class="panel-footer">
+<#
+string pkName = GetPrimaryKeyName();
+if (pkName != null) {
+#>
+    <a href="@Url.Action("Edit", new { id = Model.<#= pkName #> })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.<#= pkName #> })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+<#
+} else {
+#>
+    <a href="@Url.Action("Edit", new { /* id = Model.PrimaryKey */ })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { /* id = Model.PrimaryKey */ })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+<#
+}
+#>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+<#
+// The following code closes the tag used in the case of a view using a layout page and the body and html tags in the case of a regular view page
+#>
+<#
+if(!IsPartialView && !IsLayoutPageSelected) {
+    ClearIndent();
+#>
+</body>
+</html>
+<#
+}
+#>
+<#@ include file="ModelMetadataFunctions.cs.include.t4" #>

@@ -1,0 +1,128 @@
+﻿@model Monitoreo.Models.Inscripcion
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("Inscripcion"));
+}
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+<style type="text/css">
+    .dropdown-menu {
+        min-width: 500px;
+    }
+
+
+</style>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            @if (@Request.Params["MasterType"] == "CicloFormativo")
+            {
+            @Html.Hidden("CicloFormativoId", Request.Params["MasterId"]);
+            }
+            else
+            {
+            <div class="form-group">
+                @Html.LabelFor(model => model.CicloFormativoId, Resources.T.ResourceManager.GetString("CicloFormativo"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.CicloFormativoId, (IEnumerable<SelectListItem>)ViewBag.CicloFormativoId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CicloFormativoId)
+                </div>
+            </div>
+            }
+
+
+            @Html.EditorFor(model => model.Rol ,new { @id = "RolDropDownList" })
+           
+            <div class="form-group" >
+                @Html.LabelFor(model => model.GrupoCicloFormativoId, "Grupo", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.GrupoCicloFormativoId, (IEnumerable<SelectListItem>)ViewBag.GrupoCicloFormativoId, string.Empty, new { @class = "form-control", @id="GrupoDropDown" })
+                    @*@Html.ValidationMessageFor(model => model.GrupoCicloFormativoId)*@
+                </div>
+            </div>       
+            
+            
+            <div class="form-group">
+                @Html.Label("Persona", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="personas_multiselectID" style="width:300px;" name="personaId" class="form-control" multiple="multiple"></select>
+                </div>
+            </div>                 
+            @*<div class="form-group" >
+                @Html.LabelFor(model => model.ParticipanteId, Resources.T.ResourceManager.GetString("Participante"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(x => x.ParticipanteId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ParticipanteId)
+                </div>
+            </div>*@
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+    </div>
+}
+
+@Scripts.Render("~/bundles/bootstrap-datetimepicker/js")
+
+<script type="text/javascript">
+
+    var RolDropDownVal = "";
+    var GrupoDropDownVal = "";
+
+
+    (function () {
+        $('.datepicker').datetimepicker();
+        RolDropDownVal = $("#Rol option:selected").val();
+        GrupoDropDownVal = $("#GrupoDropDown option:selected").text();
+        var multiSelectPersonas = $('#personas_multiselectID').multiselect({ enableFiltering: true, filterPlaceholder: 'Buscar...', maxHeight: 200 });
+
+        $('#Rol').on('change', function () {
+            RolDropDownVal = $("#Rol option:selected").val();
+            console.log("Rol" + RolDropDownVal);            
+        });
+        
+        $('#GrupoDropDown').on('change', function () {
+            GrupoDropDownVal = $("#GrupoDropDown option:selected").text();
+            $("#personas_multiselectID").html("");
+            $.ajax({
+                type: "POST",
+                url: "/Inscripcion/GetPersonalByGrupoAndRol?escuela=" + GrupoDropDownVal + "&Rol=" + RolDropDownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var options = data;
+                    $('#personas_multiselectID').multiselect('dataprovider', options);
+                    /*$.each(data.data, function (i, data) {
+                        $("#personas_multiselectID").append("<option value='" + data.Id + "'>" + data.Cedula + "</option>")
+                    });*/
+                    
+                }
+            });
+        });
+
+
+
+    })(jQuery);
+
+    var personaType = "Participante";
+</script>
+<script type="text/javascript" src="~/Content/js/personaSelect2imp.js"></script>
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

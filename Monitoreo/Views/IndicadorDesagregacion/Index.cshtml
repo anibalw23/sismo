@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Monitoreo.Models.BO.IndicadorDesagregacion>
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("IndicadorDesagregacions");
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.nombre)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        @*<tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td class="row-actions">
+                    <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                    </a>
+                </td>
+            </tr>
+}
+	    </tbody>*@
+    </table>
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("Create")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+</div>
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+    (function ($) {
+        var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';
+
+        $('#dataTable').dataTable(
+            {
+                autoWidth: false,
+                processing: true,
+                serverSide: true,
+                ordering: true,
+                stateSave: true,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                language: { url: '/Content/js/dataTables.Spanish.txt' },
+                ajax: { url: '@Url.Action("GetDataJson")', type: 'POST' },
+                columns: [
+                    { data: 'nombre' },
+                    { data: null, targets: -1, defaultContent: actionsTemplate, orderable: false }
+                ],
+                createdRow: function (row, data, index) {
+                    var lastTD = $('td', row).last();
+
+                    $("a[href]", lastTD).each(function () {
+                        this.href = this.href.replace('ID_Holder', data.DT_RowId);
+                    });
+
+                    lastTD.addClass('row-actions');
+                }
+            }
+    );
+    })(jQuery);
+    </script>
+}

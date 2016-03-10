@@ -1,0 +1,24 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model Boolean?
+
+@{
+    string controlsClass = ViewBag.controlsClass;
+    if (controlsClass == null) { controlsClass = "col-sm-4"; }
+    var htmlAttributes = new RouteValueDictionary();
+    if (ViewBag.@class != null)
+    {
+        htmlAttributes.Add("class", ViewBag.@class);
+    }
+}
+
+
+<div class="form-group@(Html.ValidationErrorFor(m => m, " has-error"))">
+    @Html.LabelFor(m => m, new { @class = "col-sm-3 control-label" })
+    <div class="@controlsClass controls">
+        @Html.CheckBox(
+            "",
+            Model.HasValue && Model.Value,
+            htmlAttributes)
+        @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    </div>
+</div>

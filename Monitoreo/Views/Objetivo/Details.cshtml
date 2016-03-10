@@ -1,0 +1,54 @@
+﻿@model Monitoreo.Models.BO.PlanMejora.Objetivo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Objetivo"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AmbitoObjetivo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AmbitoObjetivo.codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PlanMejoraCentro)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PlanMejoraCentro.nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.codigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+    </dl>
+</div>
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.ID })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.ID })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

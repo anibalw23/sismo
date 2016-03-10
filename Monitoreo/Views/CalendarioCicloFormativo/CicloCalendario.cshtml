@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Monitoreo.Models.BO.ViewModels.CalendarioCicloFormativoVm.CalendarioCicloFormativoVM>
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("CalendarioCicloFormativos");
+}
+@*<script src="~/Content/js/daypilot-all.min.js"></script>*@
+
+<link href="~/Content/css/fullcalendar.css" rel="stylesheet" />
+<link href="~/Content/css/fullcalendar.print.css" rel="stylesheet" media="print" />
+<script src="~/Content/js/calendar-full/moment.min.js"></script>
+
+<script src="~/Content/js/calendar-full/fullcalendar.js"></script>
+
+
+<div class="panel-heading">
+    <h3><i class="fa fa-calendar-o" style="margin-right:10px; color:white;"></i>Calendario de Actividad Formativa</h3>
+</div>
+
+<input type="hidden" id="cicloId" value="@ViewBag.MasterId" />
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.horas)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var cal in Model){
+                <tr>
+                    <td>@cal.Fecha</td>
+                    <td>@cal.horas</td>
+                    <td class="row-actions">                       
+                        <a href="@Url.Action("Edit", new { id = cal.Id, cicloId = cal.CicloFormativoID })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = cal.Id, cicloId = cal.CicloFormativoID })" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+@{
+    if (User.IsInRole("Administrador") || User.IsInRole("AdministradorTransversal"))
+    {
+        <div class="panel-footer">
+            <a href="@Url.Action("Create", new { cicloId = @ViewBag.MasterId })" class="btn btn-default">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+            </a>
+        </div>
+    }
+
+
+}
+
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+    (function ($) {
+
+        var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';
+
+
+        
+
+    })(jQuery);
+
+
+    </script>
+}
+
+

@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<link href="~/Content/css/hover.css" rel="stylesheet" />
+
+<style type="text/css">
+    #menu_panelID li {
+        margin: 40px;
+    }
+
+    .panel-default > .panel-heading {
+        color: white;
+        background-color: black;
+    }
+</style>
+
+
+<div class="panel-body" style="border-radius: 10px;box-shadow: 10px 10px 20px 5px #C9C9C9;">
+    <div>
+
+    </div>
+
+    <div class="row">
+
+            <div class="col-md-4 hvr-pop" style="text-align: center;">
+                <i class="fa fa-users" style="font-size: 4em; color:#bd1c4c;margin-left:auto;margin-right:auto;"></i>
+                <h3 style="color:black">Mis Docentes</h3>
+                <p style="text-align: center;color:black">Aqui puede ver los docentes que acompaña</p>
+                <p><a class="btn btn-warning" href="~/Acompanante/AcompananteDocentes">Ver más &raquo;</a></p>
+            </div>
+
+            <div class="col-md-4 hvr-pop" style="text-align: center;">
+                <i class="fa fa-retweet" style="font-size: 4em; color:#BF00FF;margin-left:auto;margin-right:auto;"></i>
+                <h3 style="color:black">Ejecución del Proyecto</h3>
+                <p style="text-align: center;color:black">Aqui se maneja la ejecución del proyecto</p>
+                <p><a class="btn btn-success" style="background-color:#BF00FF; border-style:none;" href="~/SuperCiclosFormativos">Ver más &raquo;</a></p>
+            </div>
+
+            <div class="col-md-4 hvr-pop" style="text-align: center;">
+                <i class="fa fa-bar-chart" style="font-size: 4em; color:#2f4f4f;margin-left:auto;margin-right:auto;"></i>
+                <h3 style="color:black">Reportes Básicos</h3>
+                <p style="text-align: center;color:black">Visualización de reportes básicos..</p>
+                <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/Reporte">Ver más &raquo;</a></p>
+            </div>
+
+
+       
+        
+
+    </div>
+</div>
+
+@section Actions {
+}

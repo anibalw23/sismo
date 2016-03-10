@@ -1,0 +1,142 @@
+﻿@model Monitoreo.Models.Centro
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("Centro"));
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("#ProvinciaId").change(function () {
+            var selectedItem = $(this).val();
+            var ddlMunicipio = $("#MunicipioId");
+            var MunicipioProgress = $("#states-loading-progress");
+            ddlMunicipio.html('');
+            ddlMunicipio.append($('<option></option>').val(-1).html('Cargando...'));
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.Action("GetMunicipios", "Provincia"))",
+                data: { "Id": selectedItem },
+                success: function (data) {
+                    ddlMunicipio.html('');
+                    $.each(data, function (id, option) {
+                        ddlMunicipio.append($('<option></option>').val(option.id).html(option.name));
+                    });
+                    MunicipioProgress.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve Municipios.');
+                    MunicipioProgress.hide();
+                }
+            });
+        });
+    });
+</script>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm(new { MasterType = ViewBag.MasterType, MasterId = ViewBag.MasterId }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+            <div role="tabpanel">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Informaci&oacute;n General</a></li>
+                    <li role="presentation"><a href="#contacto" aria-controls="contacto" role="tab" data-toggle="tab">Datos de Cont&aacute;cto</a></li>
+                    <li role="presentation"><a href="#criterios" aria-controls="criterios" role="tab" data-toggle="tab">Crit&eacute;rios de Evaluaci&oacute;n</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active fade in" id="general">
+                        @Html.EditorFor(model => model.Codigo)
+                        @Html.EditorFor(model => model.Nombre)
+                        @Html.EditorFor(model => model.SectorEducativo)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DirectorId, Resources.T.ResourceManager.GetString("Director"), new { @class = "control-label col-sm-3" })
+                            <div class="col-sm-4">
+                                @Html.DropDownListFor(x => x.DirectorId, (IEnumerable<SelectListItem>)ViewBag.DirectorId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DirectorId)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RedId, Resources.T.ResourceManager.GetString("Red"), new { @class = "control-label col-sm-3" })
+                            <div class="col-sm-4">
+                                @Html.DropDownListFor(x => x.RedId, (IEnumerable<SelectListItem>)ViewBag.RedId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.RedId)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ComponenteId, Resources.T.ResourceManager.GetString("Componente"), new { @class = "control-label col-sm-3" })
+                            <div class="col-sm-4">
+                                @Html.DropDownListFor(x => x.ComponenteId, (IEnumerable<SelectListItem>)ViewBag.ComponenteId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ComponenteId)
+                            </div>
+                        </div>
+                        @Html.EditorFor(model => model.Niveles)
+                        @Html.EditorFor(model => model.Ciclos)
+                        @Html.EditorFor(model => model.Tandas)
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="contacto">
+                        @Html.EditorFor(model => model.Telefono)
+                        @Html.EditorFor(model => model.Email)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProvinciaId, Resources.T.ResourceManager.GetString("Provincia"), new { @class = "control-label col-sm-3" })
+                            <div class="col-sm-4">
+                                @Html.DropDownListFor(x => x.ProvinciaId, (IEnumerable<SelectListItem>)ViewBag.ProvinciaId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ProvinciaId)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.MunicipioId, Resources.T.ResourceManager.GetString("Municipio"), new { @class = "control-label col-sm-3" })
+                            <div class="col-sm-4">
+                                @Html.DropDownListFor(x => x.MunicipioId, (IEnumerable<SelectListItem>)ViewBag.MunicipioId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MunicipioId)
+                            </div>
+                        </div>
+                        @Html.EditorFor(model => model.Sector)
+                        @Html.EditorFor(model => model.Calle)
+                        @Html.EditorFor(model => model.Latitud)
+                        @Html.EditorFor(model => model.Longitud)
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="criterios">
+                        @Html.EditorFor(model => model.SalonMultiUso)
+                        @Html.EditorFor(model => model.LabInformatica)
+                        @Html.EditorFor(model => model.BanosSuficientes)
+                        @Html.EditorFor(model => model.Biblioteca)
+                        @Html.EditorFor(model => model.FacilidadesDeAccesibilidad)
+                        @Html.EditorFor(model => model.Lavamanos)
+                        @Html.EditorFor(model => model.InstrumentosDeGestionActualizados)
+                        @Html.EditorFor(model => model.EscuelaPadresMadres)
+                        @Html.EditorFor(model => model.FrecuenciaActividades)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

@@ -1,0 +1,148 @@
+﻿@model Monitoreo.Models.BO.AusenciaReporte
+
+@{
+    ViewBag.Title = "Reporte de Asistencia del Ciclo Formativo";
+}
+
+<script src="~/Content/js/raphael.2.1.0.min.js"></script>
+<script src="~/Content/js/justgage.1.0.1.min.js"></script>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CicloFormativo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CicloFormativo.Tema)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Seccion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Seccion.Numero)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.titulo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.titulo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NumeroPersonasObjetivo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NumeroPersonasObjetivo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AsistenciaObjetivo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AsistenciaObjetivo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NumeroHorasObjetivo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NumeroHorasObjetivo)
+        </dd>
+
+    </dl>
+</div>
+
+<div class="panel-body">
+    <div id="gaugePersonas"  style="float:left; width:100px; height:80px"></div>
+    <div id="gaugeAsistencia" style="float:left; width:100px; height:80px"></div>
+    <div id="gaugeHoras" style="float:left; width:100px; height:80px"></div>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Cédula")
+                </th>
+                <th>
+                    @Html.DisplayName("% Asistencia")
+                </th>
+                <th>
+                    @Html.DisplayName("Horas Cursadas")
+                </th>
+            </tr>
+        </thead>
+
+    </table>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+            var actionsTemplate = "";
+            $('#dataTable').dataTable(
+                {
+                    autoWidth: false,
+                    processing: true,
+                    serverSide: true,
+                    ordering: true,
+                    stateSave: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    language: { url: '/Content/js/dataTables.Spanish.txt' },
+                    ajax: { url: '/AusenciaReportes/GetReporteAsistencia?CicloFormativoId='+ @Model.CicloFormativoId + "&seccionId=" + @Model.SeccionId, type: 'POST' },
+                    columns: [
+                        { data: 'Cedula' },
+                        { data: 'Asistencia' },
+                        { data: 'Horas' },
+                        { data: null, targets: -1, defaultContent: actionsTemplate, orderable: false }
+                    ],
+                    createdRow: function (row, data, index) {
+                        
+                    }
+                }
+        );
+
+            var g = new JustGage({
+                id: "gaugePersonas",
+                value: 67,
+                min: 0,
+                max: 100,
+                title: "Personas",
+                
+            });
+
+            var g = new JustGage({
+                id: "gaugeAsistencia",
+                value: 67,
+                min: 0,
+                max: 100,
+                title: "%Asistencia"
+            });
+            var g = new JustGage({
+                id: "gaugeHoras",
+                value: 67,
+                min: 0,
+                max: 100,
+                title: "Horas Completadas"
+            });
+
+
+
+        })(jQuery);
+    </script>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+
+
+

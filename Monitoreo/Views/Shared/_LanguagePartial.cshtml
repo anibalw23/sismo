@@ -1,0 +1,17 @@
+﻿@{
+    var culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.ToLowerInvariant();
+}
+
+@helper selected(string c, string culture)
+{
+    if (c == culture)
+    {
+        @:class="selected"
+    }
+}
+<li class="langselector">
+    <a href="@Url.Action("SetCulture", "Home", new { culture = "en-us" })" @selected("en-us", culture)><span class="lang-sm" lang="en"></span></a>
+</li>
+<li class="langselector">
+    <a href="@Url.Action("SetCulture", "Home", new { culture = "es" })" @selected("es", culture)><span class="lang-sm" lang="es"></span></a>
+</li>

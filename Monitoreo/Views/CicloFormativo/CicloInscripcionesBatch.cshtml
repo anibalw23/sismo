@@ -1,0 +1,134 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+    @*<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">*@
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+    @*<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>*@
+}
+
+@*<script src="~/Content/js/bootstrap-multiselect.js"></script>
+    <link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />*@
+
+
+<div class="panel-heading">
+    <h3 style="text-align:center;">Inscripciones de Docentes</h3>
+</div>
+
+@Html.AntiForgeryToken()
+<div class="panel-body">
+    <div id="msjPanel"></div>
+
+    <div class="form-horizontal">
+        @Html.Action("DocentesFilterByCriteria", "Docente", new { CicloFormativoId = Model.Id })
+        <div class="col-lg-offset-4">
+            <button id="btnVerificarCiclos" type="button" class="btn btn-info">Verificar Seleccionados con Otros Ciclos</button>
+            <button id="btnInscribirSelected" type="button" class="btn btn-success">Inscribir Seleccionados</button>
+        </div>
+
+        <div id="dialog-confirm" title="Desinscribir Seleccionados?">
+            <p>Esta seguro que desea inscribir a los participantes seleccionados?</p>
+        </div>
+        <div id="dialog" title="Confirmation Required">
+            Desea Inscribir a estos participantes?
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true
+        });
+
+
+        $("#btnVerificarCiclos").on('click', function () {
+            var participantesIDs = getParticipantesIdsChecked();
+            if(participantesIDs.length > 0){
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CicloInscripcionesVerificarDuplicado", "CicloFormativo")',
+                    data:JSON.stringify({docentesIds:participantesIDs}),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $('#modalBody').html(data);
+                        $('#CreateModal').modal({ show: true, backdrop: true });
+                    }
+                });
+
+            }
+            else{
+                alert("Favor Seleccionar al menos un docente!");
+            }
+        });
+
+
+        $("#btnInscribirSelected").on('click', function () {
+            $("#dialog-confirm").dialog("open");
+        });
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: 200,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Si": function () {
+                    $(this).dialog("close");
+                    var participantesIDs = getParticipantesIdsChecked();
+                    if (participantesIDs.length > 0) {
+                        $("#msjPanel").text("");
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("InscribirDocentesBatch", "CicloFormativo")',
+                            data:JSON.stringify({cicloId: @Model.Id , docentesIds:participantesIDs}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                if(data == "OK"){
+                                    $("#msjPanel").text("Docentes Inscritos Satisfactoriamente!");
+                                }
+                                if(data == "ERROR"){
+                                    $("#msjPanel").text("Ha ocurrido un error inscribiendo Docentes...")
+                                }
+                            }
+                        });
+                    }
+
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+
+    });
+
+
+        function showBLPopup(url, title) {
+            $('#modalBody')
+                .load(url,
+                        function (response, status, xhr) {
+                            $('#CreateModal').modal({ show: true, backdrop: true });
+                            return response;
+                        })
+        };
+</script>

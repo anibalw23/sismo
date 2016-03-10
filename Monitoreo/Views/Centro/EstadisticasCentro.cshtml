@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Monitoreo.Models.BO.ViewModels.EstadisticaCentro>
+
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+<script src="~/Scripts/jquery.counterup.min.js"></script>
+
+<style type="text/css">
+    .col-sm-4 > span {
+        font-size: 66px;
+        color: #555;
+        margin-bottom: 350px;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+    }
+    .col-sm-4 > span > span {
+        margin-bottom: 0;
+    }
+
+</style>
+
+
+<div class="panel-heading">
+    <h3><i class="fa fa-building-o" style="color:white; margin-right:10px;"></i>@ViewBag.Centro.Nombre</h3>
+</div>
+
+<div class="panel-body">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-4" style="height:200px;">
+                <h2 style=""> @item.label</h2>
+                <span class="counter" style="font-weight:bold;display: inline-block; width: 32%;color:@item.colorhex">@item.contador</span>
+            </div>
+        }
+        
+    </div>
+
+</div>
+
+
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+    (function ($) {
+        $('.counter').counterUp({
+            delay: 10,
+            time: 1000
+        });
+
+    })(jQuery);
+    </script>
+}
+

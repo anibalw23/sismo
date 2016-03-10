@@ -1,0 +1,63 @@
+﻿@model Monitoreo.Models.BO.PlanMejora.Meta
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("EditandoX"), Resources.T.ResourceManager.GetString("Meta"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+
+                @Html.EditorFor(model => model.codigo)
+                @Html.EditorFor(model => model.nombre)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ObjetivoId, Resources.T.ResourceManager.GetString("ObjetivoId"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.ObjetivoId, (IEnumerable<SelectListItem>)ViewBag.ObjetivoId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ObjetivoId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PeriodoMetaId, Resources.T.ResourceManager.GetString("PeriodoMetaId"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.PeriodoMetaId, (IEnumerable<SelectListItem>)ViewBag.PeriodoMetaId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PeriodoMetaId)
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")</a>');
+        </script>
+        <a href="@Url.Action("Delete", new { id = Model.ID })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

@@ -1,0 +1,702 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Acciones" xml:space="preserve">
+    <value>Acciones</value>
+  </data>
+  <data name="ActividadesFormativas" xml:space="preserve">
+    <value>Actividades Formativas</value>
+  </data>
+  <data name="ActividadFormativa" xml:space="preserve">
+    <value>Actividad Formativa</value>
+  </data>
+  <data name="ActividadFormativaBase" xml:space="preserve">
+    <value>Actividad Formativa (Base)</value>
+  </data>
+  <data name="ActividadFormativaBases" xml:space="preserve">
+    <value>Actividades Formativas (Bases)</value>
+  </data>
+  <data name="Administracion" xml:space="preserve">
+    <value>Administración</value>
+  </data>
+  <data name="Agregar" xml:space="preserve">
+    <value>Agregar</value>
+  </data>
+  <data name="Aula" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="Aulas" xml:space="preserve">
+    <value>Aulas</value>
+  </data>
+  <data name="BorrandoX" xml:space="preserve">
+    <value>Borrando {0}</value>
+  </data>
+  <data name="Borrar" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="BorrarConfirmacion" xml:space="preserve">
+    <value>¿Está seguro en borrar {0}?</value>
+  </data>
+  <data name="Cancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Cedula" xml:space="preserve">
+    <value>Cédula</value>
+  </data>
+  <data name="Centro" xml:space="preserve">
+    <value>Centro</value>
+  </data>
+  <data name="Centros" xml:space="preserve">
+    <value>Centros</value>
+  </data>
+  <data name="Codigo" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="CreandoX" xml:space="preserve">
+    <value>Creando {0}</value>
+  </data>
+  <data name="CrearNuevo" xml:space="preserve">
+    <value>Crear Nuevo</value>
+  </data>
+  <data name="Descripcion" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Detalles" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="DetallesDeX" xml:space="preserve">
+    <value>Detalles de {0}</value>
+  </data>
+  <data name="Distrito" xml:space="preserve">
+    <value>Distrito</value>
+  </data>
+  <data name="DistritoNombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Distritos" xml:space="preserve">
+    <value>Distritos</value>
+  </data>
+  <data name="Docente" xml:space="preserve">
+    <value>Docente</value>
+  </data>
+  <data name="Docentes" xml:space="preserve">
+    <value>Docentes</value>
+  </data>
+  <data name="Duracion" xml:space="preserve">
+    <value>Duración</value>
+  </data>
+  <data name="EditandoX" xml:space="preserve">
+    <value>Editando {0}</value>
+  </data>
+  <data name="Editar" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Estudiante" xml:space="preserve">
+    <value>Estudiante</value>
+  </data>
+  <data name="Estudiantes" xml:space="preserve">
+    <value>Estudiantes</value>
+  </data>
+  <data name="FechaNacimiento" xml:space="preserve">
+    <value>Fecha de Nacimiento</value>
+  </data>
+  <data name="FuncionesEjerce" xml:space="preserve">
+    <value>Funciones</value>
+  </data>
+  <data name="GrupoEtnico" xml:space="preserve">
+    <value>Grupo Étnico</value>
+  </data>
+  <data name="GruposEtnicos" xml:space="preserve">
+    <value>Grupos Étnicos</value>
+  </data>
+  <data name="Guardar" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Inscripcion" xml:space="preserve">
+    <value>Inscripción</value>
+  </data>
+  <data name="Login_Hola" xml:space="preserve">
+    <value>Hola {0}!</value>
+  </data>
+  <data name="LugarNacimiento" xml:space="preserve">
+    <value>Lugar de Nacimiento</value>
+  </data>
+  <data name="ModoEvaluacion" xml:space="preserve">
+    <value>Modo de Evaluación</value>
+  </data>
+  <data name="Monitoreo" xml:space="preserve">
+    <value>Monitoreo</value>
+  </data>
+  <data name="Municipio" xml:space="preserve">
+    <value>Municipio</value>
+  </data>
+  <data name="Municipios" xml:space="preserve">
+    <value>Municipios</value>
+  </data>
+  <data name="NivelDominio" xml:space="preserve">
+    <value>Nivel de Dominio</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Nombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="NombreCompleto" xml:space="preserve">
+    <value>Nombre Completo</value>
+  </data>
+  <data name="Numero" xml:space="preserve">
+    <value>Número</value>
+  </data>
+  <data name="Organizacion" xml:space="preserve">
+    <value>Organización</value>
+  </data>
+  <data name="Persona" xml:space="preserve">
+    <value>Persona</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="Personas" xml:space="preserve">
+    <value>Personas</value>
+  </data>
+  <data name="Preguntas" xml:space="preserve">
+    <value>Preguntas</value>
+  </data>
+  <data name="PrimerApellido" xml:space="preserve">
+    <value>Primer Apellido</value>
+  </data>
+  <data name="Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Redes" xml:space="preserve">
+    <value>Redes</value>
+  </data>
+  <data name="Regional" xml:space="preserve">
+    <value>Regional</value>
+  </data>
+  <data name="Regionales" xml:space="preserve">
+    <value>Regionales</value>
+  </data>
+  <data name="ResultadoMaximo" xml:space="preserve">
+    <value>Resultado Máximo</value>
+  </data>
+  <data name="ResultadoMinimo" xml:space="preserve">
+    <value>Resultado Mínimo</value>
+  </data>
+  <data name="Seccion" xml:space="preserve">
+    <value>Sección</value>
+  </data>
+  <data name="Secciones" xml:space="preserve">
+    <value>Secciones</value>
+  </data>
+  <data name="SegundoApellido" xml:space="preserve">
+    <value>Segundo Apellido</value>
+  </data>
+  <data name="SeleccioneIdioma" xml:space="preserve">
+    <value>Seleccione su Idioma</value>
+  </data>
+  <data name="Sexo" xml:space="preserve">
+    <value>Sexo</value>
+  </data>
+  <data name="Si" xml:space="preserve">
+    <value>Si</value>
+  </data>
+  <data name="Telefono" xml:space="preserve">
+    <value>Teléfonos</value>
+  </data>
+  <data name="TipoDeObjeto" xml:space="preserve">
+    <value>Tipo de objeto</value>
+  </data>
+  <data name="Volver" xml:space="preserve">
+    <value>Volver al listado</value>
+  </data>
+  <data name="Director" xml:space="preserve">
+    <value>Director</value>
+  </data>
+  <data name="APMAE" xml:space="preserve">
+    <value>APMAE</value>
+  </data>
+  <data name="AsambleaDeMaestros" xml:space="preserve">
+    <value>Asamblea de Maestros</value>
+  </data>
+  <data name="AutoevaluacionDelCentro" xml:space="preserve">
+    <value>Autoevaluación del Centro</value>
+  </data>
+  <data name="BanosSuficientes" xml:space="preserve">
+    <value>Baños Suficientes</value>
+  </data>
+  <data name="CentroSede" xml:space="preserve">
+    <value>Centro Sede</value>
+  </data>
+  <data name="ComitesDePadresYMadresPorCurso" xml:space="preserve">
+    <value>Comites de Padres Y Madres por Curso</value>
+  </data>
+  <data name="ConInternet" xml:space="preserve">
+    <value>Con Internet</value>
+  </data>
+  <data name="ConsejoEstudiantil" xml:space="preserve">
+    <value>Consejo Estudiantil</value>
+  </data>
+  <data name="ConsejosDeCurso" xml:space="preserve">
+    <value>Consejos de Curso</value>
+  </data>
+  <data name="DocumentoDeRevision" xml:space="preserve">
+    <value>Documento de Revisión</value>
+  </data>
+  <data name="DocumentoDeRevisionCurricular" xml:space="preserve">
+    <value>Documento de Revisión Curricular</value>
+  </data>
+  <data name="EnBuenasCondiciones" xml:space="preserve">
+    <value>En Buenas Condiciones</value>
+  </data>
+  <data name="EnMalasCondiciones" xml:space="preserve">
+    <value>En Malas Condiciones</value>
+  </data>
+  <data name="EquipoDeGestion" xml:space="preserve">
+    <value>Equipo de Gestión</value>
+  </data>
+  <data name="EscuelaPadresMadres" xml:space="preserve">
+    <value>Escuela de Padres y Madres</value>
+  </data>
+  <data name="FacilidadesDeAccesibilidad" xml:space="preserve">
+    <value>Facilidades de Accesibilidad</value>
+  </data>
+  <data name="FrecuenciaActividades" xml:space="preserve">
+    <value>Frecuencia de Actividades</value>
+  </data>
+  <data name="Funcionarios" xml:space="preserve">
+    <value>Funcionarios</value>
+  </data>
+  <data name="InformeDePeriodo" xml:space="preserve">
+    <value>Informe de Período</value>
+  </data>
+  <data name="InstrumentosDeGestionActualizados" xml:space="preserve">
+    <value>Instrumentos de Gestión Actualizados</value>
+  </data>
+  <data name="JuntaDeCentro" xml:space="preserve">
+    <value>Junta de Centro</value>
+  </data>
+  <data name="LabInformatica" xml:space="preserve">
+    <value>Laboratorio de Informática</value>
+  </data>
+  <data name="Lavamanos" xml:space="preserve">
+    <value>Lavamanos</value>
+  </data>
+  <data name="MemoriaAnual" xml:space="preserve">
+    <value>Memoria Anual</value>
+  </data>
+  <data name="NoTiene" xml:space="preserve">
+    <value>No Tiene</value>
+  </data>
+  <data name="PersonalAdministrativo" xml:space="preserve">
+    <value>Personal Administrativo</value>
+  </data>
+  <data name="PlanAnualDeCentro" xml:space="preserve">
+    <value>Plan Anual de Centro</value>
+  </data>
+  <data name="PlanDeAccion" xml:space="preserve">
+    <value>Plan de Acción</value>
+  </data>
+  <data name="PlanDeAcompanamiento" xml:space="preserve">
+    <value>Plan de Acompanamiento</value>
+  </data>
+  <data name="PlanDeMejora" xml:space="preserve">
+    <value>Plan de Mejora</value>
+  </data>
+  <data name="PlanOperativoAnual" xml:space="preserve">
+    <value>Plan Operativo Anual</value>
+  </data>
+  <data name="ProyectoCurricularDeCentro" xml:space="preserve">
+    <value>Proyecto Curricular de Centro</value>
+  </data>
+  <data name="ProyectoEducativoDeCentro" xml:space="preserve">
+    <value>Proyecto Educativo de Centro</value>
+  </data>
+  <data name="Publico" xml:space="preserve">
+    <value>Público</value>
+  </data>
+  <data name="SalonMultiUso" xml:space="preserve">
+    <value>Salón Multi-Uso</value>
+  </data>
+  <data name="SectorEducativo" xml:space="preserve">
+    <value>Sector Educativo</value>
+  </data>
+  <data name="SinInternet" xml:space="preserve">
+    <value>Sin Internet</value>
+  </data>
+  <data name="TecnicosDocente" xml:space="preserve">
+    <value>Tecnicos docente</value>
+  </data>
+  <data name="TutorVirtual" xml:space="preserve">
+    <value>Tutor virtual</value>
+  </data>
+  <data name="Calle" xml:space="preserve">
+    <value>Calle</value>
+  </data>
+  <data name="Provincia" xml:space="preserve">
+    <value>Provincia</value>
+  </data>
+  <data name="Provincias" xml:space="preserve">
+    <value>Provincias</value>
+  </data>
+  <data name="Sector" xml:space="preserve">
+    <value>Sector</value>
+  </data>
+  <data name="CorreoElectronico" xml:space="preserve">
+    <value>Correo Electrónico</value>
+  </data>
+  <data name="SitioWeb" xml:space="preserve">
+    <value>Sitio Web</value>
+  </data>
+  <data name="Acompanante" xml:space="preserve">
+    <value>Acompañante</value>
+  </data>
+  <data name="CicloFormativo" xml:space="preserve">
+    <value>Ciclo Formativo</value>
+  </data>
+  <data name="Comentario" xml:space="preserve">
+    <value>Comentario</value>
+  </data>
+  <data name="CursosTalleres" xml:space="preserve">
+    <value>Cursos Talleres</value>
+  </data>
+  <data name="DuracionTotal" xml:space="preserve">
+    <value>Duración Total</value>
+  </data>
+  <data name="FechaFinalizacion" xml:space="preserve">
+    <value>Fecha de Finalización</value>
+  </data>
+  <data name="FechaInicio" xml:space="preserve">
+    <value>Fecha de Inicio</value>
+  </data>
+  <data name="Formador" xml:space="preserve">
+    <value>Formador</value>
+  </data>
+  <data name="Grupo" xml:space="preserve">
+    <value>Grupo</value>
+  </data>
+  <data name="Inscripciones" xml:space="preserve">
+    <value>Inscripciones</value>
+  </data>
+  <data name="Matricula" xml:space="preserve">
+    <value>Matrícula</value>
+  </data>
+  <data name="Nivel" xml:space="preserve">
+    <value>Nivel</value>
+  </data>
+  <data name="Tema" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Tipo" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Tanda" xml:space="preserve">
+    <value>Tanda</value>
+  </data>
+  <data name="FechaContratacion" xml:space="preserve">
+    <value>Fecha de Contratación</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="Ciclo" xml:space="preserve">
+    <value>Ciclo</value>
+  </data>
+  <data name="Grados" xml:space="preserve">
+    <value>Grados</value>
+  </data>
+  <data name="Ausencias" xml:space="preserve">
+    <value>Ausencias</value>
+  </data>
+  <data name="CiclosFormativos" xml:space="preserve">
+    <value>Ciclos Formativos</value>
+  </data>
+  <data name="FechaFin" xml:space="preserve">
+    <value>Fecha Final</value>
+  </data>
+  <data name="Ausencia" xml:space="preserve">
+    <value>Ausencia</value>
+  </data>
+  <data name="Componente" xml:space="preserve">
+    <value>Componente</value>
+  </data>
+  <data name="Componentes" xml:space="preserve">
+    <value>Componentes</value>
+  </data>
+  <data name="Acompanantes" xml:space="preserve">
+    <value>Acompanantes</value>
+  </data>
+  <data name="Ciencias_Naturales" xml:space="preserve">
+    <value>Ciencias Naturales</value>
+  </data>
+  <data name="CienciasSociales" xml:space="preserve">
+    <value>Ciencias sociales</value>
+  </data>
+  <data name="CuartoSecundaria" xml:space="preserve">
+    <value>Cuarto de secundaria</value>
+  </data>
+  <data name="Espanol" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Formadores" xml:space="preserve">
+    <value>Formadores</value>
+  </data>
+  <data name="Matematica" xml:space="preserve">
+    <value>Matemática</value>
+  </data>
+  <data name="NivelInicial" xml:space="preserve">
+    <value>Nivel inicial</value>
+  </data>
+  <data name="NoAplica" xml:space="preserve">
+    <value>No aplica</value>
+  </data>
+  <data name="Participante" xml:space="preserve">
+    <value>Participante</value>
+  </data>
+  <data name="Participantes" xml:space="preserve">
+    <value>Participantes</value>
+  </data>
+  <data name="PrimeroSecundaria" xml:space="preserve">
+    <value>Primero de secundaria</value>
+  </data>
+  <data name="SegundoSecundaria" xml:space="preserve">
+    <value>Segundo de secundaria</value>
+  </data>
+  <data name="TerceroSecundaria" xml:space="preserve">
+    <value>Tercero de secundaria</value>
+  </data>
+  <data name="TutoresVirtuales" xml:space="preserve">
+    <value>Tutores virtuales</value>
+  </data>
+  <data name="Actitudinal" xml:space="preserve">
+    <value>Actitudinal</value>
+  </data>
+  <data name="Contenido" xml:space="preserve">
+    <value>Contenido</value>
+  </data>
+  <data name="OpcionCorrecta" xml:space="preserve">
+    <value>Opción correcta</value>
+  </data>
+  <data name="Pregunta" xml:space="preserve">
+    <value>Pregunta</value>
+  </data>
+  <data name="Procedimental" xml:space="preserve">
+    <value>Procedimental</value>
+  </data>
+  <data name="Titulo" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="Valor" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="Acompanamiento" xml:space="preserve">
+    <value>Acompañamiento</value>
+  </data>
+  <data name="PostTest" xml:space="preserve">
+    <value>Post-Test</value>
+  </data>
+  <data name="PreTest" xml:space="preserve">
+    <value>Pre-Test</value>
+  </data>
+  <data name="TipoEvaluacion" xml:space="preserve">
+    <value>Tipo de evaluación</value>
+  </data>
+  <data name="Correcta" xml:space="preserve">
+    <value>Correcta</value>
+  </data>
+  <data name="FormaEvaluacion" xml:space="preserve">
+    <value>Forma de evaluación</value>
+  </data>
+  <data name="Fecha" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="Rol" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="Evaluacion" xml:space="preserve">
+    <value>Evaluación</value>
+  </data>
+  <data name="Respuestas" xml:space="preserve">
+    <value>Respuestas</value>
+  </data>
+  <data name="Digitador" xml:space="preserve">
+    <value>Digitador</value>
+  </data>
+  <data name="Evaluaciones" xml:space="preserve">
+    <value>Evaluaciones</value>
+  </data>
+  <data name="NA" xml:space="preserve">
+    <value>NA</value>
+  </data>
+  <data name="Agropecuaria" xml:space="preserve">
+    <value>Agropecuaria</value>
+  </data>
+  <data name="Biblioteca" xml:space="preserve">
+    <value>Biblioteca</value>
+  </data>
+  <data name="CuatroBasicas" xml:space="preserve">
+    <value>CuatroBasicas</value>
+  </data>
+  <data name="Educación_Artística" xml:space="preserve">
+    <value>Educación Artística</value>
+  </data>
+  <data name="Formación_Humana" xml:space="preserve">
+    <value>Formación Humana y Religiosa</value>
+  </data>
+  <data name="Informática" xml:space="preserve">
+    <value>Informática</value>
+  </data>
+  <data name="Inicial" xml:space="preserve">
+    <value>Inicial</value>
+  </data>
+  <data name="Lengua_Española" xml:space="preserve">
+    <value>Lengua Española</value>
+  </data>
+  <data name="Lenguas_Extranjeras" xml:space="preserve">
+    <value>Lenguas Extranjeras</value>
+  </data>
+  <data name="Matemática" xml:space="preserve">
+    <value>Matemática</value>
+  </data>
+  <data name="Sociales" xml:space="preserve">
+    <value>Sociales</value>
+  </data>
+  <data name="Educación_Física" xml:space="preserve">
+    <value>Educación Física</value>
+  </data>
+  <data name="I" xml:space="preserve">
+    <value>I</value>
+  </data>
+  <data name="FormacionAcademica" xml:space="preserve">
+    <value>Formación académica</value>
+  </data>
+  <data name="Maestria" xml:space="preserve">
+    <value>Maestría</value>
+  </data>
+  <data name="Tecnico" xml:space="preserve">
+    <value>Técnico</value>
+  </data>
+  <data name="TecnicoProfesional" xml:space="preserve">
+    <value>Técnico profesional</value>
+  </data>
+  <data name="AnosDeEjercicio" xml:space="preserve">
+    <value>Años de ejercicio profesional</value>
+  </data>
+</root>

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Monitoreo.Models.PersonalAdministrativo>
+
+<script src="~/Content/js/tableExport/tableExport.js"></script>
+<script src="~/Content/js/tableExport/jspdf/jspdf.js"></script>
+<script src="~/Content/js/tableExport/jquery.base64.js"></script>
+
+
+
+
+
+<div class="panel-body">
+    <div style="margin-bottom:30px;">
+        <div class="btn-group">
+            <button class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> Exportar tabla</button>
+            <ul class="dropdown-menu " role="menu">
+
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'xml', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/xml.png' width='24px'> XML</a></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'sql' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/sql.png' width='24px'> SQL</a></li>
+                <li class="divider"></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'csv', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/csv.png' width='24px'> CSV</a></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'txt', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/txt.png' width='24px'> TXT</a></li>
+                <li class="divider"></li>
+
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'excel', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/xls.png' width='24px'> XLS</a></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'doc', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/word.png' width='24px'> Word</a></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'powerpoint', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/ppt.png' width='24px'> PowerPoint</a></li>
+                <li class="divider"></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'png', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/png.png' width='24px'> PNG</a></li>
+                <li><a href="#" onclick="$('#dataTableAdmin').tableExport({ type: 'pdf', pdfFontSize: '7', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/pdf.png' width='24px'> PDF</a></li>
+
+
+            </ul>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-striped table-hover" id="dataTableAdmin">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Persona.NombreCompleto)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.FuncionesEjerce)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tanda)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FuncionesEjerce)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tanda)
+                    </td>
+                    <td class="row-actions">
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                        </a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <a href="@Url.Action("Create")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+
+   
+
+
+
+
+</div>

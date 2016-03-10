@@ -1,0 +1,63 @@
+﻿@model Monitoreo.Models.BO.AusenciaReporte
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("AusenciaReporte"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+                @Html.EditorFor(model => model.titulo)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CicloFormativoId, Resources.T.ResourceManager.GetString("CicloFormativoId"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CicloFormativoId, (IEnumerable<SelectListItem>)ViewBag.CicloFormativoId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CicloFormativoId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SeccionId, Resources.T.ResourceManager.GetString("SeccionId"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.SeccionId, (IEnumerable<SelectListItem>)ViewBag.SeccionId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SeccionId)
+                    </div>
+                </div>
+                @Html.EditorFor(model => model.NumeroPersonasObjetivo)
+                @Html.EditorFor(model => model.AsistenciaObjetivo)
+                @Html.EditorFor(model => model.NumeroHorasObjetivo)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+

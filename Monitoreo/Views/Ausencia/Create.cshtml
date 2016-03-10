@@ -1,0 +1,162 @@
+﻿@model Monitoreo.Models.BO.Ausencia
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("Ausencia"));
+}
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+
+<script src="~/Content/js/bootstrap-select.js"></script>
+<link href="~/Content/css/bootstrap-select.css" rel="stylesheet" />
+
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                @Html.Label("Ciclo Formativo", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.SuperCicloFormativoId, "Seleccione el Ciclo..", new { @class = "form-control", @id = "SuperCicloDropDownList" })
+                </div>
+            </div>
+
+
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                @Html.Label("Acción Formativa", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.CicloFormativoId, "Seleccione la Acción Formativa..", new { @class = "form-control", @id = "CicloDropDownList" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Grupo", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.GrupoCicloFormativo, "Seleccione el Grupo..", new { @class = "form-control", @id = "GrupoDropDownList" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Persona", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="personas_multiselectID" name="personaId" class="selectpicker" data-live-search="true"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.Label("Fechas", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="fechas_multiselectID" name="fechasCalendarioID" multiple class="form-control"></select>
+                </div>
+            </div>
+
+           
+            @Html.EditorFor(model => model.Tipo)
+            @Html.EditorFor(model => model.Comentario)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+    var grupoDropdownVal = "";
+    var cicloDropdownVal = "";
+    $(document).ready(function () {
+        
+
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('setStyle', 'btn-danger');
+
+        $('#SuperCicloDropDownList').on('change', function () {
+            $("#CicloDropDownList").html("");
+            $("#CicloDropDownList").append("<option value='0'>Seleccione el ciclo...</option>")
+            superCicloDropdownVal = $("#SuperCicloDropDownList option:selected").val();
+            $.ajax({
+                type: "POST",
+                url: "GetCiclosBySuperCicloId?superCicloId=" + superCicloDropdownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {
+                        $("#CicloDropDownList").append("<option value='" + data.id + "'>" + data.tema + "</option>")
+                    });
+                }
+            });
+        });
+
+
+
+        $('#CicloDropDownList').on('change', function () {
+            $("#GrupoDropDownList").html("");
+            $("#GrupoDropDownList").append("<option value='0'>Seleccione el grupo...</option>")
+            cicloDropdownVal = $("#CicloDropDownList option:selected").val();
+            $.ajax({
+                type: "POST",
+                url: "GetGruposByCicloId?cicloId=" + cicloDropdownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {
+                        $("#GrupoDropDownList").append("<option value='" + data.id + "'>" + data.nombre + "</option>")
+                    });
+                }
+            });
+        });
+
+        
+        $('#GrupoDropDownList').on('change', function () {
+            grupoDropdownVal = $("#GrupoDropDownList option:selected").val();;
+            cicloDropdownVal = $("#CicloDropDownList option:selected").text();
+            $("#personas_multiselectID").html("");
+            $("#fechas_multiselectID").html("");
+
+            $.ajax({
+                type: "POST",
+                url: "GetPersonalBySeccion?seccionId=" + grupoDropdownVal + "&cicloId=" + cicloDropdownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {                       
+                        $("#personas_multiselectID").append("<option value='" + data.Cedula + "'>" + data.Cedula + "</option>")
+                        $('.selectpicker').selectpicker('refresh');
+
+                    });
+                    $.each(data.calendarios, function (i, calendarios) {
+                        $("#fechas_multiselectID").append("<option value='" + calendarios.id + "'>" + calendarios.fecha + "</option>")
+                    });
+
+                    
+                }
+            });
+        });
+        //$('#personas_multiselectID').multiselect();
+
+    });
+
+</script>

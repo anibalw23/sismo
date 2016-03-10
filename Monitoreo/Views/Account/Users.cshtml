@@ -1,0 +1,120 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Lista de Usuarios";
+}
+<div class="panel-heading">
+    <h3> @ViewBag.Title</h3>
+</div>
+
+
+
+<div class="panel-body">
+    <table id="dataTable"  class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Nombre de Usuario
+                </th>
+                <th>
+                    Nombre Personal
+                </th>
+                <th>
+                    Rol
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @*@foreach (var user in ViewBag.Users)
+            {
+                <tr>
+                    <td>
+                        @user.username
+                    </td>
+                    <td>
+                        @user.nombrePersonal
+                    </td>
+
+                    <td>                      
+                        @user.rol
+                    </td>
+
+                    <td class="row-actions">
+
+                        <a href="@Url.Action("EditUser", new { UserName = user.username })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                        </a>
+                        <a href="@Url.Action("DeleteUser", new { UserName = user.username })" class="btn btn-danger" id="DeleteUser">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+
+
+                </tr>
+            }*@
+        </tbody>
+
+    </table>
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("CreateUser")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+    (function ($) {
+        var actionsTemplate = '<a href="@Url.Action("EditUser", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar </a>\
+                               <a href="@Url.Action("DeleteUser", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Borrar </a>';
+
+
+       
+        $('#dataTable').dataTable(
+            {
+                autoWidth: false,
+                processing: true,
+                serverSide: true,
+                ordering: true,
+                stateSave: true,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                language: { url: '/Content/js/dataTables.Spanish.txt' },
+                ajax: { url: '@Url.Action("GetUsersJson")', type: 'POST' },
+                columns: [
+                    { data: 'NombreUsuario' },
+                    { data: 'NombrePersonal' },
+                    { data: 'Rol' },
+                    { data: null, targets: -1, defaultContent: actionsTemplate, orderable: false }
+                ],
+                createdRow: function (row, data, index) {
+                    var lastTD = $('td', row).last();
+
+                    $("a[href]", lastTD).each(function () {
+                        this.href = this.href.replace('ID_Holder', data.DT_RowId);
+                    });
+
+                    lastTD.addClass('row-actions');
+                }
+            }
+    );
+    })(jQuery);
+    </script>
+}

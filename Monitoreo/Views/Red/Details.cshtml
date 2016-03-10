@@ -1,0 +1,114 @@
+﻿@model Monitoreo.Models.Red
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Red"));
+}
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+<script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CentroSede)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CentroSede.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Distrito)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Distrito.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Codigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+    </dl>
+</div>
+
+
+@*<div id="map_canvas" style="width:100%;height:400px;"></div>*@
+
+
+<div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#centros" aria-controls="centros" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("Centros")</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="centros">
+            <div class="panel">
+                @Html.Action("RedCentros", "Centro", new { RedId = Model.Id })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+        @{
+            List<Monitoreo.Models.Centro> centros = ViewBag.CentrosLatLong;
+            int count = 0;
+            count++;
+        }
+           <script type="text/javascript">
+            (function ($) {
+            @*var mapOptions = {
+                center: new google.maps.LatLng(Number(@centros[0].Latitud), Number(@centros[0].Longitud)),
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map_canvas"),
+                mapOptions);
+
+                for(var i = 0; i < @centros.Count; i++){
+                    count = i;
+                    alert("Id = " + @centros[count].Id +"count =" + count + "i = " + i);
+                    var myLatlng = new google.maps.LatLng(Number(@centros.ElementAt(count).Latitud), Number(@centros.ElementAt(count).Longitud));
+                    var marker = new google.maps.Marker({
+                        position: myLatlng,
+                        map: map,
+                        title: '@centros.ElementAt(count).Nombre'
+                    });*@
+        }
+
+    })(jQuery);
+</script>
+}
+
+
+
+
+
+

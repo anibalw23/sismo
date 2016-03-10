@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Monitoreo.Models.Red>
+<div class="panel-heading">
+    <h3>Redes</h3>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                   Codigo
+                </th>
+                <th>
+                   Nombre de Red
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Codigo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nombre)
+                            </td>
+                            <td class="row-actions">
+                                <a  class="btn btn-default" id="btnDetallesRed"  onclick="detalles(@item.Id)">
+                                    <i class="fa fa-eye"></i>
+                                    @Resources.T.ResourceManager.GetString("Detalles")
+                                </a>
+                               
+                            </td>
+                        </tr>
+            }
+                    </tbody>
+    </table>
+</div>
+
+<div class="panel-heading">
+    <h3 id="titleRedSeleccionada"> Centros de la Red Seleccionada</h3>
+</div>
+<div class="panel-body">
+   
+    <table id="tableCentrosRed" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Codigo
+                </th>
+                <th>
+                    Nombre de Centro
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+    @section Styles {
+        @Styles.Render("~/bundles/dataTables/css")
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/dataTables/js")
+
+        <script type="text/javascript">
+            (function ($) {
+                $('#dataTable').dataTable({});
+                $('#tableCentrosRed').dataTable({});
+            })(jQuery);
+
+
+            function detalles(id){
+                $("#tableCentrosRed").html("");
+                $("#titleRedSeleccionada").html("");
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetCentrosByRedId", "Red")' + "?redID=" + id , 
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data.data, function (i, data) {
+                            $("#tableCentrosRed").append("<tr><td>" + data.Codigo + "</td>" + "<td>" + data.Nombre + "</td>" + "<td>  <a href='/Coordinador/CoordinadorDocentes/" + data.Id + "' class='btn btn-default' id='btnDetallesCentro'>Docentes</a>    <a href='/Centro/EstadisticasCentro/" + data.Id + "' class='btn btn-info' id='btnDetallesCentro'>Estadisticas</a></td></tr>");
+                            $("#titleRedSeleccionada").text("Centros de la Red " + data.Red);
+                        });
+
+                    }
+                });
+
+            }
+        </script>
+    }

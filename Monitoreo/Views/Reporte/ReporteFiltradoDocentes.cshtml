@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.Title = "Reporte Filtrado de Docentes";
+}
+
+@Scripts.Render("~/bundles/dataTables/js")
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+
+<div class="panel-heading">
+    <h3><i class="fa fa-bar-chart"></i>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("Distrito", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.DistritoId, "Seleccione el Distrito..", new { @class = "form-control", @id = "DistritoDropDownList" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.Label("Red", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select id="redes_multiselectID" name="personaId" class="form-control"></select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.Label("Centro", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select id="centros_multiselectID" name="personaId" class="form-control"></select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.Label("Area", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("areaId", (SelectList)ViewBag.Arealist, new { @class = "form-control", @id = "areaId", @name = "areaId" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Nivel", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("nivelId", (SelectList)ViewBag.Nivellist, new { @class = "form-control", @id = "nivelId", @name = "nivelId" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ciclo", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                @Html.DropDownList("cicloId", (SelectList)ViewBag.Ciclolist, new { @class = "form-control", @id = "cicloId", @name = "cicloId" })
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-2 col-md-offset-4">
+                <button type="submit" class="btn btn-default" id="reportGeneratorId">Generar Reporte</button>
+            </div>
+           
+            @*<button class="glyphicon glyphicon-ok" type="button" id="reportGeneratorId">Generar Reporte</button>*@
+        </div>
+
+            <table id="dataTable" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+    var grupoDropdownVal = "";
+    var distritoDropdownVal = "";
+    $(document).ready(function () {
+        $('#DistritoDropDownList').on('change', function () {
+            $("#redes_multiselectID").html("");
+            $("#redes_multiselectID").append("<option value='0'>Seleccione la red...</option>")
+            distritoDropdownVal = $("#DistritoDropDownList option:selected").val();
+            $.ajax({
+                type: "POST",
+                url: "GetRedesByDistritoId?distritoId=" + distritoDropdownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {
+                        $("#redes_multiselectID").append("<option value='" + data.Id + "'>" + data.Nombre + "</option>")
+                    });
+                }
+            });
+        });
+
+
+        $('#redes_multiselectID').on('change', function () {
+            redDropdownVal = $("#redes_multiselectID option:selected").val();
+            $("#centros_multiselectID").html("");
+            $("#centros_multiselectID").append("<option value='0'>Seleccione el centro...</option>")
+            $.ajax({
+                type: "POST",
+                url: "GetCentrosByRedId?redID=" + redDropdownVal,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {
+                        $("#centros_multiselectID").append("<option value='" + data.Id + "'>" + data.Nombre + "</option>")
+                    });
+                }
+            });
+        });
+
+
+
+        $('#reportGeneratorId').click(function() {
+            centroDropdownVal = $("#centros_multiselectID option:selected").val();
+            areaDropdownVal = $("#areaId option:selected").val();
+            nivelDropdownVal = $("#nivelId option:selected").val();
+            cicloDropdownVal = $("#cicloId option:selected").val();
+
+            var actionsTemplate = '';@*'<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';*@
+
+           // var tableX = $('#dataTable').DataTable();
+    
+            var table = $('#dataTable').dataTable(
+           {
+               autoWidth: false,
+               processing: true,
+               serverSide: true,
+               ordering: true,
+               stateSave: true,
+               bDestroy: true,
+               lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+               language: { url: '/Content/js/dataTables.Spanish.txt' },
+               ajax: { url: 'GetDocentesByCentroAreaNivelCiclo?centroID=' + centroDropdownVal + "&areaId=" + areaDropdownVal + "&nivelId=" + nivelDropdownVal + "&cicloId=" + cicloDropdownVal, type: 'POST' },
+               columns: [
+                   { data: 'Cedula' },
+                   { data: 'NombreCompleto' },
+                   { data: null, targets: -1, defaultContent: actionsTemplate, orderable: false }
+               ],
+               createdRow: function (row, data, index) {
+
+               }
+           }           
+   );
+
+            //$.ajax({
+            //    type: "POST",
+            //    url: "GetCentrosByRedId?redID=" + redDropdownVal,
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: function (data) {
+            //        $.each(data.data, function (i, data) {
+            //            $("#centros_multiselectID").append("<option value='" + data.Id + "'>" + data.Nombre + "</option>")
+            //        });
+            //    }
+            //});
+        });
+
+
+
+
+
+
+
+
+
+
+    });
+
+</script>

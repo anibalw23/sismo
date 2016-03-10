@@ -1,0 +1,117 @@
+﻿@model Monitoreo.Models.BO.InscripcionActividadAcompanamiento
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("InscripcionActividadAcompanamiento"));
+}
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<div class="panel-heading">
+    <h3>Añadir Fecha sd</h3>
+</div>
+
+<div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        <input type="hidden" name="tipo" value="@ViewBag.tipo"> 
+        @Html.HiddenFor(model => model.personalID)
+        @Html.HiddenFor(model => model.actividadAcompanamientoID)
+        @Html.EditorFor(model => model.fecha)
+        @Html.EditorFor(model => model.horas)
+        @Html.EditorFor(model => model.Area)
+    </div>
+    <div class="msjError" style="color:red;"></div>
+</div>
+
+
+<button id="btnGuardar" type="submit" value="Create" class="btn btn-primary" style="margin-left:40%; height:50px; width:150px;">
+    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+</button>
+
+
+
+
+<script type="text/javascript">
+    (function ($) {
+        $("#btnGuardar").on("click", function () {
+            var personalID = $("#personalID").val();
+            var actividadAcompanamientoID = $("#actividadAcompanamientoID").val();
+            var fecha = $("#fecha").val();
+            var horas = Number($("#horas").val());
+            var Area = $("#Area").val();
+
+            if (horas > 0 && horas < 10) {
+                $(".msjError").hide();
+                var values =
+                {
+                    "personalID": personalID,
+                    "actividadAcompanamientoID": actividadAcompanamientoID,
+                    "fecha": fecha,
+                    "horas": horas,
+                    "Area": Area,
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CreateModal", "InscripcionActividadAcompanamiento")',  
+                    data: JSON.stringify(values),
+                    contentType: "application/json",
+                    datatype: "html",
+                    success: function (data) {
+                        if (data.success == true) {
+                            $('#CreateModal').modal("hide");
+                            if (data.tipo == "AcompanamientoAula") {
+                                $("#dataTableActividadesAcompanamiento").html("");
+                                generarTablaAcompanamiento("#dataTableActividadesAcompanamiento", 1, data.cicloId, data.docenteId); // Acompañamiento en Aula
+                            }
+
+                            if (data.tipo == "AcompanamientoTutorial") {
+                                $("#dataTableAcompanamientoPractica").html("");
+                                generarTablaAcompanamiento("#dataTableAcompanamientoPractica", 2, data.cicloId, data.docenteId); // Acompañamiento Reflexivo
+                            }
+                            if (data.tipo == "ClaseModelo") {
+                                $("#dataTableAcompanamientoModelo").html("");
+                                generarTablaAcompanamiento("#dataTableAcompanamientoModelo", 3, data.cicloId, data.docenteId); // Clase Modelo
+                            }
+                            if (data.tipo == "GrupoPedagogico") {
+                                $("#dataTableAcompanamientoComunidad").html("");
+                                generarTablaAcompanamiento("#dataTableAcompanamientoComunidad", 4, data.cicloId, data.docenteId); // Comunidad Aprendizaje
+                            }
+                            alert("Actividad de Acompañamineto creada exitosamente!");
+                        }
+                        else {
+                            alert("No se creo la inscripción correctamente!, contacte su administrador");
+                        }
+                    }
+                });
+
+            }
+            else {
+                $(".msjError").show();
+                $(".msjError").text("Las horas de acompanamiento deben ser mayores a 0 y menores que 10");
+
+            }
+
+
+            
+
+        });
+
+    })(jQuery);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

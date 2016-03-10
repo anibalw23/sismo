@@ -1,0 +1,258 @@
+﻿@model Monitoreo.Models.SuperCicloFormativo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("SuperCicloFormativo"));
+    ViewBag.Title = "Detalles del Ciclo Formativo";
+}
+
+<style type="text/css">
+    #actividadesHeaderID{
+    }
+
+</style>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nivel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nivel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Area)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Area)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ciclo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ciclo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CategoriaSuperCiclo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CategoriaSuperCiclo)
+        </dd>
+
+
+
+    </dl>
+
+    
+
+   @{
+       var ciclosFormativos = (IEnumerable<Monitoreo.Models.CicloFormativo>)ViewBag.CiclosFormativos;
+    }
+    <div id="actividadesHeaderID" style="background-color:black;margin-bottom:30px;  height:60px;">
+        <div style="padding-top:2px;">
+            <h3 style="color:white; background-color:#CD0000;text-align:center;">Actividades Formativas Presenciales</h3>
+        </div>
+      
+    </div>
+    <div class="panel-body">
+        
+        <table class="table table-bordered table-striped table-hover" id="dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Tema")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Fecha")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Duración")
+                    </th>
+
+                    <th>
+                        @Html.DisplayName("Area")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Nivel")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Ciclo")
+                    </th>
+                    <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ciclosFormativos)
+                {
+                    <tr>
+                        <td>
+                            @item.Tema
+                        </td>
+                        <td>
+                            @item.FechaInicio
+                        </td>
+                        <td>
+                            @item.DuracionTotal
+                        </td>
+                        <td>
+                           @item.Area
+                        </td>
+                        <td>
+                            @item.Nivel
+                        </td>
+                        <td>
+                            @item.Ciclo
+                        </td>
+
+                           
+                                <td class="row-actions">
+                                    <a href="@Url.Action("Details", "CicloFormativo", new { id = item.Id})" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> 
+                                    </a>
+
+                    @{
+                    if (User.IsInRole("Administrador") || User.IsInRole("Acompanante") || User.IsInRole("Coordinador") || User.IsInRole("EspecialistaCurricular"))
+                                    {
+                                    <a href="@Url.Action("Edit", "CicloFormativo", new { id = item.Id, superCicloID = Model.Id })" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 
+                                    </a>
+                                    <a href="@Url.Action("Delete", "CicloFormativo", new { id = item.Id, superCicloID = Model.Id })" class="btn btn-danger">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
+                                    </a>
+                                    }
+                    }
+                                </td>
+                       
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @{
+            if (User.IsInRole("Administrador") || User.IsInRole("Acompanante") || User.IsInRole("Coordinador") || User.IsInRole("EspecialistaCurricular"))
+            {
+                <div class="panel-footer">
+                    <a href="@Url.Action("Create", "CicloFormativo", new { superCicloId = Model.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva Actividad Formativa Presencial
+                    </a>
+                </div>
+            }
+        }
+        </div>
+    </div>
+
+
+
+@{
+            if (User.IsInRole("Administrador"))
+            {
+
+                @*<div class="panel-footer">
+                    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                    </a>
+                </div>*@
+            }
+
+}
+
+
+
+@{
+    var actividadesAcompanamiento = (IEnumerable<Monitoreo.Models.BO.ActividadAcompanamiento>)ViewBag.ActividadesAcompanamiento;
+}
+
+
+
+<div  class="">
+
+    <div id="" style="background-color:black;margin-bottom:30px;  height:60px;">
+        <div style="padding-top:2px;">
+            <h3 style="color:white; background-color:#CD0000;text-align:center;">Actividades Formativas de Acompañamiento</h3>
+        </div>
+
+    </div>
+    <table style="width:80%; margin-left:30px;"  class="table table-bordered table-striped table-hover" id="dataTable">
+        <thead>
+            <tr>
+                <th>
+                    Tipo
+                </th>
+
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in actividadesAcompanamiento)
+            {
+                <tr>
+                    <td>
+                        @item.TipoAcompanamiento
+                    </td>
+
+
+                    <td class="row-actions">
+                        <a href="@Url.Action("Details", "ActividadAcompanamiento", new { id = item.ID })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                        </a>
+                        <a href="@Url.Action("Edit", "ActividadAcompanamiento", new { id = item.ID, superCicloID = Model.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                        <a href="@Url.Action("Delete", "ActividadAcompanamiento", new { id = item.ID, superCicloID = Model.Id })" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        <a href="@Url.Action("Create", "ActividadAcompanamiento", new { superCicloId = Model.Id })" class="btn btn-default">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva Actividad de Acompañamiento
+        </a>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+            var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';
+
+            $('#dataTable').dataTable();
+        })(jQuery);
+    </script>
+}

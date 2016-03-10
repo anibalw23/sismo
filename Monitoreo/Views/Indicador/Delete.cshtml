@@ -1,0 +1,77 @@
+﻿@model Monitoreo.Models.BO.Indicador
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("BorrandoX"), Resources.T.ResourceManager.GetString("Indicador"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <h3>@Html.Raw(String.Format(Resources.T.ResourceManager.GetString("BorrarConfirmacion"), Resources.T.ResourceManager.GetString("Indicador")))</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.codigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.tipo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.tipo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.valorLineaBase)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.valorLineaBase)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.formula)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.formula)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Frecuencia)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Frecuencia)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        <div class="panel-footer">
+            <button type="submit" value="Delete" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Si")
+            </button>
+            <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("No")</a>');
+            </script>
+        </div>
+    }
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Monitoreo.Models.ActividadFormativa>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ActividadFormativaBase)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Duracion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaFin)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActividadFormativaBase.Organizacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duracion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaFin)
+                </td>
+                <td class="row-actions">
+                    <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                    </a>
+                </td>
+            </tr>
+}
+	    </tbody>
+    </table>
+</div>

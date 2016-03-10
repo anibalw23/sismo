@@ -1,0 +1,325 @@
+﻿@model IEnumerable<Monitoreo.Models.BO.PlanMejora.PlanMejoraCentro>
+
+@{
+    ViewBag.Title = @Resources.T.ResourceManager.GetString("PlanMejoraCentros");
+}
+
+@*<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">*@
+
+<div class="panel-heading">
+    <h3>Planes de Mejora de mi Centro</h3>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.periodo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.fechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.fechaFin)
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.periodo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.fechaInicio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.fechaFin)
+                        </td>
+                       
+                        <td class="row-actions">
+                            <a id="Objetivo_@item.ID" onclick='ObjetivosPlan(this)' class="btn btn-default">
+                                <i class="fa fa-bullseye"></i> Objetivos
+                            </a>
+                            <a href="@Url.Action("Details", new { id = item.ID })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                            </a>
+                            <a href="@Url.Action("EditByAcompanante", new { id = item.ID, @centroId = @ViewBag.CentroID })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                            </a>
+                            <a href="@Url.Action("DeleteByAcompanante", new { id = item.ID })" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                            </a>
+
+                        </td>
+                    </tr>
+        }
+                </tbody>
+
+    </table>
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("CreateByAcompanante", new {@id = @ViewBag.CentroID })" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Crear Nuevo Plan
+    </a>
+</div>
+
+
+
+
+
+@*<div class="panel-heading" style="background-color:#ED7839;">
+    <h3 id="titleRedSeleccionada"> Objetivos</h3>
+</div>
+<div class="panel-body">
+    <table id="tableObjetivos" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Código
+                </th>
+                <th>
+                    Objetivo
+                </th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <div id="createObjetivoId" class="panel-footer">      
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="panel-heading" style="background-color:#38ACEC;">
+    <h3 id="titleMetas"> Metas</h3>
+</div>
+<div class="panel-body">
+    <table id="tableMetas" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Código
+                </th>
+                <th>
+                    Meta
+                </th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <div id="createMetaId" class="panel-footer">
+    </div>
+
+</div>
+
+
+
+
+
+<div class="panel-heading" style="background-color:#54C571;">
+    <h3 id="titleIndicadores"> Indicadores</h3>
+</div>
+<div class="panel-body">
+    <table id="tableIndicadores" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Código
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <div id="createIndicadorId" class="panel-footer">
+    </div>
+
+</div>*@
+
+
+
+
+
+
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+             $('#dataTable').dataTable({});
+        })(jQuery);
+
+
+        //function ObjetivosPlan(a) {
+        //    $(a).css('background-color', 'green');
+        //    $(a).css('color', 'white');
+        //    var objetivoId = a.id.split("_")[1];
+        //    $("#tableObjetivos > tbody").html("");
+        //    $("#createObjetivoId").html("");
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Objetivo/GetObjetivosByPlanCentro?planId=" + objetivoId,
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (data) {
+        //            $.each(data.data, function (i, data) {
+        //                $("#tableObjetivos").append("<tr id=" + data.id + "><td>" + data.codigo + "</td>" + "<td>" + data.nombre + "</td>" + "<td>  <a onclick='getMetas(" + data.id + ", this)'  class='btn btn-default' id='btnDetallesCentro'><i class='fa fa-flag-checkered'></i>Metas</a> <a  onclick='getGrandesActividades(" + data.id + ", this)' class='btn btn-default' >Grandes Actividades </a> </td></tr>");
+        //            });
+        //            $("#createObjetivoId").append('<a onclick="showBLPopup(/Objetivo/CreateByPlanCentro?planID=1, Crear Objetivo)" class="btn btn-default"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Crear Objetivo</a>');
+        //        }
+        //    });
+
+        //}
+
+
+        //function getMetas(id, select) {
+        //    $("#tableMetas > tbody").html("");
+        //    $("#createMetaId").html("");
+        //    $("#titleMetas").html("Metas");
+
+        //    $("#tableMetas > thead").html("");
+        //    $("#tableMetas > thead").append("<tr><th>Código</th><th>Meta</th><th>Acciones</th></tr>");
+
+        //    $('#tableObjetivos > tbody  > tr').each(function () {
+        //        console.log("a tr");
+        //        if ($(this).attr("id") == id) {
+        //            $(this).css('background-color', '#FFE5B4');
+        //            $(this).css('color', 'black');
+        //        }
+        //        else {
+        //            $(this).css('background-color', 'white');
+        //            $(this).css('color', '#D1D0CE');
+        //        }
+        //    });
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Meta/GetMetasByObjetivo?objetivoId=" + id,
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (data) {
+        //            $.each(data.data, function (i, data) {
+        //                $("#tableMetas").append("<tr><td>" + data.codigo + "</td>" + "<td>" + data.nombre + "</td>" + "<td>  <a onclick='getIndicadores(" + data.id + ", this)'  class='btn btn-default' id='btnDetallesCentro'><i class='fa fa-tachometer'></i></i>Indicadores</a></td></tr>");
+        //            });
+        //            $("#createMetaId").append(' <a href="" class="btn btn-default"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Crear Meta</a>');
+        //        }
+        //    });
+        //}
+
+
+        //function getGrandesActividades(id, select) {
+        //    $("#tableMetas > tbody").html("");
+        //    $("#tableIndicadores").html("");
+        //    $("#titleIndicadores").html("");
+        //    $("#createIndicadorId").html("");
+
+        //    $("#tableMetas > thead").html("");
+        //    $("#tableMetas > thead").append("<tr><th>Código</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Acciones</th></tr>");
+
+        //    $("#createMetaId").html("");
+        //    $("#titleMetas").html("Grandes Actividades");
+        //    $('#tableObjetivos > tbody  > tr').each(function () {
+        //        console.log("a tr");
+        //        if ($(this).attr("id") == id) {
+        //            $(this).css('background-color', '#FFE5B4');
+        //            $(this).css('color', 'black');
+        //        }
+        //        else {
+        //            $(this).css('background-color', 'white');
+        //            $(this).css('color', '#D1D0CE');
+        //        }
+        //    });
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Actividad/GetGrandesActividadesByObjetivo?objetivoId=" + id,
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (data) {
+        //            $.each(data.data, function (i, data) {
+        //                $("#tableMetas").append("<tr><td>" + data.nombre + "</td>" + "<td>" + data.fechaInicio + "</td>" + "<td>" + data.fechaFin + "</td>" + "<td>  <a onclick='' href='#' class='btn btn-default'><i class='fa fa-flag-checkered'></i>Actividades Especificas</a></td></tr>");
+        //            });
+        //            $("#createMetaId").append('<a  class="btn btn-default"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Crear Gran Actividad</a>');
+        //        }
+        //    });
+        //}
+
+
+        //function getIndicadores(id, select) {
+        //    $("#tableIndicadores > tbody").html("");
+        //    $("#createIndicadorId").html("");
+        //    $("#titleIndicadores").html("Indicadores");
+
+        //    $("#tableIndicadores > thead").html("");
+        //    $("#tableIndicadores > thead").append("<tr><th>Código</th><th>Nombre</th><th>Acciones</th></tr>");
+
+
+
+
+        //    $('#tableIndicadores > tbody  > tr').each(function () {
+        //        console.log("a tr");
+        //        if ($(this).attr("id") == id) {
+        //            $(this).css('background-color', '#FFE5B4');
+        //            $(this).css('color', 'black');
+        //        }
+        //        else {
+        //            $(this).css('background-color', 'white');
+        //            $(this).css('color', '#D1D0CE');
+        //        }
+        //    });
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/IndicadorPlan/GetIndicadoresByMeta?metaId=" + id,
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (data) {
+        //            $.each(data.data, function (i, data) {
+        //                $("#tableIndicadores").append("<tr><td>" + data.codigo + "</td>" + "<td>" + data.nombre + "</td>"  + "<td> </td></tr>");
+        //            });
+        //            $("#createIndicadorId").append(' <a href="" class="btn btn-default"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Crear Indicador</a>');
+        //        }
+        //    });
+        //}
+
+
+
+        function showBLPopup(url, title) {
+            $('#modalBody')
+                .load(url,
+                        function (response, status, xhr) {
+                            $('#CreateModal').modal({ show: true, backdrop: true });
+                            return response;
+                        })
+        };
+    </script>
+}

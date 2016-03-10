@@ -1,0 +1,63 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.MenuHelperModel
+@using System.Web.Mvc.Html
+@using MvcSiteMapProvider.Web.Html.Models
+
+@helper  TopMenu(List<SiteMapNodeModel> nodeList)
+{
+    <nav class="nav navbar-nav" role="navigation">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="~/Home">Inicio</a></li>
+                    @*@foreach (SiteMapNodeModel node in nodeList)
+                    {
+                        string url = node.IsClickable ? node.Url : "#";
+
+                        if (!node.Children.Any())
+                        {
+                            <li><a href="@url">@node.Title</a></li>
+                        }
+                        else
+                        {
+                            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">@node.Title <i class="glyphicon glyphicon-chevron-down"></i></a>@DropDownMenu(node.Children)</li>
+                        }
+
+                        if (node != nodeList.Last())
+                        {
+                            <li class="divider-vertical"></li>
+                        }
+                    }*@
+                </ul>
+            </div>
+        </div>
+    </nav>
+}
+
+@helper DropDownMenu(SiteMapNodeModelList nodeList)
+{
+    <ul class="dropdown-menu" role="menu">
+        <li class="divider"></li>
+        @foreach (SiteMapNodeModel node in nodeList)
+        {
+            if (node.Title == "Separator")
+            {
+                <li class="divider"></li>
+                continue;
+            }
+
+            string url = node.IsClickable ? node.Url : "#";
+
+            if (!node.Children.Any())
+            {
+                <li><a href="@url">@node.Title</a></li>
+            }
+            else
+            {
+                <li class="dropdown-submenu"><a href="@url">@node.Title</a>@DropDownMenu(node.Children)</li>
+            }
+        }
+    </ul>
+}
+
+@TopMenu(Model.Nodes)

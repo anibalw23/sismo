@@ -1,0 +1,72 @@
+﻿@model Monitoreo.Models.Estudiante
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Estudiante"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Matricula)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Matricula)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Persona.NombreCompleto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Persona.NombreCompleto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Centro)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Centro.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nivel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nivel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ciclo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ciclo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanda)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tanda)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Seccion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Seccion.Numero)
+        </dd>
+    </dl>
+</div>
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

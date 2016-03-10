@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    ViewBag.Title = "Borrar Usuario";
+}
+
+<div class="panel-heading">
+    <h3> @ViewBag.Title</h3>
+</div>
+
+
+
+
+<div class="panel-footer">
+    <p>Está Seguro de que desea borrar este usuario?</p>
+    <button type="submit" id="btnSubmit" value="Borrar" class="btn btn-primary">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </button>
+</div>
+<script type="text/javascript">
+
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+
+
+
+
+    $(document).ready(function () {
+        $('#btnSubmit').button().click(function () {
+            var userName = getParameterByName("UserName");
+            alert("UserName = " + userName);
+            $.post(@Url.Action("DeleteUser", "Account") + "?UserName=" + userName, function (data) {
+                alert("Ok!");
+            });
+
+        });
+    });
+
+</script>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}

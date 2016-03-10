@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Import Provincias From Excel";
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+<div class="panel-body">
+    <div class=" panel-group">
+        @using (Html.BeginForm("ImportFromExcelFile", "Regional", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input name="uploadFile" type="file" /><input type="submit" value="UploadFile" title="Upload file" onclick="return CheckFileName();" />
+        }
+    </div>
+
+    <div class="panel-group">
+
+        <h3> Formato del archivo de Excel..</h3>
+        <table>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Codigo Municipio</th>
+                <th>Codigo Provincia</th>
+                <th>Sector</th>
+                <th>Calle</th>
+            </tr>
+            <tr>
+                <td>001</td>
+                <td>Santo Domingo</td>
+                <td>03</td>
+                <td>04</td>
+                <td>El Pedregal</td>
+                <td>Opalo</td>
+            </tr>
+            <tr>
+                <td>001</td>
+                <td>Santo Domingo</td>
+                <td>03</td>
+                <td>04</td>
+                <td>El Pedregal</td>
+                <td>Opalo</td>
+            </tr>
+            <tr>
+                <td>001</td>
+                <td>Santo Domingo</td>
+                <td>03</td>
+                <td>04</td>
+                <td>El Pedregal</td>
+                <td>Opalo</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+

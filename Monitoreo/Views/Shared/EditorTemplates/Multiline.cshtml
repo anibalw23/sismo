@@ -1,0 +1,18 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model object
+
+@{
+    string controlsClass = ViewBag.controlsClass;
+    if (controlsClass == null) { controlsClass = "col-sm-4"; }
+}
+
+<div class="form-group@(Html.ValidationErrorFor(m => m, " has-error"))">
+    @Html.LabelFor(m => m, new { @class = "col-sm-3 control-label" })
+    <div class="@controlsClass controls">
+        @Html.TextAreaFor(
+            m => m,
+            8, 8,
+            ViewBag.ClearTextField == true ? new { @class = "form-control input-block-level clear-text-field" } : new { @class = "form-control input-block-level" })
+        @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    </div>
+</div>

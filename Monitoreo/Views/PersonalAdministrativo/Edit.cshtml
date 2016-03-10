@@ -1,0 +1,57 @@
+﻿@model Monitoreo.Models.PersonalAdministrativo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("EditandoX"), Resources.T.ResourceManager.GetString("PersonalAdministrativo"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title: @Model.Persona.Nombres - @Model.Persona.Cedula</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.PersonaId)
+        @Html.HiddenFor(model => model.CentroId)
+                @*<div class="form-group">
+                    @Html.LabelFor(model => model.PersonaId, "PersonaId", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.PersonaId, (IEnumerable<SelectListItem>)ViewBag.PersonaId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PersonaId)
+                    </div>
+                </div>*@
+                @if (@Request.Params["MasterType"] == "Centro")
+                {
+                    @Html.Hidden("CentroId", Request.Params["MasterId"]);
+                }
+                else
+                {
+                @*<div class="form-group">
+                    @Html.LabelFor(model => model.CentroId, "CentroId", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CentroId, (IEnumerable<SelectListItem>)ViewBag.CentroId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CentroId)
+                    </div>
+                </div>*@
+                }
+                @Html.EditorFor(model => model.FechaContratacion)
+                @Html.EditorFor(model => model.FuncionesEjerce)
+                @Html.EditorFor(model => model.Tanda)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>
+    </div>
+}
+
+@*<script type="text/javascript" src="~/Content/js/personaSelect2imp.js"></script>*@

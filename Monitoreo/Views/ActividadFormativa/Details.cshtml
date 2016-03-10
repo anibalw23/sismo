@@ -1,0 +1,75 @@
+﻿@model Monitoreo.Models.ActividadFormativa
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("ActividadFormativa"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ActividadFormativaBase)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ActividadFormativaBase.Organizacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CicloFormativo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CicloFormativo.Tema)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Duracion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Duracion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaFin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaFin)
+        </dd>
+    </dl>
+    <hr />
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#ausencias" aria-controls="ausencias" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.Ausencias)</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active fade in" id="ausencias">
+                <div class="panel">
+                    @Html.Action("ActividadAudencias", "Ausencia", new { CicloFormativoId = Model.Id })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

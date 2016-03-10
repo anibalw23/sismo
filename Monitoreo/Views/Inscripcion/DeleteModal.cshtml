@@ -1,0 +1,54 @@
+﻿
+@model Monitoreo.Models.Inscripcion
+
+@{
+    ViewBag.Title = "DeleteModal";
+}
+
+
+<div class="panel-heading">
+    <h3>Desinscribir en Actividad Formativa</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @*@Html.HiddenFor(modelItem => modelItem.Fecha)
+    @Html.HiddenFor(modelItem => modelItem.GrupoCicloFormativoId)*@
+    @Html.HiddenFor(modelItem => modelItem.ParticipanteId)
+    @Html.HiddenFor(modelItem => modelItem.Rol)
+    <div class="panel-body">
+        <div class="form-group">
+            @Html.Label("Actividades Formativas", new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.DropDownListFor(x => x.Id, (IEnumerable<SelectListItem>)ViewBag.actividades, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Id)
+            </div>
+        </div>
+    </div>
+    <button type="submit" value="Save" class="btn btn-danger" style="margin-left:40%; height:50px; width:150px;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Desinscribir
+    </button>
+}
+
+
+
+<script type="text/javascript">
+    (function ($) {
+        $('form').submit(function () {
+            if ($(this).valid()) {
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#CreateModal').modal('toggle');
+                        table.draw();
+                    }
+                });
+            }
+            return false;
+        });
+    })(jQuery);
+</script>
+

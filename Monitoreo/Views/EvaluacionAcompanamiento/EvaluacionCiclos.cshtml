@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "EvaluacionCiclos";
+}
+
+<style type="text/css">
+
+#ciclosList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  min-width:900px;
+}
+
+
+
+</style>
+
+<div class="panel-heading">
+    <h3>Asignar Ciclos Formativos a Evaluación</h3>
+</div>
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+   
+
+    <div class="form-horizontal">
+       <input type="hidden" name="evaluacionId" value="@ViewBag.evaluacionId" />
+       
+
+        <div class="form-group" style="min-width:800px;">  
+            <h3 class="col-lg-10 col-lg-offset-4" > Lista de Ciclos Formativos</h3>    
+           
+            
+            <div class="col-sm-4">
+               <ul id="ciclosList">
+                   @foreach (var ciclo in ViewBag.SuperCiclos)
+                   {
+                    <li>
+                        <input type="checkbox" name="SelectedCiclos" value="@ciclo.Value" id="@ciclo.Value"
+                               @{if (ciclo.Selected == true) {  <text> checked='checked' </text> } } /> @ciclo.Text
+                    </li>
+                   }
+               </ul>
+            </div>
+        </div>
+
+        <div>
+            <div class="panel panel-success">
+                <div class="panel-heading">Acciones</div>
+                <div class="panel-body"><input type="checkbox" id="select_all" /> <b>Seleccionar/Deseleccionar Todos</b></div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button type="submit" value="Create" class="btn btn-primary">
+                <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Guardar Cambios
+            </button>
+        </div>
+    </div>
+}
+
+
+@section Styles {
+
+}
+
+@section Scripts {
+
+
+    <script type="text/javascript">
+        (function ($) {
+            $('#select_all').change(function () {
+                var checkboxes = $(this).closest('form').find(':checkbox');
+                if ($(this).is(':checked')) {
+                    checkboxes.prop('checked', true);
+                } else {
+                    checkboxes.prop('checked', false);
+                }
+            });
+
+
+    })(jQuery);
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+

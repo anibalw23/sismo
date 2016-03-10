@@ -1,0 +1,136 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Crear Rol";
+}
+<div class="panel-heading">
+    <h3> @ViewBag.Title</h3>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @*@Html.Label("Nombre del Rol", new { @class = "control-label col-sm-3" })*@
+
+
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem
+                     {
+                         Text = "Administrador",
+                         Value = "Administrador",
+                         Selected = true
+                     });
+                listItems.Add(new SelectListItem
+                     {
+                         Text = "Acompanante",
+                         Value = "Acompanante",
+                      
+                     });
+                listItems.Add(new SelectListItem
+                     {
+                         Text = "Formador",
+                         Value = "Formador"
+                     });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Coordinador",
+                    Value = "Coordinador"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "AdministradorTransversal",
+                    Value = "AdministradorTransversal"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Visualizador",
+                    Value = "Visualizador"
+                });
+
+                listItems.Add(new SelectListItem
+                {
+                    Text = "EspecialistaCurricular",
+                    Value = "EspecialistaCurricular"
+                });
+                
+                
+                
+            }
+            <div class="form-group">
+                @Html.Label("Nombre del Rol", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.Name, listItems, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+
+
+            @*@Html.TextBoxFor(model => model.Name)*@
+        </div>
+    </div>
+
+    <div class="panel-footer">
+        <button type="submit" id="btnSubmit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+
+    </div>
+}
+
+
+@*@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="panel-body">
+         <div class="form-group">
+                @Html.Label("Nombre", new { @class = "control-label col-sm-3"})
+                @Html.Editor("Nombre", new { @Id = "Nombre" })
+        </div>
+    </div>
+}
+<div class="panel-footer">
+    <button type="submit" id="btnSubmit" value="Create" class="btn btn-primary">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+    </button>
+   
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#btnSubmit').button().click(function () {
+            rolName = $('#Nombre').val();
+            $.post("CreateRole?RoleName=" + rolName, function (data) {
+            });
+
+        });
+    });
+
+</script>*@
+
+
+
+
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}
+
+

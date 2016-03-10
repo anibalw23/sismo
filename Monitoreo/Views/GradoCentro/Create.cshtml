@@ -1,0 +1,113 @@
+﻿@model Monitoreo.Models.BO.GradoCentro
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("GradoCentro"));
+}
+
+
+<div class="panel-heading">
+    <h3>Creando Aula</h3>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+
+            @if (@Request.Params["MasterType"] == "Centro")
+            {
+                @Html.Hidden("CentroId", Request.Params["MasterId"]);
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CentroId, Resources.T.ResourceManager.GetString("CentroId"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CentroId, (IEnumerable<SelectListItem>)ViewBag.CentroId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CentroId)
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(model => model.GradoNombreId, Resources.T.ResourceManager.GetString("GradoId"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.GradoNombreId, (IEnumerable<SelectListItem>)ViewBag.GradoNombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.GradoNombreId)
+                </div>
+            </div>
+
+            <div>
+                @{
+                Monitoreo.Models.Seccion seccion = new Monitoreo.Models.Seccion();
+                }
+
+                <table id="seccionesTable" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Secciones</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr id="seccionTemplate" style="display: none;">
+                            <td>
+                                @Html.DropDownListFor(model => seccion.Id, (IEnumerable<SelectListItem>)ViewBag.Secciones, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => seccion.Id)
+                            </td>
+                        </tr>
+                    </tbody>
+
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                <a id="addSeccion" href="#" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Agregar
+                                </a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+
+    </div>
+}
+
+
+
+<script type="text/javascript">
+    var countRows = 0;
+    (function ($) {
+        var rowIndex = 0;
+
+        $("#addSeccion").on("click", function () {
+            addSeccion();
+        });
+
+        function addSeccion() {
+            var clonned = $("#seccionTemplate")
+                .clone()
+                .attr({ id: "Secciones_" + rowIndex, style: "display: table-row", name: "Secciones_" + rowIndex })
+                .appendTo("#seccionesTable");
+
+            //var contenido = clonned.html().replace(/seccionTemplate/g, "Secciones[" + rowIndex + "]");
+            //clonned.html(contenido);
+            rowIndex++;
+            return false;
+        };
+
+    })(jQuery);
+</script>

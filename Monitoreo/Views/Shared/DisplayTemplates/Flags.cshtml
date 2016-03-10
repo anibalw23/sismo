@@ -1,0 +1,12 @@
+﻿@model object
+
+@{
+    if (Model == null || Model.ToString() == "0")
+    {
+        <text>Indefinido</text>
+    }
+    else
+    {
+        @Model
+    }
+}

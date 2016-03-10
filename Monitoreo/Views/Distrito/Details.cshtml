@@ -1,0 +1,140 @@
+﻿@model Monitoreo.Models.Distrito
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Distrito"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CentroSede)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CentroSede.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Municipio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Municipio.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Provincia)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Provincia.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Regional)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Regional.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Codigo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Sector)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Sector)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Calle)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Calle)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CorreoElectronico)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CorreoElectronico)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SitioWeb)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SitioWeb)
+        </dd>
+    </dl>
+</div>
+<div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#redes" aria-controls="redes" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("Redes")</a>
+        </li>
+        <li role="presentation">
+            <a href="#centros" aria-controls="centros" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("Centros")</a>
+        </li>
+        <li role="presentation">
+            <a href="#funcionarios" aria-controls="funcionarios" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("Funcionarios")</a>
+        </li>
+        <li role="presentation">
+            <a href="#tecnicosdocente" aria-controls="tecnicosdocente" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("TecnicosDocente")</a>
+        </li>
+        <li role="presentation">
+            <a href="#personaladministrativo" aria-controls="personaladministrativo" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("PersonalAdministrativo")</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="redes">
+            <div class="panel">
+                @Html.Action("DistritoRedes", "Red", new { DistritoId = Model.Id })
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="centros">
+            <div class="panel">
+                @Html.Action("DistritoCentros", "Centro", new { DistritoId = Model.Id })
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="funcionarios">
+            <div class="panel">
+                @*@Html.Action("DistritoFuncionarios", "Personal", new { DistritoId = Model.Id })*@
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="tecnicosdocente">
+            <div class="panel">
+                @*@Html.Action("DistritoTecnicosDocente", "Personal", new { DistritoId = Model.Id })*@
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="personaladministrativo">
+            <div class="panel">
+                @*@Html.Action("DistritoPersonalAdministrativo", "Personal", new { DistritoId = Model.Id })*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

@@ -1,0 +1,121 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+@{
+    //ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("CicloFormativo"));
+    ViewBag.Title = "Creando Actividades Formativas";
+}
+
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<script src="~/Content/js/bootstrap-select.js"></script>
+<link href="~/Content/css/bootstrap-select.css" rel="stylesheet" />
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @*@Html.ValidationSummary(true)*@
+
+
+            @Html.EditorFor(model => model.Tema)
+            @Html.EditorFor(model => model.DuracionTotal)
+
+            <div class="form-group">
+                @Html.Label("Tipo", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(x => x.tipo, (IEnumerable<SelectListItem>)ViewBag.ModuloFormativoList, new { @class = "form-control" })
+                </div>
+            </div>
+
+           
+            @Html.EditorFor(model => model.FechaInicio)
+            @Html.EditorFor(model => model.FechaFinalizacion)
+           
+            @Html.EditorFor(model => model.Nivel)
+            @Html.EditorFor(model => model.Area)
+            @Html.EditorFor(model => model.Ciclo)
+
+
+            @*@{
+                if (User.IsInRole("Administrador") || User.IsInRole("Coordinador"))
+                {
+                    <div class="form-group">
+                        @Html.Label("Escuela", new { @class = "control-label col-sm-3" })
+                        <div class="col-sm-4">
+                            @Html.DropDownList("CentrosId", (IEnumerable<SelectListItem>)ViewBag.CentrosId, new { @class = "form-control", multiple = "multiple" })
+                        </div>
+                    </div>
+
+                }
+                if (User.IsInRole("Acompanante") || User.IsInRole("Formador"))
+                {
+                    <div class="form-group">
+                        @Html.Label("Escuela", new { @class = "control-label col-sm-3" })
+                        <div class="col-sm-4">
+                            @Html.DropDownList("CentrosId", (IEnumerable<SelectListItem>)ViewBag.CentrosId, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                }*@
+
+} 
+            @*<div class="form-group">
+                @Html.Label("Inscribir Docentes", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.CheckBox("InsDocentes")
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Inscribir Equipo Gestión", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.CheckBox("InsPerAdmin")
+                </div>
+            </div>*@
+
+            </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+        <script>
+            document.write(
+            '<a href="' + document.referrer + '" class="btn btn-default">' +
+                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Cancelar")' +
+            '</a>');
+        </script>
+    </div>
+}
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#InsDocentes").on("click", function () {
+
+            if (!this.checked) {
+                console.log("not checked");
+                $("#InsDocentes").prop("checked", false);
+            }
+            else {
+                console.log("checked");
+                $("#InsDocentes").prop("checked", true);
+            }
+        });
+       // $('.selectpicker').selectpicker();
+    });
+
+</script>

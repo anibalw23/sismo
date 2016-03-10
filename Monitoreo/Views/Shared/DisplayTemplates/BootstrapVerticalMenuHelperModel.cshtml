@@ -1,0 +1,60 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.MenuHelperModel
+@using System.Web.Mvc.Html
+@using MvcSiteMapProvider.Web.Html.Models
+
+@helper  TopMenu(List<SiteMapNodeModel> nodeList)
+{
+    <ul class="nav nav-stacked">
+        @*@foreach (SiteMapNodeModel node in nodeList)
+        {
+            string url = node.IsClickable ? node.Url : "#";
+            int index = nodeList.IndexOf(node);
+
+            if (!node.Children.Any())
+            {
+                <li><a href="@url">@node.Title</a></li>
+            }
+            else
+            {
+                <li>
+                    <a href="#" data-toggle="collapse" data-target="#toggleDemo_@index" class="collapsed">
+                        @node.Title <i class="glyphicon glyphicon-chevron-down"></i>
+                    </a>
+                    @DropDownMenu(node, index)
+                </li>
+            }
+
+            if (node != nodeList.Last())
+            {
+                <li class="divider-vertical"></li>
+            }
+        }*@
+    </ul>
+}
+
+@helper DropDownMenu(SiteMapNodeModel parentNode, int parentIndex)
+{
+    <div class="collapse" id="toggleDemo_@parentIndex" style="height: 0px;">
+        <ul class="nav nav-list">
+            @foreach (SiteMapNodeModel node in parentNode.Children)
+            {
+                int index = node.Order;
+                
+                if (node.Title == "Separator")
+                {
+                    <li class="divider"></li>
+                    continue;
+                }
+
+                string url = node.IsClickable ? node.Url : "#";
+
+                {
+                    <li><a href="@url">@node.Title</a></li>
+                }
+
+            }
+        </ul>
+    </div>
+}
+
+@TopMenu(Model.Nodes)

@@ -1,0 +1,250 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+@{
+    ViewBag.Title = "Inscripciones del Personal Administrativo";
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+}
+
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.Label("Distrito", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("DistritoId", (IEnumerable<SelectListItem>)ViewBag.Distritos, "Seleccione el Distrito...", new { @class = "form-control", @id = "distritoId", @name = "distritoId", multiple = "multiple" })
+                </div>
+            </div>
+
+            <div class="form-group" id="redesFormGroup">
+                @Html.Label("Redes", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="redesId" multiple >
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group" id="centrosFormGroup">
+                @Html.Label("Centros", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="centrosId" multiple></select>
+                </div>
+            </div>
+
+            <div class="form-group" id="tiposFormGroup">
+                @Html.Label("Tipo Personal", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    <select id="tiposId" multiple>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-footer">
+
+        <button type="submit" value="InscribiPersonalAdmin" id="btnInscribir" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Inscribir..
+        </button>
+
+
+    </div>
+
+
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+
+        $("#redesFormGroup").hide();
+        $("#centrosFormGroup").hide();
+        $("#tiposFormGroup").hide();
+        $("#btnInscribir").hide();
+       
+        //Para buscar los tipos de funciones del personal administrativo
+        $.ajax({
+            url: "/PersonalAdministrativo/GetPersonalAdminFunciones",
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+
+        }).done(function (data) {
+            var countData = 0;
+            var optionsArray = [];
+            $.each(data.data, function (k, v) {
+                optionsArray.push({ label: v.Text, title: v.Text, value: v.Value })
+                countData++;
+            });
+            $('#tiposId').multiselect('dataprovider', optionsArray);
+        });
+
+
+
+        //Si cambia el combobox de Distrito busca las redes correspondientes
+        $('#distritoId').multiselect({
+            enableFiltering: true,
+            maxHeight: 400,
+            onDropdownHidden: function (event) {
+                var distritosIds = Array();
+                var distritos = $('#distritoId option:selected');
+                $(distritos).each(function (index, distrito) {
+                    distritosIds.push($(this).val());
+                });
+        
+                jQuery.ajaxSettings.traditional = true;
+                $.ajax({
+                    url: "/Red/GetRedesByDistritosIds",
+                    type: "POST",
+                    data: JSON.stringify(distritosIds),
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+
+                }).done(function (data) {
+                    $("#redesId").html("");
+                    var countData = 0;
+                    var optionsArray = [];
+                    $.each(data.data, function (k, v) {
+                        optionsArray.push({ label: v.Nombre, title: v.Nombre , value: v.Id})
+                        countData++;
+                    });
+                    if (countData > 0) {
+                        $("#redesFormGroup").show();
+                        $('#redesId').multiselect('dataprovider', optionsArray);
+                    }
+                    else {
+                        $("#redesFormGroup").hide();
+                    }
+
+                   
+                });
+
+            }
+
+        });
+
+        $("#redesId").multiselect({
+            enableFiltering: true,
+            maxHeight: 400,
+            onDropdownHidden: function (event) {
+                var redesIds = Array();
+                var redes = $('#redesId option:selected');
+                $(redes).each(function (index, red) {
+                    redesIds.push($(this).val());
+                });
+                jQuery.ajaxSettings.traditional = true;
+                $.ajax({
+                    url: "/Centro/GetCentrosByRedesIds",
+                    type: "POST",
+                    data: JSON.stringify(redesIds),
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+
+                }).done(function (data) {
+                    $("#centrosId").html("");
+                    var countData = 0;
+                    var optionsArray = [];
+                    $.each(data.data, function (k, v) {
+                        optionsArray.push({ label: v.Nombre, title: v.Nombre, value: v.Id })
+                        countData++;
+                    });
+                    if (countData > 0) {
+                        $("#centrosFormGroup").show();
+                        $("#tiposFormGroup").show();
+                        $("#btnInscribir").show();
+                        $('#centrosId').multiselect('dataprovider', optionsArray);
+                    }
+                    else {
+                        $("#centrosFormGroup").hide();
+                        $("#tiposFormGroup").hide();
+                        $("#btnInscribir").hide();
+                    }
+                });
+
+            }
+        });
+
+
+        $("#centrosId").multiselect({
+            enableFiltering: true,
+            maxHeight: 400,
+
+        });
+
+        $("#tiposId").multiselect({
+            enableFiltering: true,
+            maxHeight: 400,
+
+        });
+
+        $("#btnInscribir").click(function() {
+            $('#loading-indicator').show();
+            console.log("Click Inscribir!");
+            var centrosIds = Array();
+            var centrosSelected = $('#centrosId option:selected');
+            $(centrosSelected).each(function (index, red) {
+                centrosIds.push($(this).val());
+            });
+
+            var tiposIds = Array();
+            var tiposSelected = $('#tiposId option:selected');
+            $(tiposSelected).each(function (index, red) {
+                tiposIds.push($(this).val());
+            });
+
+            var data = JSON.stringify({
+                cicloId: @Model.Id,
+                centrosIds: centrosIds,
+                tiposPersonalIds: tiposIds,  
+            });
+
+
+            $.ajax({
+                url: "/CicloFormativo/InscribirPersonalAdministrativo",
+                type: "POST",
+                data: data,
+                contentType: 'application/json; charset=utf-8',
+
+            }).done(function (data) {
+                if(data.data == "OK"){
+                    $('#loading-indicator').hide();
+                    $('#CreateModal').modal('hide');
+                }
+ 
+            });
+
+
+
+
+        });
+
+
+
+
+    });
+
+</script>
+
+

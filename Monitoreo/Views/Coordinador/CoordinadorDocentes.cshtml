@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Monitoreo.Models.Docente>
+
+<div class="panel-heading">
+    <h3>Docentes del Centro @ViewBag.Centro.Nombre</h3>
+</div>
+<script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.columnFilter.js"></script>
+
+<style type="text/css">
+    tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Cédula
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Grados
+                </th>
+                <th>
+                    Areas
+                </th>
+                <th>
+                    Niveles/Ciclo
+                </th>
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Persona.Cedula)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                    </td>
+
+                    <td>
+                        <ul>
+                            @foreach (var materia in item.Materias.Select(g => g.Grados).Distinct())
+                            {
+                                <li>
+                                    @materia.ToString()
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var materia in item.Materias.Select(g => g.Area).Distinct())
+                            {
+                                <li>
+                                    @materia.ToString()
+                                </li>
+                            }
+                        </ul>
+                    </td>
+
+                    <td>
+                        <ul>
+                            @foreach (var materia in item.Materias.Select(c => new { c.Nivel, c.Ciclo }).Distinct())
+                            {
+                                <li>
+                                    @materia.Nivel _ @materia.Ciclo
+                                </li>
+                            }
+                        </ul>
+                    </td>
+
+                    <td class="row-actions">
+                        @if ((int)ViewBag.Coordinador.nivel == 2) // Si es Coordinador de Nivel Inicial
+                        {
+                            <a href="@Url.Action("DocenteDetailsCoordinadorInicial", "Docente", new { id = item.Id, centroID = @ViewBag.Centro.Id })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                            </a>
+                        }
+                        else // De cualquier otra forma
+                        {
+                            <a href="@Url.Action("DocenteDetailsCoordinador", "Docente", new { id = item.Id })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+
+
+            var table = $('#dataTable').dataTable(
+                {
+                    autoWidth: false,
+                    serverSide: false,
+                    ordering: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    'iDisplayLength': 100,
+                    paging: false
+                }
+            ).columnFilter({
+                aoColumns: [
+                            null,
+                            null,
+                           { type: "select", values: ['I', 'Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Septimo', 'Octavo', 'PrimeroSecundaria', 'SegundoSecundaria', 'TerceroSecundaria', 'CuartoSecundaria'] },
+                           { type: "select", values: ['CuatroBasicas', 'Matemática', 'Inicial', 'Sociales', 'Lengua_Española', 'Educación_Artística', 'Ciencias_Naturales', 'Educación_Física', 'Lenguas_Extranjeras', 'Formación_Humana', 'Informática', 'Agropecuaria', 'NA', 'Biblioteca', 'Todos'] },
+
+                         { type: "text" }, ,
+                         null,
+                 { type: "select" }
+                ]
+
+            });
+
+        })(jQuery);
+    </script>
+}
+
+
+
+

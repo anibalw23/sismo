@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>@ViewBag.Title - CEED: Sistema de Monitoreo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    @Styles.Render("~/Content/css/styles")
+    @Styles.Render("~/bundles/select2/css/styles")
+    @Styles.Render("~/bundles/bootstrap-datetimepicker/css/styles")
+    @RenderSection("styles", required: false)
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/select2/js")
+
+    <style type="text/css">
+        #headerLogo a {
+            font-size: xx-large;
+            text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="masthead">
+        <div class="row" style=" background-color:white; ">
+            <div id="headerLogo" class="col-md-offset-2" style="margin-left:20%;">
+                <a>
+                    <img src="~/Content/img/logoNew.jpg" style="max-width: 100%;height: auto !important;" />
+                    Sistema de Monitoreo SISMO
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navbar navbar-static">
+            <div class="container">
+                <a class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <div class="nav-collapse collase">
+                    <span class="navbar-brand">
+                        SysMo
+                    </span>
+                    @*@Html.MvcSiteMap().Menu(0,1)*@
+                    @Html.MvcSiteMap().Menu("BootstrapMenuHelperModel", 0, 1)
+                    <ul class="nav navbar-right navbar-nav">
+                        @Html.Partial("_LanguagePartial")
+                        @Html.Partial("_LoginPartial")
+                    </ul>
+
+                </div>
+            </div>
+        </nav><!-- /.navbar -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            @Html.MvcSiteMap().SiteMapPath()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Begin Body -->
+    <div class="container">
+        <div class="row">
+            @if (IsSectionDefined("actions"))
+            {
+                <div class="sidebar col col-sm-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bars"></i>
+                            @Resources.T.ResourceManager.GetString("Acciones")
+                        </div>
+                        <div class="panel-body">
+                            @Html.MvcSiteMap().Menu("BootstrapVerticalMenuHelperModel", true, true, false, 2)
+                            @RenderSection("actions", required: false)
+                        </div>
+                    </div>
+                </div>
+                <text>      <div class="col col-sm-9">
+                </text>
+            }
+            else
+            {
+                <text>      <div class="col col-sm-12">
+                </text>
+            }
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign pull-left" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    @Html.ValidationSummary()
+                </div>
+            }
+            <div class="panel panel-default">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; @DateTime.Now.Year - INTEC</p>
+</footer>
+
+@Scripts.Render("~/Content/js/scripts")
+@Scripts.Render("~/bundles/jqueryval")
+
+@RenderSection("scripts", required: false)
+<script type="text/javascript">
+    (function ($) {
+        $("input[type = 'radio']").click(function () {
+            $(this).parents("form").submit(); // post form
+        });
+
+    })(jQuery);
+</script>
+
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-23668039-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+
+</body>
+</html>

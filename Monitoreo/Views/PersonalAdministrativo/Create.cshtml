@@ -1,0 +1,58 @@
+﻿@model Monitoreo.Models.PersonalAdministrativo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("PersonalAdministrativo"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PersonaId, Resources.T.ResourceManager.GetString("Persona"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(x => x.PersonaId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PersonaId)
+                </div>
+            </div>
+                @if (@Request.Params["MasterType"] == "Centro")
+                {
+                    @Html.Hidden("CentroId", Request.Params["MasterId"]);
+                }
+                else
+                {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CentroId, "Centro", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CentroId, (IEnumerable<SelectListItem>)ViewBag.CentroId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CentroId)
+                    </div>
+                </div>
+                }
+                @Html.EditorFor(model => model.FechaContratacion)
+                @Html.EditorFor(model => model.FuncionesEjerce)
+                @Html.EditorFor(model => model.Tanda)
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+    </div>
+}
+
+<script type="text/javascript" src="~/Content/js/personaSelect2imp.js"></script>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

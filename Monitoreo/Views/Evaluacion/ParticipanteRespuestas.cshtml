@@ -1,0 +1,118 @@
+﻿@model Monitoreo.Models.BO.Evaluacion
+
+<div class="panel-heading">
+    <h3 style="background-color:black; color:white; padding-top:5px; padding-bottom:5px;text-align:center">Cuestionario para @ViewBag.Participante.NombreCompleto</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(modelItem => modelItem.Id)
+    @Html.HiddenFor(modelItem => modelItem.FormaEvaluacion)
+    @Html.HiddenFor(modelItem => modelItem.Titulo)
+
+  
+    if (@Model.ModoEntradaEvaluacion ==  Monitoreo.Models.BO.ModoEntradaEvaluacion.Preguntas_Respuesta)
+    {
+        <div class="panel-body">
+            @{
+        Monitoreo.Models.BO.Respuesta resp = new Monitoreo.Models.BO.Respuesta();
+            }
+            <table id="dataTable" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => resp.Pregunta)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => resp.Valor)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                     int i = 0;
+                    }
+
+                    @foreach (var item in Model.Respuestas)
+                    {
+                        if (item.Participante.Id == ViewBag.Participante.Id)
+                        {
+                            <tr>
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Evaluacion.Id)
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Participante.Id)
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Pregunta.Id)
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Id)
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Fecha)
+                                @Html.HiddenFor(modelItem => Model.Respuestas[i].Digitador)
+                                <td>
+                                    @*(@Html.DisplayFor(modelItem => Model.Respuestas[i].Pregunta.Id)) -*@
+                                    @Html.DisplayFor(modelItem => Model.Respuestas[i].Pregunta.Descripcion)
+                                </td>
+                                <td>
+                                    @*@Html.TextBoxFor(modelItem => Model.Respuestas[i].Valor)*@ @*dejar esto si se reuquieren preguntas abiertas*@ 
+
+                                    @{                                          
+                                       var opcionesRespuestas2 = Model.Respuestas[i].Pregunta.Opciones.Select(c => new SelectListItem { Value = c.Valor.ToString(), Text = c.Titulo, Selected = c.Valor.Equals(Model.Respuestas[i].Valor) });
+                                    }
+                                    
+                                    <div class="form-group">                                       
+                                        <div class="col-sm-4">
+                                                @{   
+                                                    @Html.DropDownListFor(modelItem => Model.Respuestas[i].Valor, (IEnumerable<SelectListItem>)opcionesRespuestas2)
+                                                }
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Nota_Final)
+    {
+        <table id="tableNotaRaw" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Puntaje")
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+
+                    @Html.HiddenFor(modelItem => Model.Id)
+
+                    <td>
+                        @{
+                            Monitoreo.Models.BO.EvaluacionNotaRaw evalNotaRaw = new Monitoreo.Models.BO.EvaluacionNotaRaw();
+                            evalNotaRaw = Model.EvaluacionNotaRaw.Where(p => p.ParticipanteId == ViewBag.Participante.Id).Where(e => e.EvaluacionId == Model.Id).FirstOrDefault();
+                            @Html.HiddenFor(modelItem => evalNotaRaw.ParticipanteId, new { @name = "Participante" })
+                            @Html.HiddenFor(modelItem => evalNotaRaw.EvaluacionId)
+                            @Html.HiddenFor(modelItem => evalNotaRaw.Id)
+                            @Html.HiddenFor(modelItem => Model.ModoEntradaEvaluacion, new { @name = "ModoEntradaEvaluacion" })
+}
+                        @Html.TextBoxFor(modelItem => evalNotaRaw.nota)
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+    }
+
+
+
+
+    <button type="submit" value="Save" class="btn btn-primary" style="margin-left:40%; height:50px; width:150px;">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+    </button>
+}

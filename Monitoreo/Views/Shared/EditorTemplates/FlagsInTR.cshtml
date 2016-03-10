@@ -1,0 +1,11 @@
+﻿@using Monitoreo.Utility
+@using BootstrapEditorTemplatesNameSpace.Utility
+@model object
+
+<tr class="@(Html.ValidationErrorFor(m => m, "has-error"))">
+    <td>
+        @Html.LabelFor(m => m)
+        @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    </td>
+    @Html.CheckBoxListForEnumTD(m => m, new { @class = "checkbox" })
+</tr>

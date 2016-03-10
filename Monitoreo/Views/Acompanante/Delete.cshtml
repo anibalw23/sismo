@@ -1,0 +1,61 @@
+﻿@model Monitoreo.Models.Acompanante
+
+<div class="panel-heading">
+    <h3>Borrar Acompañante</h3>
+</div>
+
+<div class="panel-body">
+    <h3>@Html.Raw(String.Format(Resources.T.ResourceManager.GetString("BorrarConfirmacion"), Resources.T.ResourceManager.GetString("Acompanante")))</h3>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Centro)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Centro.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Persona)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Persona.Cedula)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.Label("Eliminar Usuario", new { @class = "control-label col-sm-3" })
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="CreateUser" value="1" checked="checked"> Si
+                            <input type="checkbox" name="CreateUser" value="0"> No
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="panel-footer">
+                    <button type="submit" value="Delete" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Si")
+                    </button>
+                    <script>
+                        document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                            '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("No")</a>');
+                    </script>
+                </div>
+                }
+            </div>
+
+            @section Actions {
+                <ul class="nav nav-stacked">
+                    <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+                </ul>
+            }

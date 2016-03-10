@@ -1,0 +1,230 @@
+﻿@model Monitoreo.Models.BO.Evaluacion
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Evaluacion"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Titulo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Titulo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CicloFormativo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CicloFormativo.Tema)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoEvaluacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoEvaluacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FormaEvaluacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FormaEvaluacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoDeObjeto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoDeObjeto)
+        </dd>
+    </dl>
+    <hr />
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#participantes" aria-controls="participantes" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.Participantes)</a>
+            </li>
+
+            @{
+                if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Preguntas_Respuesta)
+                {
+                    <li role="presentation">
+                        <a href="#preguntas" aria-controls="preguntas" role="tab" data-toggle="tab">Preguntas</a>
+                    </li>
+                }
+            }
+        </ul>
+        <div class="tab-content">
+
+            <div role="tabpanel" class="tab-pane active fade in" id="participantes">
+                <div class="panel">
+                    <div class="panel-body">
+                        @{
+                            var participante = new Monitoreo.Models.Persona();
+                        }
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => participante.Cedula)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => participante.NombreCompleto)
+                                    </th>
+                                    @{
+                                        if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Nota_Final)
+                                        {
+                                            <th>
+                                                Nota
+                                            </th>
+                                        }
+                                    }
+                                    <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Participantes)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(model => item.Cedula)</td>
+                                        <td>@Html.DisplayFor(model => item.NombreCompleto)</td>
+                                        @{
+                                            if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Nota_Final)
+                                            {
+
+                                                try
+                                                {
+                                                    Monitoreo.Models.BO.EvaluacionNotaRaw eval = @Model.EvaluacionNotaRaw.Where(x => x.Participante.Id == item.Id).SingleOrDefault();
+                                                    <td>@eval.nota</td>
+                                                }
+                                                catch (Exception exp)
+                                                {
+                                                    var msj = exp.Message;
+                                                }
+
+
+                                            }
+                                        }
+                                        <td>
+                                            <a href="#" class="btn btn-default" onclick='showBLPopup("@Html.Raw(Url.Action("ParticipanteRespuestas", "Evaluacion", new { EvaluacionId = Model.Id, ParticipanteId = item.Id, Modal = true }))", "Cuestionario"); return false;'>
+                                                                                                      
+                                                @if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Nota_Final)
+                                                {
+                                                    <span class="fa fa-pencil" aria-hidden="true"></span> <span>Publicar Nota</span>
+                                                }
+                                                else{
+                                                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"> </span> <span>Ver cuestionario</span>
+                                                }                           
+                                               
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            @{
+                if (Model.ModoEntradaEvaluacion == Monitoreo.Models.BO.ModoEntradaEvaluacion.Preguntas_Respuesta) { 
+                    
+                     <div role="tabpanel" class="tab-pane fade in" id="preguntas">
+                        <div class="panel">
+                            <div class="panel-body">  
+                                <table class="table table-bordered table-striped table-hover" id="datatablePreguntas">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Descripción
+                                            </th>
+                                           
+                                            <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Preguntas.Where(e => e.EvaluacionId == Model.Id))
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(model => item.Descripcion)</td>
+                                                
+                                                <td class="row-actions">
+                                                    <a href="@Url.Action("Details","Pregunta", new { id = item.Id })" class="btn btn-default">
+                                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                                                    </a>
+                                                    <a href="@Url.Action("EditByEvaluacion", "Pregunta", new { id = item.Id })" class="btn btn-default">
+                                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                                                    </a>
+                                                    <a href="@Url.Action("Delete", "Pregunta", new { id = item.Id })" class="btn btn-danger">
+                                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div class="panel-footer">
+                                    <a href="@Url.Action("CreateByEvaluacion", "Pregunta", new {@evaluacionId = Model.Id})" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar Pregunta
+                                    </a>
+                                </div>
+                         
+                            </div>
+                        </div>
+                    </div>
+                }
+            }  
+                
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function showBLPopup(url, title) {
+        $('#modalBody')
+            .load(url,
+                    function () {
+                        $('#CreateModal').modal({ show: true, backdrop: true });
+                    })
+    };
+</script>
+
+<div class="panel-footer">
+@{
+     if (Model.creadoPor == User.Identity.Name || User.IsInRole("Administrador"))
+       {
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+            </a>
+            <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+            </a>
+        }
+        
+}
+</div>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}

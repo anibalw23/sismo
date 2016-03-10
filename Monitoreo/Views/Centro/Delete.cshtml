@@ -1,0 +1,182 @@
+﻿@model Monitoreo.Models.Centro
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("BorrandoX"), Resources.T.ResourceManager.GetString("Centro"));
+}
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <h3>@Html.Raw(String.Format(Resources.T.ResourceManager.GetString("BorrarConfirmacion"), Resources.T.ResourceManager.GetString("Centro")))</h3>
+    <hr />
+    <div class="panel panel-default">
+        <div class="panel-heading">Datos Generales</div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Municipio)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Municipio.Codigo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Red)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Red.Codigo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Codigo)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Codigo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.SectorEducativo)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.SectorEducativo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Telefono)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Telefono)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sector)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Sector)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Calle)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Calle)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Componente)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Componente)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Niveles)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Niveles)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Ciclos)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Ciclos)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Tandas)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Tandas)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Criterios de Evaluaci&oacute;n</div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.SalonMultiUso)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.SalonMultiUso)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.LabInformatica)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.LabInformatica)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.BanosSuficientes)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.BanosSuficientes)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Biblioteca)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Biblioteca)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FacilidadesDeAccesibilidad)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FacilidadesDeAccesibilidad)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Lavamanos)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Lavamanos)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.InstrumentosDeGestionActualizados)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.InstrumentosDeGestionActualizados)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.EscuelaPadresMadres)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.EscuelaPadresMadres)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FrecuenciaActividades)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FrecuenciaActividades)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="panel-footer">
+            <button type="submit" value="Delete" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Si")
+            </button>
+            <script>
+                document.write('<a href="' + document.referrer + '" class="btn btn-default">' +
+                    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("No")</a>');
+            </script>
+        </div>
+    }
+</div>
+
+
+
+        @section Actions {
+            <ul class="nav nav-stacked">
+                <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+            </ul>
+        }

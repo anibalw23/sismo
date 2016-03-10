@@ -1,0 +1,265 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("CicloFormativo"));
+    ViewBag.Title = "Detalles de la Actividad Formativa";
+
+}
+
+<style type="text/css">
+    #loading-indicator {
+        display: none;
+        width: 150px;
+        height: 150px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        background: url('../../Content/img/hex-loader2.gif') no-repeat center #fff;
+        text-align: center;
+        padding: 10px;
+        font: normal 16px Tahoma, Geneva, sans-serif;
+        border: 1px solid #666;
+        margin-left: -50px;
+        margin-top: -50px;
+        z-index: 2000;
+        overflow: auto;
+    }
+</style>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div id="loading-indicator">
+    Cargando Datos...
+</div>
+
+<div class="panel-body">
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tema)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tema)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaFinalizacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FechaFinalizacion)
+        </dd>
+        @*<dt>
+                @Html.DisplayNameFor(model => model.Nivel)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Nivel)
+            </dd>*@
+    </dl>
+
+    <hr />
+
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#inscripciones" aria-controls="inscripciones" role="tab" data-toggle="tab">@Resources.T.ResourceManager.GetString("Inscripciones")</a>
+            </li>
+            <li role="presentation">
+                <a href="#grupos" aria-controls="grupos" role="tab" data-toggle="tab">Grupos</a>
+            </li>
+
+            <li role="presentation">
+                <a href="#asistencia" aria-controls="asistencia" role="tab" data-toggle="tab">Asistencia</a>
+            </li>
+
+            <li role="presentation">
+                <a href="#calendario" aria-controls="calendario" role="tab" data-toggle="tab">Calendario</a>
+            </li>
+
+
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="inscripciones">
+                <div class="panel">
+                    <div class="panel">
+
+                        @Html.Action("CicloInscripciones", "Inscripcion", new { CicloFormativoId = Model.Id })
+                        <a class="btn btn-default" href='@Url.Action("CicloInscripcionesBatch", "CicloFormativo", new  { id = Model.Id })'>
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir Docentes
+                        </a>
+
+
+                        @*@Html.Action("CicloInscripciones", "Inscripcion", new { CicloFormativoId = Model.Id })
+                        <a href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("Create", "Inscripcion", new { MasterType = "CicloFormativo", MasterId = Model.Id, Modal = true })', '@Html.DisplayNameFor(model => model.Inscripciones)'); return false;">
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir..
+                        </a>*@
+
+                        <a href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("CicloInscripcionAdministrativo", "CicloFormativo", new { MasterType = "CicloFormativo", cicloId = Model.Id, Modal = true })', '@Html.DisplayNameFor(model => model.Inscripciones)'); return false;">
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir Personal Administrativo
+                        </a>
+
+
+
+                        @*<a href="@Url.Action("CicloInscripcionesExcel", new { id = Model.Id })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Importar desde Excel
+                            </a>
+
+                            <a href="@Url.Action("CicloInscripcionesBatch", new { id = Model.Id })" class="btn btn-default">
+                                <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Inscribir Docentes por Lote
+                            </a>*@
+
+
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="grupos">
+                <div class="panel">
+                    @{
+
+                        var grupos = (List<Monitoreo.Models.BO.GrupoCicloFormativo>)ViewBag.Grupos;
+                    }
+
+                    <table id="dataTableGrupos" class="table table-bordered table-striped table-hover">
+
+                        <thead style="">
+                            <tr>
+                                <th>
+                                    Nombre
+                                </th>
+                                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                            </tr>
+                        </thead>
+
+
+                        @foreach (var item in grupos)
+                        {
+
+                            <tr>
+                                <td>
+                                    @item.Centro.Nombre
+                                </td>
+
+                                <td class="row-actions">
+                                    <a href="@Url.Action("Details", "GrupoCicloFormativo", new { id =  @item.ID })" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                                    </a>
+
+
+                                    @{
+                            if (User.IsInRole("Administrador") || User.IsInRole("Formador") || User.IsInRole("Acompanante") || User.IsInRole("AdministradorTransversal"))
+                            {
+                                <a href="@Url.Action("Edit", "GrupoCicloFormativo", new { id = @item.ID, cicloId = Model.Id })" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                                </a>
+
+                                        <a href="@Url.Action("Delete", "GrupoCicloFormativo", new { id = @item.ID, cicloId = Model.Id })" class="btn btn-danger">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                                        </a>
+                            }
+                                    }
+
+
+
+                                </td>
+
+
+
+                            </tr>
+                        }
+                    </table>
+                    <a href="@Url.Action("Create", "GrupoCicloFormativo", new { cicloId = Model.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Nuevo Grupo
+                    </a>
+
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="asistencia">
+                <div class="panel">
+                    @Html.Action("CicloAsistencia", "CicloFormativo", new { CicloFormativoId = Model.Id })
+                </div>
+            </div>
+
+
+            <div role="tabpanel" class="tab-pane" id="calendario">
+                <div class="panel">
+                    @Html.Action("CicloCalendario", "CalendarioCicloFormativo", new { CicloFormativoId = Model.Id })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*<div class="panel-footer">
+        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+        </a>
+        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>
+    </div>*@
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        function showBLPopup(url, title) {
+            $('#modalBody')
+                .load(url,
+                        function () {
+                            //$("form", $(this)).on("submit", function (event) {
+                            //    event.preventDefault();
+                            //    $.post($(this).attr('action'), $(this).serialize()).done(function (data) {
+                            //        $('#CreateModal').modal({ show: false, backdrop: true });
+                            //    });
+                            //});
+
+                            $('#CreateModal').modal({ show: true, backdrop: true });
+                        })
+        };
+
+        (function ($) {
+            $('#loading-indicator').hide();
+            var actionsTemplate = ""; @*'<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';*@
+
+            $('#dataTableGrupos').dataTable(
+                {
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                }
+        );
+        })(jQuery);
+    </script>
+}

@@ -1,0 +1,211 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model Monitoreo.Models.Docente
+
+@{
+    ViewBag.Title = "Inscribir Docente";
+}
+
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+
+            @Html.EditorFor(model => model.Codigo)
+            <div class="form-group">
+                @Html.LabelFor(model => model.PersonaId, Resources.T.ResourceManager.GetString("Persona"), new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(x => x.PersonaId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PersonaId)
+                </div>
+            </div>
+            @Html.EditorFor(model => model.FormacionAcademica)
+            @Html.EditorFor(model => model.AnosDeEjercicio)
+            @if (@Request.Params["MasterType"] == "Centro")
+            {
+                @Html.Hidden("CentroId", Request.Params["MasterId"]);
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CentroId, Resources.T.ResourceManager.GetString("Centro"), new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.CentroId, (IEnumerable<SelectListItem>)ViewBag.CentroId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CentroId)
+                    </div>
+                </div>
+            }
+            @Html.EditorFor(model => model.FechaContratacion)
+            @{
+            var materiaTemplate = new Monitoreo.Models.BO.PersonalMateria();
+            var area = new Monitoreo.Models.BO.Materia();            
+            var grado = new Monitoreo.Models.BO.CentroGrado();
+            var seccion = new Monitoreo.Models.Seccion();
+            var SeccionPersonaMateria = new Monitoreo.Models.BO.SeccionPersonalMateria();
+            var periodoEscolar = new Monitoreo.Models.BO.PeriodoEscolar();
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => periodoEscolar.ID, "Período Escolar", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => periodoEscolar.ID, (IEnumerable<SelectListItem>)ViewBag.Periodo, string.Empty, new { @class = "form-control"})
+                    @Html.ValidationMessageFor(model => periodoEscolar.ID)
+                </div>
+            </div>
+             
+        
+
+            <table id="@Html.IdFor(model => model.PersonalMaterias)" class="table table-bordered table-striped table-hover">
+                <caption><h3>@Html.DisplayNameFor(model => model.Materias)</h3></caption>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>Grado</th>
+                        <th>Sección</th>
+                        <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="materiaTemplate" style="display: none;">
+                        <td>
+                            @Html.HiddenFor(model => materiaTemplate.DocenteId)
+
+                            @Html.DropDownListFor(model => area.ID, (IEnumerable<SelectListItem>)ViewBag.Areas, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => area.ID)
+                        </td>
+
+                        <td>
+                            @Html.DropDownListFor(model => grado.ID, (IEnumerable<SelectListItem>)ViewBag.Grados, string.Empty, new { @id = "Grado_ID", @class = "form-control", @onchange = "OnGradoChange(this.options[this.selectedIndex].value, this.selectedIndex )" })
+                            @Html.ValidationMessageFor(model => grado.ID)
+                        </td>
+
+                        <td>
+                            <select id="seccion_Id" name="seccion_Id" class="form-control" onchange=""></select>
+                        </td>
+                      
+
+                        <td>
+                            <a href="#" class="btn btn-danger" onclick="return removeMateria('materiaTemplate');">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <a href="#" class="btn btn-default" onclick='return addMateria();'>
+                                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Agregar")
+                            </a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <table id="PersonalMateriaTable">
+
+
+            </table>
+
+
+        </div>
+
+    </div>
+    <div class="panel-footer">
+        <button type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+    </div>
+}
+
+<script type="text/javascript" src="~/Content/js/personaSelect2imp.js"></script>
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+    </ul>
+}
+
+<script type="text/javascript">
+    var gradoDropDown;
+    $(document).ready(function () {
+      
+
+    });
+
+    var cantidadMateria = 0;
+    @if (Model != null && Model.PersonalMaterias != null)
+    {
+        <text>cantidadMateria = </text>@Model.PersonalMaterias.Count;
+
+    }
+
+
+    function OnGradoChange(value, index) {
+        var seccionDiv = $("#Materias_" + (cantidadMateria - 1) + "_");
+        var seccionId = seccionDiv.find("#seccion_Id").css({ "color": "red", "border": "2px solid red" });
+        seccionId.html("");
+        seccionId.append("<option value='0'></option>");
+        var centroId = $('input[name=CentroId]').val();
+
+        if (value != "") {
+            $.ajax({
+                type: "POST",
+                url: "/SeccionesAulas/GetSeccionesAulaByCentroByGrado?centroId=" + centroId + "&gradoId=" + value,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data.data, function (i, data) {
+                        seccionId.append("<option value='" + data.id + "'>" + data.Numero + "</option>")
+                        seccionId.css({ "color": "black", "border": "0.5px solid black" });
+                    });
+                }
+            });
+        }
+
+
+    }
+
+
+
+    function addMateria() {
+        var clonned = $("#materiaTemplate")
+            .clone()
+            .attr({ id: "Materias_" + cantidadMateria + "_", style: "display: table-row" })
+            .appendTo("#@Html.IdFor(model => model.PersonalMaterias)");
+
+        var contenido = clonned.html().replace(/materiaTemplate/g, "Materias[" + cantidadMateria + "]");
+        clonned.html(contenido);
+
+        cantidadMateria++;
+
+        return false;
+    };
+
+    function removeMateria(id) {
+        newId = id.replace(/[\[\]]/g, "_");
+        materiaTr = $('#' + newId);
+        materiaId = $('#' + newId + '_Id');
+
+        if (materiaId != undefined) {
+            value = materiaId.val();
+            materiaId.val(value * -1);
+        }
+
+        materiaTr.hide();
+
+        return false;
+    }
+
+
+
+
+</script>

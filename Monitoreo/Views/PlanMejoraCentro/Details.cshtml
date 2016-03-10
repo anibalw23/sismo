@@ -1,0 +1,91 @@
+﻿@model Monitoreo.Models.BO.PlanMejora.PlanMejoraCentro
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("PlanMejoraCentro"));
+}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+
+<div class="panel-heading">
+    <h3>Detalles del Plan de Mejora</h3>
+</div>
+
+<div class="panel-body">
+
+    <div class="row">
+        <div class="col-sm-5">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Centro)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Centro.Codigo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.nombre)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.nombre)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.periodo)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.periodo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.fechaInicio)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.fechaInicio)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.fechaFin)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.fechaFin)
+                </dd>
+            </dl>
+        </div>
+
+
+        <div class="col-sm-5">
+            <div>
+                @*<a href="/AmbitoObjetivo"><i class="fa fa-arrows" style="font-size:1.5em"></i> Ambitos de Objetivos</a>
+                <a href="/Objetivo"><i class="fa fa-crosshairs" style="font-size:1.5em"></i> Objetivos</a>
+                <a href="/Meta"><i class="fa fa-crosshairs" style="font-size:1.5em"></i> Metas</a>
+                <a href="/IndicadorPlan"><i class="fa fa-crosshairs" style="font-size:1.5em"></i> Indicadores</a>
+                <a href="/Actividad"><i class="fa fa-crosshairs" style="font-size:1.5em"></i> Grandes Actividades</a>
+                <a href="/ActividadEspecifica"><i class="fa fa-crosshairs" style="font-size:1.5em"></i> Actividades Específicas</a>*@
+                
+            </div>
+
+        </div>
+
+
+
+        </div>
+    </div>
+
+
+<div class="panel">
+    @Html.Action("PlanActividades", "ActividadEspecifica", new { PlanId = Model.ID })
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("Edit", new { id = Model.ID })" class="btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+    </a>
+    <a href="@Url.Action("Delete", new { id = Model.ID })" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </a>
+</div>
+@section Scripts {
+    @*@Scripts.Render("~/bundles/jqueryui")*@
+    $.noConflict();
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+        });
+    </script>
+}

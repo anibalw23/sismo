@@ -1,0 +1,16 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model Monitoreo.Models.Telefono
+
+@{
+    string controlsClass = ViewBag.controlsClass;
+    if (controlsClass == null) { controlsClass = "col-sm-10"; }
+}
+
+<fieldset>
+    @Html.LabelFor(m => m, new { @class = "col-sm-1 control-label" })
+    <div class="@controlsClass controls" style="margin-left: 14px;">
+        @Html.EditorFor(m => m.Fijo, new { @class = "form-control" })
+        @Html.EditorFor(m => m.Celular, new { @class = "form-control" })
+        @Html.EditorFor(m => m.Otro, new { @class = "form-control" })
+    </div>
+</fieldset>

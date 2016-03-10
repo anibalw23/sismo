@@ -1,0 +1,958 @@
+﻿@model Monitoreo.Models.BO.ViewModels.DocenteDetailsAcompananteVM
+<style>
+    .comment-list .row {
+        margin-bottom: 0px;
+    }
+
+    .comment-list .panel .panel-heading {
+        padding: 4px 15px;
+        position: absolute;
+        border: none;
+        /*Panel-heading border radius*/
+        border-top-right-radius: 0px;
+        top: 1px;
+    }
+
+        .comment-list .panel .panel-heading.right {
+            border-right-width: 0px;
+            /*Panel-heading border radius*/
+            border-top-left-radius: 0px;
+            right: 16px;
+        }
+
+        .comment-list .panel .panel-heading .panel-body {
+            padding-top: 6px;
+        }
+
+    .comment-list figcaption {
+        /*For wrapping text in thumbnail*/
+        word-wrap: break-word;
+    }
+
+    .comment-list .arrow:after, .comment-list .arrow:before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-color: transparent;
+    }
+
+    .comment-list .panel.arrow.left:after, .comment-list .panel.arrow.left:before {
+        border-left: 0;
+    }
+
+    .comment-list .panel.arrow.left:before {
+        left: 0px;
+        top: 30px;
+        /*Use boarder color of panel*/
+        border-right-color: inherit;
+        border-width: 16px;
+    }
+    /*Background color effect*/
+    .comment-list .panel.arrow.left:after {
+        left: 1px;
+        top: 31px;
+        /*Change for different outline color*/
+        border-right-color: #FFFFFF;
+        border-width: 15px;
+    }
+    /*****Right Arrow*****/
+    /*Outline effect style*/
+    .comment-list .panel.arrow.right:before {
+        right: -16px;
+        top: 30px;
+        /*Use boarder color of panel*/
+        border-left-color: inherit;
+        border-width: 16px;
+    }
+    /*Background color effect*/
+    .comment-list .panel.arrow.right:after {
+        right: -14px;
+        top: 31px;
+        /*Change for different outline color*/
+        border-left-color: #FFFFFF;
+        border-width: 15px;
+    }
+
+    }
+
+    .comment-list .comment-post {
+        margin-top: 6px;
+    }
+
+    .comment-user .span {
+        margin-right: 10px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .comment-user {
+        margin-bottom: 5px;
+    }
+</style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+<script src="~/Content/js/raphael-2.1.4.min.js"></script>
+<script src="~/Content/js/justgage.1.0.1.min.js"></script>
+
+
+<div class="panel-heading">
+    <h3>Detalle del Docente</h3>
+</div>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="page-header">Informaciones Generales</h2>
+            <section class="comment-list">
+                <!-- First Comment -->
+                <article class="row">
+                    <div class="col-md-2 col-sm-2 hidden-xs">
+                        <figure class="thumbnail">
+                            <img class="img-responsive" src="http://www.keita-gaming.com/assets/profile/default-avatar-c5d8ec086224cb6fc4e395f4ba3018c2.jpg" />
+                            <figcaption class="text-center">@Html.DisplayFor(model => model.nombreDocente)</figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-md-10 col-sm-10">
+                        <div class="panel panel-default arrow left">
+                            <div class="panel-body">
+                                <header class="text-left">
+                                    <div class="comment-user"><i class="fa fa-user"></i><span>Cédula: </span>  @Html.DisplayFor(model => model.cedula)</div>
+                                    <div class="comment-user"><i class="fa fa-user"></i><span>Sexo: </span>@Html.DisplayFor(model => model.sexo)</div>
+                                    <div class="comment-user"><i class="fa fa-hourglass"></i><span>Edad: </span>  @Html.DisplayFor(model => model.edad) años</div>
+                                    <div class="comment-user"><i class="fa fa-phone"></i><span>Teléfono: </span>@Html.DisplayFor(model => model.telefono)</div>
+                                    <div class="comment-user"><i class="fa fa-user"></i><span>Nivel: </span> @Html.DisplayFor(model => model.nivel)</div>
+                                    <div class="comment-user"><i class="fa fa-user"></i><span>Tanda: </span> @Html.DisplayFor(model => model.tanda)</div>
+                                </header>
+
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+SuperCicloFormativoId
+
+<div class="container">
+    <h2 class="page-header" style=""><i class="fa fa-home"></i>Sesión de Profundización Presencial</h2>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <select id="cicloDropDown" class="form-control">
+                        <option value="0"> Seleccione el Ciclo Formativo </option>
+                        @foreach (var ciclo in @Model.ciclosFormativos)
+                        {
+                            <option value="@ciclo.Id"> @ciclo.nombre </option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="width:95%;">
+
+        <table id="dataTableActividadesPresenciales" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+
+                    <th>
+                        Horas
+                    </th>
+                    <th>
+                        Asistió
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div>
+        <button id="addActividadPresencial" type="button" class="btn btn-success">Inscribir</button>
+        <button id="removeActividadPresencial" type="button" class="btn btn-danger" onclick=''>Desinscribir</button>
+    </div>
+</div>
+<div class="panel-footer">
+
+</div>
+
+
+
+
+<div class="panel-body">
+    <h2 class="fc-header" style=""><i class="fa fa-leanpub"></i>Acompañamiento en Aula </h2>
+    <table id="dataTableActividadesAcompanamiento" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    Fecha
+                </th>
+
+                <th>
+                    Horas
+                </th>
+                <th>
+                    Asistió
+                </th>
+                <th>
+                    Observaciones
+                </th>
+                <th>
+                    Acciones
+                </th>
+
+                <th>
+                    InscripcionId
+                </th>
+                <th>
+                    ActividadId
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div>
+        <button id="addActividadAula" type="button" class="btn btn-success">Añadir</button>
+    </div>
+
+</div>
+
+<div class="panel-footer">
+
+</div>
+
+
+<div class="panel-body">
+    <h2 class="fc-header" style=""><i class="fa fa-language"></i>Acompañamiento Tutorial </h2>
+    <table id="dataTableAcompanamientoPractica" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    Fecha
+                </th>
+
+                <th>
+                    Horas
+                </th>
+                <th>
+                    Asistió
+                </th>
+                <th>
+                    Observaciones
+                </th>
+                <th>
+                    Acciones
+                </th>
+                <th>
+                    InscripcionId
+                </th>
+                <th>
+                    ActividadId
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div>
+        <button id="addActividadReflexivo" type="button" class="btn btn-success">Añadir</button>
+    </div>
+
+</div>
+
+<div class="panel-footer">
+
+</div>
+
+
+
+<div class="panel-body">
+    <h2 class="fc-header" style=""><i class="fa fa-eye"></i>Acompañamiento Clase Modelo </h2>
+    <table id="dataTableAcompanamientoModelo" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    Fecha
+                </th>
+
+                <th>
+                    Horas
+                </th>
+                <th>
+                    Asistió
+                </th>
+                <th>
+                    Observaciones
+                </th>
+                <th>
+                    Acciones
+                </th>
+                <th>
+                    InscripcionId
+                </th>
+                <th>
+                    ActividadId
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div>
+        <button id="addActividadClaseModelo" type="button" class="btn btn-success">Añadir</button>
+    </div>
+
+</div>
+
+<div class="panel-footer">
+
+</div>
+
+
+
+
+
+<div class="panel-body">
+    <h2 class="fc-header" style=""><i class="fa fa-users"></i>Acompañamiento Grupo Pedagógico </h2>
+    <table id="dataTableAcompanamientoComunidad" class="table table-bordered table-striped table-hover" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    Fecha
+                </th>
+
+                <th>
+                    Horas
+                </th>
+                <th>
+                    Asistió
+                </th>
+                <th>
+                    Observaciones
+                </th>
+                <th>
+                    Acciones
+                </th>
+                <th>
+                    InscripcionId
+                </th>
+                <th>
+                    ActividadId
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div>
+        <button id="addActividadComunidad" type="button" class="btn btn-success">Añadir</button>
+    </div>
+
+</div>
+
+<div class="panel-footer">
+
+</div>
+
+
+
+
+<div class="panel-body">
+    <h1 style="text-align:center;"> Indicadores </h1>
+    <div class="row">
+        <div class="col-sm-4">
+            <div id="gaugeNumeroHorasPresencial" class="200x160px"></div>
+        </div>
+        <div class="col-sm-4">
+            <div id="gaugeNumeroHorasAcompAula" class="200x160px"></div>
+        </div>
+        <div class="col-sm-4">
+            <div id="gaugeNumeroHorasReflexivo" class="200x160px"></div>
+        </div>
+        <div class="col-sm-4">
+            <div id="gaugeNumeroHorasModelo" class="200x160px"></div>
+        </div>
+
+        <div class="col-sm-4">
+            <div id="gaugeNumeroHorasComApren" class="200x160px"></div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="dialog" title="Confirmation Required">
+    Esta seguro de esto? (Tambien se eliminaran los detalles de la Evaluacion)
+</div>
+
+<div id="dialogInasistencia" title="Confirmation Required">
+    Desea modificar la asistencia para este participante de la sesión de profundizacion presencial?
+</div>
+
+
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+
+
+    <script type="text/javascript">
+        // Contador de indicadores de Gauges
+        var NhorasPresenciales = 0;
+        var gaugeHorasPresenciales;
+        var NhorasAcompAula = 0;
+        var gaugeHorasAcompAula;
+        var NhorasAcompReflexivo = 0;
+        var gaugeHorasReflexivo;
+        var NhorasAcompModelo = 0;
+        var gaugeHorasModelo;
+        var NhorasAcompComApren = 0;
+        var gaugeHorasComApren;
+        var table;
+        var cicloId = 0;
+        var centroId = 0;
+        (function ($) {
+            var tableAcompanamiento;
+            var tablaAcompPractica;
+            var tableAcompModelo;
+            var tableAcompComunidad;
+
+            var tableFormularios;
+            var url = window.location.pathname;
+            var docenteId = url.substring(url.lastIndexOf('/') + 1);
+            centroId = getUrlVars()["centroID"];
+
+
+            // Id de actividades formativas
+            var ActividadAulaId;
+            var ActividadReflexivoId;
+            var ActividadClaseModeloId;
+            var ActividadGrupoPedagogicoId;
+            //######################### Actividades Presenciales ########################################################
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+            $("#dialogInasistencia").dialog({
+                autoOpen: false,
+                modal: true
+            });
+            $("#addActividadPresencial").hide();
+            $("#removeActividadPresencial").hide();
+            $("#addActividadComunidad").hide();
+            $("#addActividadClaseModelo").hide();
+            $("#addActividadReflexivo").hide();
+            $("#addActividadAula").hide();
+
+
+            $('#cicloDropDown').on('change', function () {
+                cicloId = $("#cicloDropDown option:selected").val();
+
+
+                $("#gaugeNumeroHorasAcompAula").html("");
+                $("#gaugeNumeroHorasPresencial").html("");
+                $("#gaugeNumeroHorasReflexivo").html("");
+                $("#gaugeNumeroHorasModelo").html("");
+                $("#gaugeNumeroHorasComApren").html("");
+                NhorasAcompAula = 0;
+                NhorasAcompReflexivo = 0;
+                NhorasAcompModelo = 0;
+                NhorasAcompComApren = 0;
+                NhorasPresenciales = 0;
+                ActividadAulaId = 0;
+                ActividadReflexivoId = 0;
+                ActividadClaseModeloId = 0;
+                ActividadGrupoPedagogicoId = 0;
+
+                if (cicloId == 0) {
+                    $("#addActividadComunidad").hide();
+                    $("#removeActividadPresencial").hide();
+                    $("#addActividadClaseModelo").hide();
+                    $("#addActividadReflexivo").hide();
+                    $("#addActividadAula").hide();
+                }
+                else {
+                    $("#addActividadPresencial").show();
+                    $("#removeActividadPresencial").show();
+                    $("#addActividadComunidad").show();
+                    $("#addActividadClaseModelo").show();
+                    $("#addActividadReflexivo").show();
+                    $("#addActividadAula").show();
+                }
+
+
+
+
+                gaugeHorasAcompAula = new JustGage({
+                    id: "gaugeNumeroHorasAcompAula",
+                    value: 0,
+                    min: 0,
+                    max: 8,
+                    title: "Horas Acompañamiento en Aula"
+                });
+
+                gaugeHorasPresenciales = new JustGage({
+                    id: "gaugeNumeroHorasPresencial",
+                    value: 0,
+                    min: 0,
+                    max: 8,
+                    title: "Número de Horas Presenciales"
+                });
+
+                gaugeHorasReflexivo = new JustGage({
+                    id: "gaugeNumeroHorasReflexivo",
+                    value: 0,
+                    min: 0,
+                    max: 8,
+                    title: "Número de Horas Acompañamiento Tutorial"
+                });
+
+                gaugeHorasModelo = new JustGage({
+                    id: "gaugeNumeroHorasModelo",
+                    value: 0,
+                    min: 0,
+                    max: 8,
+                    title: "Número de Horas Clase Modelo"
+                });
+                gaugeHorasComApren = new JustGage({
+                    id: "gaugeNumeroHorasComApren",
+                    value: 0,
+                    min: 0,
+                    max: 8,
+                    title: "Número de Horas Grupos Pedagogicos"
+                });
+
+
+
+
+
+
+                /// get Ids Actividades de Acompañamiento //
+                $.ajax({
+                    type: "GET",
+                    url: "/Docente/GetActividadesAcompompanamientoIds?superCicloFormativoId=" + cicloId,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data.data, function (i, data) {
+                            console.log("id " + data.id + ", tipoId = " + data.tipoAcompId);
+                            switch (data.tipoAcompId) {
+                                case 1:
+                                    //ActividadAulaId = data.tipoAcompId;
+                                    ActividadAulaId = data.id;
+                                    break;
+                                case 2:
+                                    //ActividadReflexivoId = data.tipoAcompId;
+                                    ActividadReflexivoId = data.id;
+                                    break;
+                                case 3:
+                                    //ActividadClaseModeloId = data.tipoAcompId;
+                                    ActividadClaseModeloId = data.id;
+                                    break;
+                                case 4:
+                                    //ActividadGrupoPedagogicoId = data.tipoAcompId;
+                                    ActividadGrupoPedagogicoId = data.id;
+                                    break;
+
+                            }
+
+
+
+                        });
+                    }
+                });
+                //-----------------------------------------
+
+
+
+
+
+                table = $('#dataTableActividadesPresenciales').DataTable(
+                                    {
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                                            if (aData.asistio == true) {
+                                                $("td:eq(3)", nRow).html('<i style="font-size=5em; color:green;" class="fa fa-check"></i>');
+                                                $(nRow).css('background-color', 'white');
+                                                NhorasPresenciales = NhorasPresenciales + aData.horas;
+                                                //Indicador de horas presenciales en forma de Gauge
+
+                                                gaugeHorasPresenciales.refresh(NhorasPresenciales);
+
+                                                console.log("horasPresenciales = " + NhorasPresenciales);
+                                            }
+                                            else {
+                                                //console.log(aData.Asistio + "index" + iDisplayIndex);
+                                                $("td:eq(3)", nRow).html('<i class="fa fa-times"></i>');
+                                                $(nRow).css('background-color', '#9F9E9C');
+                                                $(nRow).css('color', 'white');
+                                            }
+
+                                        },
+                                        bJQueryUI: true,
+                                        autoWidth: false,
+                                        processing: true,
+                                        serverSide: true,
+                                        ordering: true,
+                                        stateSave: true,
+                                        bDestroy: true,
+                                        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                                        language: { url: '/Content/js/dataTables.Spanish.txt' },
+                                        ajax: { url: "/Docente/GetActividadesPresencialesByCicloByPersona?superCicloFormativoId=" + cicloId + "&docenteId=" + docenteId, type: 'GET' },
+                                        columns: [
+                                            { data: 'nombre' },
+                                            { data: 'fecha' },
+                                            { data: 'horas' },
+                                            { data: 'asistio' },
+                                        ],
+
+                                    }
+                                );
+                tableAcompanamiento = generarTablaAcompanamiento("#dataTableActividadesAcompanamiento", 1, cicloId, docenteId); // Acompañamiento en Aula
+                tablaAcompPractica = generarTablaAcompanamiento("#dataTableAcompanamientoPractica", 2, cicloId, docenteId);    //Acompañamiento Reflexivo
+                tableAcompModelo = generarTablaAcompanamiento("#dataTableAcompanamientoModelo", 3, cicloId, docenteId);
+                tableAcompComunidad = generarTablaAcompanamiento("#dataTableAcompanamientoComunidad", 4, cicloId, docenteId);
+
+
+
+
+
+
+            });
+
+
+
+            $("#addActividadPresencial").on('click', function () {
+                showBLPopup("/Inscripcion/CreateModal?cicloID=" + cicloId + "&personaID=" + docenteId + "&centroID=" + centroId + "&Modal=true", "Inscribir");
+            });
+
+            $("#removeActividadPresencial").on('click', function () {
+                showBLPopup("/Inscripcion/DeleteModal?cicloID=" + cicloId + "&personaID=" + docenteId + "&Modal=true", "Desinscribir");
+            });
+
+
+            $("#addActividadAula").on('click', function () {
+                if (ActividadAulaId != 0) {
+                    showBLPopup("/InscripcionActividadAcompanamiento/CreateModal?actividadAcompanamientoID=" + ActividadAulaId + "&personalID=" + docenteId + "&Modal=true&tipo=AcompanamientoAula", "Añadir");
+                }
+                else {
+                    alert("La actividad de Aula no está creada para este ciclo, favor contacte su administrador!");
+                }
+
+            });
+            $("#addActividadReflexivo").on('click', function () {
+                if (ActividadReflexivoId != 0) {
+                    var response = showBLPopup("/InscripcionActividadAcompanamiento/CreateModal?actividadAcompanamientoID=" + ActividadReflexivoId + "&personalID=" + docenteId + "&Modal=true&tipo=AcompanamientoTutorial", "Añadir");
+                }
+                else {
+                    alert("La actividad reflexiva no está creada para este ciclo, favor contacte su administrador!");
+                }
+            });
+            $("#addActividadClaseModelo").on('click', function () {
+                if (ActividadClaseModeloId != 0) {
+                    var response = showBLPopup("/InscripcionActividadAcompanamiento/CreateModal?actividadAcompanamientoID=" + ActividadClaseModeloId + "&personalID=" + docenteId + "&Modal=true&tipo=ClaseModelo", "Añadir");
+                }
+                else {
+                    alert("La actividad de Clase Modelo no está creada para este ciclo, favor contacte su administrador!");
+                }
+
+                });
+            $("#addActividadComunidad").on('click', function () {
+                if (ActividadGrupoPedagogicoId != 0) {
+                    var response = showBLPopup("/InscripcionActividadAcompanamiento/CreateModal?actividadAcompanamientoID=" + ActividadGrupoPedagogicoId + "&personalID=" + docenteId + "&Modal=true&tipo=GrupoPedagogico", "Añadir");
+                }
+                else {
+                    alert("La actividad de Comunidad no está creada para este ciclo, favor contacte su administrador!");
+                }
+            });
+
+            $('#dataTableActividadesPresenciales tbody').on('click', 'tr', function () {
+                var data = table.row(this).data();
+                var calendarioCicloId = data.calendarioCicloId;
+
+                $("#dialogInasistencia").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            if (data.asistio == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Ausencia/CreateAusenciaPersonal?calendarioCicloId=" + calendarioCicloId + "&personalId=" + docenteId,
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        if (data.response == "OK") {
+                                            $("td:eq(3)", table.row(this).index()).html('<i class="fa fa-times"></i>');
+                                            table.draw();
+                                            $("#dialogInasistencia").dialog("close");
+                                        }
+                                        if (data.response == "ERROR") {
+                                            console.log(data.response);
+                                        }
+                                    }
+                                });
+
+                            }
+                            else {
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Ausencia/DeleteAusenciaPersonal?calendarioCicloId=" + calendarioCicloId + "&personalId=" + docenteId,
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        if (data.response == "OK") {
+                                            $("td:eq(3)", table.row(this).index()).html('<i style="font-size=2em" class="fa fa-check"></i>');
+                                            $("#dialogInasistencia").dialog("close");
+                                            table.draw();
+                                        }
+                                        if (data.response == "ERROR") {
+                                            console.log(data.response);
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+                $("#dialogInasistencia").dialog("open");
+
+            });
+
+            //################################## End Actividades Presenciales #######################################################
+
+
+
+        })(jQuery);
+
+
+
+
+        function generarTablaAcompanamiento(tabla, tipo, cicloId, docenteId) {
+            NhorasAcompAula = 0;
+            NhorasAcompReflexivo = 0;
+            NhorasAcompModelo = 0;
+            NhorasAcompComApren = 0;
+            NhorasPresenciales = 0;
+            var table = $(tabla).DataTable(
+             {
+                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                     if (aData.asistio == true) {
+                         console.log("Table = " + tabla);
+                         $("td:eq(3)", nRow).html('<i style="font-size=5em; color:green;" class="fa fa-check"></i>');
+                         $("td:eq(5)", nRow).html('<button type="button" class="btn btn-danger" onclick="deleteInscripcion(' + aData.inscripcionId + ')">Deshacer</button>');
+                         aData.evals.forEach(function (entry) {
+                             $("td:eq(4)", nRow).html('<intput id="btnEvalAcomp_' + entry.idEval + '" type="button" style="margin-left:10px;" class="btn btn-default" onclick="EvaluacionAcompanamientoPopup(' + entry.idEval + ', ' + docenteId + ', ' + aData.inscripcionId + ')">' + entry.Titulo + '</button>');
+
+                         });
+
+                         //Para indicadores Gauge
+                         if (aData.tipo == "AcompanamientoAula") {
+                             NhorasAcompAula = NhorasAcompAula + aData.horas;
+                             gaugeHorasAcompAula.refresh(NhorasAcompAula);
+                         }
+                         if (aData.tipo == "AcompanamientoTutorial") {
+                             NhorasAcompReflexivo = NhorasAcompReflexivo + aData.horas;
+                             gaugeHorasReflexivo.refresh(NhorasAcompReflexivo);
+                         }
+                         if (aData.tipo == "ClaseModelo") {
+                             NhorasAcompModelo = NhorasAcompModelo + aData.horas;
+                             gaugeHorasModelo.refresh(NhorasAcompModelo);
+                         }
+                         if (aData.tipo == "GrupoPedagogico") {
+                             NhorasAcompComApren = NhorasAcompComApren + aData.horas;
+                             gaugeHorasComApren.refresh(NhorasAcompComApren);
+                         }
+
+
+
+                         $(nRow).css('background-color', 'white');
+                     }
+
+                 },
+                 responsive: false,
+                 autoWidth: false,
+                 processing: true,
+                 serverSide: true,
+                 ordering: true,
+                 bDestroy: true,
+                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                 ajax: { url: "/Docente/GetInscripcionesActividadByCicloPersonaId?superCicloFormativoId=" + cicloId + "&docenteId=" + docenteId + "&tipoEval=" + tipo + "&tipoActividad=" + tipo, type: 'GET' },
+                 columns: [
+                     { data: 'tipo' },
+                     { data: 'fecha' },
+                     { data: 'horas' },
+                     { data: 'asistio' },
+                     { data: 'evals' },
+                     { data: 'empty' },
+                     { data: 'inscripcionId' },
+                     { data: 'actividadAcompId' },
+
+
+                 ],
+                 "columnDefs": [
+                      {
+                          "targets": [5],
+                          "visible": true,
+                      },
+                      {
+                          "targets": [6],
+                          "visible": false,
+                          "searchable": false
+                      },
+                      {
+                          "targets": [7],
+                          "visible": false,
+                          "searchable": false
+                      },
+
+
+
+                 ],
+
+
+             });
+
+        }
+
+
+
+        function showBLPopup(url, title) {
+            $('#modalBody')
+                .load(url,
+                        function (response, status, xhr) {
+                            $('#CreateModal').modal({ show: true, backdrop: true });
+                            return response;
+                        })
+        };
+
+
+        function EvaluacionAcompanamientoPopup(evaluacionId, participanteId, inscripcionID) {
+            showBLPopup("/EvaluacionAcompanamiento/ParticipanteRespuestas?EvaluacionId=" + evaluacionId + "&ParticipanteId=" + participanteId + "&Modal=true&inscripcionAcompid=" + inscripcionID, "Cuestionario");
+        }
+
+
+        function deleteInscripcion(inscripcionId) {
+            $("#dialog").dialog({
+                buttons: {
+                    "Confirm": function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "/InscripcionActividadAcompanamiento/DeleteModal?inscripcionId=" + inscripcionId,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.response == "OK") {
+                                    $("#dialog").dialog("close");
+                                    if (data.tipo == "AcompanamientoAula") {
+                                        $("#dataTableActividadesAcompanamiento").html("");
+                                        generarTablaAcompanamiento("#dataTableActividadesAcompanamiento", 1, data.cicloId, data.docenteId); // Acompañamiento en Aula
+                                    }
+
+                                    if (data.tipo == "AcompanamientoTutorial") {
+                                        $("#dataTableAcompanamientoPractica").html("");
+                                        generarTablaAcompanamiento("#dataTableAcompanamientoPractica", 2, data.cicloId, data.docenteId); // Acompañamiento Reflexivo
+                                    }
+                                    if (data.tipo == "ClaseModelo") {
+                                        $("#dataTableAcompanamientoModelo").html("");
+                                        generarTablaAcompanamiento("#dataTableAcompanamientoModelo", 3, data.cicloId, data.docenteId); // Clase Modelo
+                                    }
+                                    if (data.tipo == "GrupoPedagogico") {
+                                        $("#dataTableAcompanamientoComunidad").html("");
+                                        generarTablaAcompanamiento("#dataTableAcompanamientoComunidad", 4, data.cicloId, data.docenteId); // Comunidad Aprendizaje
+                                    }
+
+
+
+                                }
+                                if (data.response == "ERROR") {
+
+                                }
+                            }
+                        });
+
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#dialog").dialog("open");
+
+        }
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+    </script>
+}
+
+
+
+

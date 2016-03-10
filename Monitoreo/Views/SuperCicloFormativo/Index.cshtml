@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Monitoreo.Models.SuperCicloFormativo>
+
+@{
+    ViewBag.Title = "Lista de Ciclos Formativos";
+}
+
+<div class="panel-heading">
+    <h3><i class="fa fa-retweet" style="font-size: 1.5em; color:white;margin-left:auto;margin-right:auto;"></i> @ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <table id="dataTable" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nivel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Area)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciclo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoriaSuperCiclo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreadoPor)
+                </th>
+
+
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nivel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ciclo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoriaSuperCiclo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreadoPor)
+                    </td>
+                    <td class="row-actions">
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                        </a>
+
+
+                        @{
+                if (User.IsInRole("Administrador") || User.IsInRole("Coordinador") || User.IsInRole("EspecialistaCurricular"))
+                {
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                    </a>
+                            <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                            </a>
+
+                }
+
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    if (User.IsInRole("Administrador") || User.IsInRole("Coordinador") || User.IsInRole("EspecialistaCurricular"))
+    {
+        <div class="panel-footer">
+            <a href="@Url.Action("Create")" class="btn btn-default">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+            </a>
+            @*@if (User.IsInRole("Coordinador"))
+                {*@
+            <a href="@Url.Action("Index", new { @q = 1 })" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Ver Todos
+            </a>
+
+            <a href="@Url.Action("Index", new { @q = 0 })" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span> Ver Creados por mi
+            </a>
+            @*}*@
+        </div>
+    }
+}
+
+
+
+@section Styles {
+    @Styles.Render("~/bundles/dataTables/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dataTables/js")
+
+    <script type="text/javascript">
+        (function ($) {
+            var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
+                               <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
+                               <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';
+
+            $('#dataTable').dataTable();
+        })(jQuery);
+    </script>
+}

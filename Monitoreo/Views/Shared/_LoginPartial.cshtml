@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNet.Identity
+
+<li class="dropdown">
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-user"></i>
+                @Html.Raw(String.Format(Resources.T.Login_Hola, User.Identity.GetUserName()))
+                <i class="glyphicon glyphicon-chevron-down"></i>
+            </a>
+            
+            <ul class="dropdown-menu">
+                <li>@Html.ActionLink("Cambiar Contraseña", "Manage", "Account")</li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar Sesión</a></li>
+                <li class="divider"></li>
+                <li><a href="#">About</a></li>
+            </ul>
+    }
+    else
+    {
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-user"></i>
+            <i class="glyphicon glyphicon-chevron-down"></i>
+        </a>
+        <ul class="dropdown-menu">
+            <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+            <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+            <li class="divider"></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    }
+</li>

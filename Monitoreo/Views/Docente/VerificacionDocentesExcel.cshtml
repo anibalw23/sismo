@@ -1,0 +1,46 @@
+﻿
+@model Monitoreo.Models.Docente
+
+
+<div class="panel-heading">
+    <h3>Verificar Docentes desde un archivo de Excel</h3>
+</div>
+
+
+<div class="panel-body">
+    <div class=" panel-group">
+        @using (Html.BeginForm("VerificarDocentesFromExcelFile", "Docente", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input name="uploadFile" type="file" /><input type="submit" value="UploadFile" title="Upload file" onclick="" />
+        }
+    </div>
+
+    <div class="panel-group">
+
+        <h3> Formato del archivo de Excel..</h3>
+        <table class=" table table-striped">
+            <tr>
+                <th>Cédula </th>
+                <th>Nombre y Apellido</th>
+                <th>Area</th>
+                <th>Grado</th>
+            </tr>
+            <tr>
+                <td>000-0000000-0</td>
+                <td>Fulano</td>
+                <td>Sociales</td>
+                <td>1ero</td>
+            </tr>
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+

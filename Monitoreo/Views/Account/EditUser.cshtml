@@ -1,0 +1,56 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityUser
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Editar Usuario";
+}
+
+
+<div class="panel-heading">
+        <h3> @ViewBag.Title</h3>
+</div>
+
+
+    
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.EditorFor(model => model.UserName)
+
+            @Html.EditorFor(model => model.Email)
+
+            @Html.EditorFor(model => model.PhoneNumber)
+
+
+            <div class="form-group">
+                @Html.Label("Rol", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @Html.DropDownList("Roles", null, new { @class = "form-control"})
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <button type="submit" value="Save" class="btn btn-primary">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+    </button>
+
+}
+
+
+
+
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}

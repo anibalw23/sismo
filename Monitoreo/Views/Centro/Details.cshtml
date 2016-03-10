@@ -1,0 +1,377 @@
+﻿@model Monitoreo.Models.Centro
+
+@{
+    ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("DetallesDeX"), Resources.T.ResourceManager.GetString("Centro"));
+}
+<script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
+
+<style type="text/css">
+
+    body:nth-of-type(1) .dl-horizontal dt{
+        list-style-type:none;
+        padding: 0 0 0 45px;
+        position:relative;
+    }
+    body:nth-of-type(1) .dl-horizontal dt:before{
+        /*fill it with a blank space*/
+        content:"\00a0";
+ 
+        /*make it a block element*/
+        display: block;
+ 
+        /*adding an 8px round border to a 0x0 element creates an 8px circle*/
+        border: solid 9px #000;
+        border-radius: 9px;
+        -moz-border-radius: 9px;
+        -webkit-border-radius: 9px;
+        height: 0;
+        width: 0;
+ 
+        /*Now position it on the left of the list item, and center it vertically
+        (so that it will work with multiple line list-items)*/
+        position: absolute;
+        left: 7px;
+        top: 40%;
+        margin-top: -8px;
+    }
+
+    body:nth-of-type(1) .dl-horizontal dt:after{
+        /*Add another block-level blank space*/
+        content:"\00a0";
+        display:block;
+ 
+        /*Make it a small rectangle so the border will create an L-shape*/
+        width: 3px;
+        height: 6px;
+ 
+        /*Add a white border on the bottom and left, creating that 'L' */
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+ 
+        /*Position it on top of the circle*/
+        position:absolute;
+        left: 14px;
+        top: 40%;
+        margin-top: -4px;
+ 
+        /*Rotate the L 45 degrees to turn it into a checkmark*/
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+      }
+</style>
+
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Informaci&oacute;n General</a></li>
+            <li role="presentation"><a href="#contacto" aria-controls="contacto" role="tab" data-toggle="tab">Datos de Cont&aacute;cto</a></li>
+            <li role="presentation"><a href="#criterios" aria-controls="criterios" role="tab" data-toggle="tab">Crit&eacute;rios de Evaluaci&oacute;n</a></li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active fade in" id="general">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Codigo)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Codigo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.SectorEducativo)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.SectorEducativo)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Director)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Director.Persona.NombreCompleto)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Red)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Red.Nombre)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Niveles)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Niveles)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Ciclos)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Ciclos)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Tandas)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Tandas)
+                </dd>
+            </dl>
+            <div id="map_canvas" style="width:100%;height:400px;"></div>
+        </div>
+
+        
+
+
+        <div role="tabpanel" class="tab-pane fade" id="contacto">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Telefono)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Telefono)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Provincia)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Provincia.Nombre)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Municipio)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Municipio.Nombre)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sector)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Sector)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Calle)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Calle)
+                </dd>
+
+            </dl>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="criterios">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.SalonMultiUso)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.SalonMultiUso)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.LabInformatica)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.LabInformatica)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.BanosSuficientes)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.BanosSuficientes)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Biblioteca)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Biblioteca)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FacilidadesDeAccesibilidad)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FacilidadesDeAccesibilidad)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Lavamanos)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Lavamanos)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.InstrumentosDeGestionActualizados)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.InstrumentosDeGestionActualizados)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.EscuelaPadresMadres)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.EscuelaPadresMadres)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FrecuenciaActividades)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FrecuenciaActividades)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <hr/>
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            @*<li role="presentation" class="active">
+                <a href="#aulas" aria-controls="aulas" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.CentroGrados)</a>
+            </li>*@
+
+            <li role="presentation" class="active">
+                <a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.PersonalAdministrativo)</a>
+            </li>
+            <li role="presentation">
+                <a href="#docentes" aria-controls="docentes" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.Docentes)</a>
+            </li>
+            <li role="presentation">
+                <a href="#estudiantes" aria-controls="estudiantes" role="tab" data-toggle="tab">@Html.DisplayNameFor(model => model.Estudiantes)</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+
+            <div role="tabpanel" class="tab-pane active fade in" id="personal">
+                <div class="panel">
+                    @Html.Action("CentroPersonal", "PersonalAdministrativo", new { CentroId = Model.Id })
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="docentes">
+                <div class="panel">
+                    @Html.Action("CentroDocentes", "Docente", new { CentroId = Model.Id })
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="estudiantes">
+                <div class="panel">
+                    @Html.Action("CentroEstudiantes", "Estudiante", new { CentroId = Model.Id })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="panel-footer">
+        @*<a  href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-default">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+        </a>
+        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </a>*@
+    </div>
+
+    @section Actions {
+        <ul class="nav nav-stacked">
+            <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Index")</li>
+        </ul>
+    }
+
+    @section Styles {
+        @Styles.Render("~/bundles/dataTables/css")
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/dataTables/js")
+
+        <script type="text/javascript">
+
+    function showBLPopup(url, title) {
+        $('#modalBody')
+            .load(url,
+                    function () {
+                        //$("form", $(this)).on("submit", function (event) {
+                        //    event.preventDefault();
+                        //    $.post($(this).attr('action'), $(this).serialize()).done(function (data) {
+                        //        $('#CreateModal').modal({ show: false, backdrop: true });
+                        //    });
+                        //});
+
+                        $('#CreateModal').modal({ show: true, backdrop: true });
+                    })
+    };
+
+    (function ($) {
+
+        $('#EditDocenteBtn')
+         .attr('href', '#')
+         .attr('onclick', 'showBLPopup("@Html.Raw(Url.Action("Edit", "Docente", new { MasterType = "Centro", MasterId = Model.Id, Modal = true }))", "@Html.DisplayNameFor(model => model.CentroGrados)"); return false;');
+
+        
+        @*$(".btn:last", '#aulas')
+           .attr('href', '#')
+           .attr('onclick', 'showBLPopup("@Html.Raw(Url.Action("Create", "CentroGrado", new { MasterType = "Centro", MasterId = Model.Id, Modal = true }))", "@Html.DisplayNameFor(model => model.CentroGrados)"); return false;');*@
+           
+
+        $(".btn:last", '#personal')
+            .attr('href', '#')
+            .attr('onclick', 'showBLPopup("@Html.Raw(Url.Action("Create", "PersonalAdministrativo", new { MasterType = "Centro", MasterId = Model.Id, Modal = true }))", "@Html.DisplayNameFor(model => model.PersonalAdministrativo)"); return false;');
+
+        $(".btn:last", '#docentes')
+             .attr('href', '#')
+             .attr('onclick', 'showBLPopup("@Html.Raw(@Url.Action("Create", "Docente", new { MasterType = "Centro", MasterId = Model.Id, Modal = true }))", "@Html.DisplayNameFor(model => model.Docentes)"); return false;');
+        $(".btn:last", '#estudiantes')
+            .attr('href', '#')
+            .attr('onclick', 'showBLPopup("@Html.Raw(@Url.Action("Create", "Estudiante", new { MasterType = "Centro", MasterId = Model.Id, Modal = true }))", "@Html.DisplayNameFor(model => model.Estudiantes)"); return false;');
+
+        @{
+            var latitud = "18.5";
+            var longitud = "-69.9333";
+
+            if (Model.Latitud != "" && Model.Latitud != null) {
+                latitud = Model.Latitud;
+                longitud = Model.Longitud;
+            }
+
+
+        }
+        var myLatlng = new google.maps.LatLng(Number(@latitud), Number(@longitud));
+          var mapOptions = {
+            center: new google.maps.LatLng( Number(@latitud), Number(@longitud)),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+            mapOptions);
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: '@Model.Nombre'
+        });
+
+
+
+
+
+
+    })(jQuery);
+        </script>
+    }

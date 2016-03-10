@@ -1,0 +1,51 @@
+﻿@using BootstrapEditorTemplatesNameSpace.Utility
+@model IEnumerable<Monitoreo.Models.DocenteMateria>
+
+<h3>Materias</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Tanda)</th>
+            <th>@Html.DisplayNameFor(model => model.Area)</th>
+            <th>@Html.DisplayNameFor(model => model.Grados)</th>
+            <th>@Html.DisplayNameFor(model => model.SeccionId)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            var modelList = (Model as List<Monitoreo.Models.DocenteMateria>);
+            for (var i = 0; i < modelList.Count; i++)
+            {
+                var Materia = modelList[i];
+                <tr>
+                    <td>
+                        @Html.EnumDropDownListFor(model => Materia.Tanda, new { @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.EnumDropDownListFor(model => Materia.Area, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Materia.Area)
+                    </td>
+                    <td>
+                        @Html.EnumDropDownListFor(model => Materia.Grados, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Materia.Grados)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(model => Materia.SeccionId, (IEnumerable<SelectListItem>)ViewBag.SeccionId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Materia.SeccionId)
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<a href="#" class="btn btn-default">
+    <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Agregar")
+</a>

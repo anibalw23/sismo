@@ -1,0 +1,68 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Borrar Rol";
+}
+
+<div class="panel-heading">
+    <h3> @ViewBag.Title</h3>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Name)
+    <div class="panel-footer">
+        <p>Está Seguro de que desea borrar este el Rol?</p>
+        <button type="submit" id="btnSubmit" value="Delete" class="btn btn-primary">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+        </button>
+
+    </div>
+}
+
+
+
+@*<div class="panel-footer">
+    <p>Está Seguro de que desea borrar este rol?</p>
+    <button type="submit" id="btnSubmit" value="Borrar" class="btn btn-primary">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+    </button>
+</div>*@
+@*<script type="text/javascript">
+
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+
+
+
+
+    $(document).ready(function () {
+        $('#btnSubmit').button().click(function () {
+            var rolName = getParameterByName("RolName");
+            $.post("DeleteRol?RolName=" + rolName, function (data) {
+            });
+
+        });
+    });
+
+</script>*@
+
+@section Actions {
+    <ul class="nav nav-stacked">
+        <li>@Html.ActionLink(Resources.T.ResourceManager.GetString("Volver"), "Users")</li>
+    </ul>
+}
+
+

@@ -1,0 +1,47 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+<div class="panel-body">
+    <div id="msjPanel"></div>
+
+    <div class="form-horizontal">
+        <div class="row">
+            <div class="col-lg-offset-2">
+                @Html.Label("Ciclos Formativo")
+                @Html.DropDownList("ciclo", (IEnumerable<SelectListItem>)ViewBag.ciclos, new { @class = "form-control", multiple = "multiple" })
+                
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-lg-offset-2">
+                <button id="btnIVerifyDuplicados" type="button" class="btn btn-success">Revisar</button>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+}
+<script src="~/Content/js/bootstrap-multiselect.js"></script>
+<link href="~/Content/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<script>  
+    var selectedCiclos;
+      
+    $(function () {
+        console.log("Ciclo Inscripciones Duplicado");
+        $('#ciclo').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            selectAllText: 'Seleccionar Todos',
+            onChange: function (option, checked, select) {
+                selectedCiclos = $('#ciclo').val();
+            },
+        });
+
+    });
+</script>

@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Monitoreo.Models.CicloFormativo>
+
+@{
+    //ViewBag.Title = @Resources.T.ResourceManager.GetString("CiclosFormativos");
+    ViewBag.Title = "Actividades Formativas";
+}
+
+<script src="~/Content/js/tableExport/tableExport.js"></script>
+<script src="~/Content/js/tableExport/jspdf/jspdf.js"></script>
+<script src="~/Content/js/tableExport/jquery.base64.js"></script>
+
+<div class="panel-heading">
+    <h3><i class="fa fa-skyatlas" style="margin-right:10px; color:black;"></i>@ViewBag.Title</h3>
+</div>
+
+<div class="panel-body">
+
+    <div style="margin-bottom:30px;">
+        <div class="btn-group">
+            <button class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> Exportar tabla</button>
+            <ul class="dropdown-menu " role="menu">
+
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'xml', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/xml.png' width='24px'> XML</a></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'sql' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/sql.png' width='24px'> SQL</a></li>
+                <li class="divider"></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'csv', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/csv.png' width='24px'> CSV</a></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'txt', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/txt.png' width='24px'> TXT</a></li>
+                <li class="divider"></li>
+
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'excel', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/xls.png' width='24px'> XLS</a></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'doc', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/word.png' width='24px'> Word</a></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'powerpoint', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/ppt.png' width='24px'> PowerPoint</a></li>
+                <li class="divider"></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'png', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/png.png' width='24px'> PNG</a></li>
+                <li><a href="#" onclick="$('#datatableCiclos').tableExport({ type: 'pdf', pdfFontSize: '7', escape: 'false' });"> <img src='http://ngiriraj.com/pages/htmltable_export/icons/pdf.png' width='24px'> PDF</a></li>
+
+
+            </ul>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-striped table-hover" id="datatableCiclos">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Ciclo Formativo")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tema)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DuracionTotal)
+                </th>
+                @*<th>
+                    @Html.DisplayNameFor(model => model.Nivel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Area)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciclo)
+                </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.CreadoPor)
+                </th>
+
+
+                <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SuperCicloFormativo.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tema)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DuracionTotal)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nivel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ciclo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreadoPor)
+                    </td>
+
+                    <td class="row-actions">
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
+                        </a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-default">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<div class="panel-footer">
+    <a href="@Url.Action("Create")" class="btn btn-default">
+        <span class="glyphicon glyphicon-file" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("CrearNuevo")
+    </a>
+</div>
