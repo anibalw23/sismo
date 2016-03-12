@@ -92,8 +92,8 @@
                         @Html.Action("CicloInscripciones", "Inscripcion", new { CicloFormativoId = Model.Id })
                         <a class="btn btn-default" href='@Url.Action("CicloInscripcionesBatch", "CicloFormativo", new  { id = Model.Id })'>
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir Docentes
-                        </a>
-
+                        </a>                       
+                        
 
                         @*@Html.Action("CicloInscripciones", "Inscripcion", new { CicloFormativoId = Model.Id })
                         <a href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("Create", "Inscripcion", new { MasterType = "CicloFormativo", MasterId = Model.Id, Modal = true })', '@Html.DisplayNameFor(model => model.Inscripciones)'); return false;">
@@ -104,6 +104,10 @@
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir Personal Administrativo
                         </a>
 
+
+                        <a class="btn btn-default" href='@Url.Action("CicloInscripcionesImportarFrom", "CicloFormativo", new { cicloId = Model.Id })'>
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Importar desde Otro Ciclo
+                        </a>
 
 
                         @*<a href="@Url.Action("CicloInscripcionesExcel", new { id = Model.Id })" class="btn btn-default">

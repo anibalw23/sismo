@@ -104,6 +104,7 @@
                             success: function (data) {
                                 if(data == "OK"){
                                     $("#msjPanel").text("Docentes Inscritos Satisfactoriamente!");
+                                    $("form").attr('action', '/CicloFormativo/Details?id=@Model.Id').off('submit').submit();
                                 }
                                 if(data == "ERROR"){
                                     $("#msjPanel").text("Ha ocurrido un error inscribiendo Docentes...")

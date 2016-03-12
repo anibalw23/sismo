@@ -1,0 +1,64 @@
+﻿@model Monitoreo.Models.CicloFormativo
+
+<div class="panel-heading">
+    <h2>Importar Desde Ciclo</h2>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="panel-body">
+
+    <div class="form-horizontal">
+        <input type="hidden" name="cicloId" value="@ViewBag.cicloId" />
+        <div class="form-group">
+            @Html.Label("Ciclo Formativo", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">               
+                @Html.DropDownList("CicloFormativo", (IEnumerable<SelectListItem>)ViewBag.superCiclosDest, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Actividad Formativa", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select name="cicloId" class="form-control"></select>
+            </div>
+        </div>
+        <button id="btnCreate" type="submit" value="Create" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Guardar")
+        </button>
+    </div>
+
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jqueryui")*@
+}
+
+<script>
+
+    $(function () {
+        console.log("Importar From...");
+        $("#CicloFormativo").on('click', function () {
+            var cicloId = $("#cicloId").val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("getCiclosBySuperCicloId", "CicloFormativo")',
+                data: JSON.stringify({ ciclosIds: selectedCiclos, docentesIds: selectedDocentes }),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $(data).each(function (k, v) {
+
+                    });
+                }
+            });
+
+
+        });
+
+       
+    });
+</script>

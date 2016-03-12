@@ -124,14 +124,14 @@ namespace Monitoreo.Controllers
         [HttpPost]
         public ActionResult GetDataJson(DatatablesParams values)
         {
-            var docentes = db.Docentes.Include(p => p.Persona).Select(x => new { x.Id, x.Persona, CentroNombre = x.Centro.Nombre });
+            var docentes = db.Docentes.Include(p => p.Persona).Select(x => new { x.Id, x.Persona, CentroNombre = x.Centro.Nombre, isActive = x.isActive });
             var recordsTotal = docentes.Count();
             var recordsFiltered = recordsTotal;
             var limit = values.length > 0 ? values.length : recordsTotal;
             var from = values.start;
 
             // Seleccionando
-            var data = docentes.Select(x => new { DT_RowId = x.Id, Cedula = x.Persona.Cedula, Nombre = x.Persona.Nombres + " " + x.Persona.PrimerApellido + " " + x.Persona.SegundoApellido, Centro = x.CentroNombre });
+            var data = docentes.Select(x => new { DT_RowId = x.Id, Cedula = x.Persona.Cedula, Nombre = x.Persona.Nombres + " " + x.Persona.PrimerApellido + " " + x.Persona.SegundoApellido, Centro = x.CentroNombre, x.isActive });
 
             // Filtrando
             if (values.search != null && values.search.ContainsKey("value") && values.search["value"] is string[])

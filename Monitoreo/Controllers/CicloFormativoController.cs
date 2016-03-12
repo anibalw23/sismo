@@ -35,6 +35,16 @@ namespace Monitoreo.Controllers
             return View(ciclosformativos.ToList());
         }
 
+
+        [HttpPost]
+        public JsonResult getCiclosBySuperCicloId(int superCicloId)
+        {
+            var ciclos = db.CiclosFormativos.Select(x => new { x.Id, x.Tema });
+            return Json(ciclos.Select(x => new { Id = x.Id, Tema = x.Tema }), JsonRequestBehavior.AllowGet);
+        }
+
+
+
         // GET: /CicloFormativo/5/Details
        
         [Route("CicloFormativo/Details")]
@@ -286,6 +296,14 @@ namespace Monitoreo.Controllers
         }
 
 
+        public ActionResult CicloInscripcionesImportarFrom(int cicloId) {
+            ViewBag.cicloId = cicloId;
+            ViewBag.superCiclosDest = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
+
+            return View();
+        
+        }
+
 
         //Parial view CicloAsistencia
         public ActionResult CicloAsistencia(int CicloFormativoId)
@@ -307,6 +325,8 @@ namespace Monitoreo.Controllers
             return PartialView();
         }
 
+
+        /*Nota: El CicloId es el SupercicloID*/
         [HttpPost]
         public async Task<ActionResult> CicloInscripcionesVerificarDuplicados(int[] ciclosIds, int[] docentesIds){
 
@@ -314,11 +334,13 @@ namespace Monitoreo.Controllers
            foreach(var docente in docentesIds){
                Docente docenteTemp = await db.Docentes.FindAsync(docente);
                int participanteId = docenteTemp.PersonaId;
-               bool isRepeated = await db.Inscripciones.Select(x => new { x.Id, x.CicloFormativoId, x.ParticipanteId, x.Participante.Cedula }).Where(c => ciclosIds.Contains(c.CicloFormativoId)).AnyAsync(p => p.ParticipanteId ==  participanteId);
-               if (isRepeated)
-               {
-                   docentesRepeated.Add(docenteTemp);
-               }              
+               foreach (var ciclo in ciclosIds) {
+                   bool isRepeated = await db.Inscripciones.Select(x => new { x.Id, x.CicloFormativoId, x.CicloFormativo, x.ParticipanteId, x.Participante.Cedula }).Where(c => c.CicloFormativo.SuperCicloFormativoId == ciclo).AnyAsync(p => p.ParticipanteId == participanteId);
+                   if (isRepeated)
+                   {
+                       docentesRepeated.Add(docenteTemp);
+                   }         
+               }                   
            }
 
            return Json(docentesRepeated.Select(x => new {Id =  x.Id, Cedula = x.Persona.Cedula }), JsonRequestBehavior.AllowGet);
@@ -338,28 +360,35 @@ namespace Monitoreo.Controllers
             List<GrupoCicloFormativo> grupos = new List<GrupoCicloFormativo>();
             List<Inscripcion> inscripcionesNew = new List<Inscripcion>();
             if (cicloId != 0) {
-                var inscripciones = await db.Inscripciones.Where(c => c.CicloFormativoId == cicloId).ToListAsync();
-                var docentes = db.Docentes.Where(i => docentesIds.Contains(i.Id));
+                var inscripciones = await db.Inscripciones.AsNoTracking().Where(c => c.CicloFormativoId == cicloId).ToListAsync();
+                var docentes = db.Docentes.AsNoTracking().Where(i => docentesIds.Contains(i.Id));
                 var centros =  docentes.Select(x => new { x.Centro, x.CentroId }).Distinct(); //Distintos centros de los docentes a inscribir
                 
                 //Anade los Grupos al Ciclo Formativo
-                foreach (var centro in centros) {
-                    bool isGrupoRepeated = inscripciones.Select(x => new { x.GrupoCicloFormativoId, x.GrupoCicloFormativo }).Any(c => c.GrupoCicloFormativo.CentroID == centro.CentroId);
-                    if (!isGrupoRepeated) {
+                foreach (var centro in centros) {                    
                         GrupoCicloFormativo grupo = new GrupoCicloFormativo();
-                        grupo.CentroID = centro.CentroId;
-                        grupo.CicloFormativoId = cicloId;
-                        grupos.Add(grupo);                       
-                    }
+                        bool isRepeated = db.GruposCiclosFormativos.Select(x => new { x.CicloFormativoId, x.CentroID}).Where(i => i.CicloFormativoId == cicloId).Any(p => p.CentroID == centro.CentroId);
+                        if (!isRepeated) {
+                            grupo.CentroID = centro.CentroId;
+                            grupo.CicloFormativoId = cicloId;
+                            grupos.Add(grupo);  
+                        }
+                         
                 }
                 db.GruposCiclosFormativos.AddRange(grupos);
                 await db.SaveChangesAsync();
 
-                //Anade los Dcoentes a cada grupo del Ciclo Formativo
+                //Anade los Docoentes a cada grupo del Ciclo Formativo
                 foreach(var doc in docentes){
                     bool isRepeatedInscripcion = inscripciones.Any(p => p.ParticipanteId == doc.PersonaId);
                     if (!isRepeatedInscripcion) {
-                        inscripcionesNew.Add(new Inscripcion { CicloFormativoId = cicloId, GrupoCicloFormativoId = grupos.Where(c => c.CentroID == doc.CentroId).FirstOrDefault().ID, Rol = InscripcionRol.Participante, ParticipanteId = doc.PersonaId, Fecha = DateTime.Now }); 
+                        GrupoCicloFormativo grupo = grupos.Where(c => c.CentroID == doc.CentroId).FirstOrDefault();
+                        if (grupo == null) {
+                            grupo = db.GruposCiclosFormativos.Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == doc.CentroId).FirstOrDefault();
+                        }
+                        if (grupo != null) {
+                            inscripcionesNew.Add(new Inscripcion { CicloFormativoId = cicloId, GrupoCicloFormativoId = grupo.ID, Rol = InscripcionRol.Participante, ParticipanteId = doc.PersonaId, Fecha = DateTime.Now }); 
+                        }
                     }
                 }
                 db.Inscripciones.AddRange(inscripcionesNew);

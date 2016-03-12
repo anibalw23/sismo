@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = @Resources.T.ResourceManager.GetString("Docentes");
 }
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <div class="panel-heading">
     <h3>@ViewBag.Title</h3>
@@ -16,6 +16,7 @@
                 <th>Cedula</th>
                 <th>Nombre</th>
                 <th>Centro</th>
+                <th>Cursa Ciclos?</th>
                 <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
             </tr>
         </thead>
@@ -70,6 +71,18 @@
                     { data: 'Cedula' },
                     { data: 'Nombre' },
                     { data: 'Centro' },
+                    {
+                        data: 'isActive',
+                        "render": function (data, type, row) {
+                            console.log(data);
+                            if (data == true) {
+                                return '<div style="text-align:center;"><i style="color:green" class="fa fa-check"></i></div>';
+                            }
+                            else {
+                                return '<div style="text-align:center;"><i style="color:red;" class="fa fa-arrows-alt"></i></div>';
+                            }                            
+                        },
+                    },
                     { data: null, targets: -1, defaultContent: actionsTemplate, orderable: false }
                 ],
                 createdRow: function (row, data, index) {

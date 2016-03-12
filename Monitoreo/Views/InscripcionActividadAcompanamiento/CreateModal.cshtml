@@ -15,9 +15,9 @@
         <input type="hidden" name="tipo" value="@ViewBag.tipo"> 
         @Html.HiddenFor(model => model.personalID)
         @Html.HiddenFor(model => model.actividadAcompanamientoID)
-        @Html.EditorFor(model => model.fecha)
-        @Html.EditorFor(model => model.horas)
-        @Html.EditorFor(model => model.Area)
+        @Html.EditorFor(model => model.fecha, new { @class = "col-xs-3" })
+        @Html.EditorFor(model => model.horas, new { @class = "col-xs-3" })
+        @Html.EditorFor(model => model.Area, new { @class = "col-xs-3" })
     </div>
     <div class="msjError" style="color:red;"></div>
 </div>
@@ -32,6 +32,9 @@
 
 <script type="text/javascript">
     (function ($) {
+     
+
+
         $("#btnGuardar").on("click", function () {
             var personalID = $("#personalID").val();
             var actividadAcompanamientoID = $("#actividadAcompanamientoID").val();

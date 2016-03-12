@@ -13,6 +13,8 @@ using Monitoreo.Helpers;
 using System.Text;
 using Monitoreo.Models;
 using System.Threading.Tasks;
+using Postal;
+using System.Text.RegularExpressions;
 
 namespace Monitoreo.Controllers
 {
@@ -26,26 +28,31 @@ namespace Monitoreo.Controllers
         // GET: InscripcionActividadAcompanamientos
         [Route("InscripcionActividadAcompanamientos")]
         public ActionResult Index()
-        {               
+        {
             return View();
         }
 
 
-        public ActionResult InscripcionesPorFecha() {
+        public ActionResult InscripcionesPorFecha()
+        {
 
             Acompanante acompanante = new Acompanante();
             int centroID = 0;
-            if (User.Identity.IsAuthenticated) {
+            if (User.Identity.IsAuthenticated)
+            {
                 Persona persona = db.Personas.Where(c => c.Cedula == User.Identity.Name).FirstOrDefault();
-                if (persona != null) {
+                if (persona != null)
+                {
                     acompanante = db.Acompanantes.Where(p => p.PersonaId == persona.Id).FirstOrDefault();
-                    if (acompanante != null) {
+                    if (acompanante != null)
+                    {
                         centroID = acompanante.centroId;
-                        ViewBag.centroID = centroID; 
-                    }                   
-                }               
+                        ViewBag.centroID = centroID;
+                    }
+                }
             }
-            if (centroID == 0) {
+            if (centroID == 0)
+            {
                 ViewBag.centroList = db.Centros.Select(x => new { x.Id, x.Nombre }).ToList();
             }
 
@@ -53,7 +60,8 @@ namespace Monitoreo.Controllers
         }
 
 
-        public ActionResult MisInscripcionesAcompanamiento() {
+        public ActionResult MisInscripcionesAcompanamiento()
+        {
             return View();
         }
 
@@ -63,7 +71,7 @@ namespace Monitoreo.Controllers
 
             var inscripciones = await db.InscripcionesActividadesAcompanamiento.Where(p => p.Personal.CentroId == centroId).Where(f => f.fecha > fecha1).Where(f => f.fecha < fecha2).ToListAsync();
             int recordsTotal = inscripciones.Count();
-            var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.Fecha) ;
+            var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.Fecha);
             var jsonData = new
             {
                 data = data.ToList()
@@ -84,26 +92,29 @@ namespace Monitoreo.Controllers
             var from = 0; //values.start;
 
 
-             Persona persona =  db.Personas.Where(c => c.Cedula == User.Identity.Name).FirstOrDefault();
-             Acompanante acompanante = new Acompanante();      
-             Centro centro = new Centro();
-             List<InscripcionActividadAcompanamiento> inscripciones = new List<InscripcionActividadAcompanamiento>();
+            Persona persona = db.Personas.Where(c => c.Cedula == User.Identity.Name).FirstOrDefault();
+            Acompanante acompanante = new Acompanante();
+            Centro centro = new Centro();
+            List<InscripcionActividadAcompanamiento> inscripciones = new List<InscripcionActividadAcompanamiento>();
 
-             if(persona != null){
-                 acompanante = db.Acompanantes.Where(p => p.PersonaId == persona.Id).FirstOrDefault();
-                 if (acompanante != null) {
-                     centro = acompanante.Centro;
-                     if (centro != null) {
-                         inscripciones = await db.InscripcionesActividadesAcompanamiento.Where(p => p.Personal.CentroId == centro.Id).ToListAsync();
-                         recordsTotal = inscripciones.Count();
-                         recordsFiltered = recordsTotal;
-                         limit =  values.length > 0 ? values.length : recordsTotal;
-                         from = values.start;
-                     }                     
-                 }
-                
-             }
-             var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.Fecha).Skip(from).Take(limit);
+            if (persona != null)
+            {
+                acompanante = db.Acompanantes.Where(p => p.PersonaId == persona.Id).FirstOrDefault();
+                if (acompanante != null)
+                {
+                    centro = acompanante.Centro;
+                    if (centro != null)
+                    {
+                        inscripciones = await db.InscripcionesActividadesAcompanamiento.Where(p => p.Personal.CentroId == centro.Id).ToListAsync();
+                        recordsTotal = inscripciones.Count();
+                        recordsFiltered = recordsTotal;
+                        limit = values.length > 0 ? values.length : recordsTotal;
+                        from = values.start;
+                    }
+                }
+
+            }
+            var data = inscripciones.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.Area.ToString(), Fecha = x.fecha.ToShortDateString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula }).OrderByDescending(f => f.DT_RowId).Skip(from).Take(limit);
 
             var jsonData = new
             {
@@ -114,8 +125,8 @@ namespace Monitoreo.Controllers
             };
 
             return Json(jsonData, JsonRequestBehavior.AllowGet);
-        
-        
+
+
         }
 
 
@@ -134,7 +145,7 @@ namespace Monitoreo.Controllers
             var data = inscripcionesactividadesacompanamiento.Select(x => new { DT_RowId = x.ID, AreaAcomp = x.ActividadAcompanamiento.Area, Fecha = x.fecha.ToString(), Horas = x.horas, PersonaNombre = x.Personal.Persona.Nombres, CicloFormativo = x.ActividadAcompanamiento.SuperCicloFormativo.nombre, x.actividadAcompanamientoID, ActividadAcompanamiento = x.ActividadAcompanamiento.TipoAcompanamiento.ToString(), x.personalID, CentroNombre = x.Personal.Centro.Nombre, Cedula = x.Personal.Persona.Cedula });
 
 
-         
+
             // Ordenando
             var sorting = false;
             if (values.order != null && values.order.Count() > 0)
@@ -157,7 +168,8 @@ namespace Monitoreo.Controllers
             }
 
             // Preparando respuesta y ejecutando consulta
-            var jsonData = new {
+            var jsonData = new
+            {
                 draw = values.raw,
                 recordsTotal = recordsTotal,
                 recordsFiltered = recordsFiltered,
@@ -201,35 +213,54 @@ namespace Monitoreo.Controllers
             string tipo = Request.QueryString["tipo"];
             if (ModelState.IsValid)
             {
-                try {
+                try
+                {
 
                     inscripcion.horas = Math.Abs(inscripcion.horas); // para evitar valores negativos
-                    db.InscripcionesActividadesAcompanamiento.Add(inscripcion);                     
+                    db.InscripcionesActividadesAcompanamiento.Add(inscripcion);
                     await db.SaveChangesAsync();
+
+
                     ActividadAcompanamiento actividad = await db.ActividadAcompanamientoes.FindAsync(inscripcion.actividadAcompanamientoID);
                     cicloId = actividad.SuperCicloFormativoId;
                     tipo = actividad.TipoAcompanamiento.ToString();
                     docenteId = inscripcion.personalID;
 
-                    //Enviar por email
+                    //Envia por Email Verificacion
+                    dynamic email = new Email("EmailActividadAcompanamiento");
+                    email.IdInscripcion = inscripcion.ID;
+                    email.TipoAcompanamiento = actividad.TipoAcompanamiento;
+                    email.cicloFormativo = actividad.SuperCicloFormativo.nombre;
+
+                    var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail }).FirstOrDefault();
+                    email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
                     Personal personal = await db.Personal.FindAsync(inscripcion.personalID);
-                    string tituloEmail = inscripcion.ActividadAcompanamiento.TipoAcompanamiento.ToString();
-                    StringBuilder textoEmail = new StringBuilder();
-                    textoEmail.AppendLine("<h1>Ciclo Formativo: " + inscripcion.ActividadAcompanamiento.SuperCicloFormativo.nombre + " " + inscripcion.ActividadAcompanamiento.TipoAcompanamiento.ToString() + "</h1>");
-                    textoEmail.AppendLine("<h2>Creado Por: " + User.Identity.Name + "</h2>");
-                    textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcion.fecha + " horas: " + inscripcion.horas + " Area: " + inscripcion.Area + "</p>");
-                    await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " creada" + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
-                    //End Enviar por email
+                    email.docente = persona != null ? personal.Persona.NombreCompleto.ToString() : "";
+                    email.escuela = personal.Centro.Nombre;
+                    email.fecha = inscripcion.fecha;
+                    email.horas = inscripcion.horas;
+                    email.area = inscripcion.Area;
+                    email.Subject = "Actividad de Acompañamiento " + actividad.TipoAcompanamiento + " Creada" + " Centro " + personal.Centro.Nombre;
+                    if (verifyEmail(persona.mail))
+                    {
+                        email.To = "sismo@stat5.com" + "," + persona.mail;
+                    }
+                    else {
+                        email.To = "sismo@stat5.com";
+                    }                   
+                    email.Send();
 
                 }
-                catch(Exception e){
+                catch (Exception e)
+                {
                     var msj = e.Message;
                     return Json(new { success = false });
                 }
-                
-               // return RedirectToAction("DocenteDetailsAcompanante", "Docente", new { id = inscripcion.personalID});
+
+                // return RedirectToAction("DocenteDetailsAcompanante", "Docente", new { id = inscripcion.personalID});
             }
-            return Json(new { 
+            return Json(new
+            {
                 success = true,
                 cicloId = cicloId,
                 docenteId = docenteId,
@@ -253,7 +284,7 @@ namespace Monitoreo.Controllers
             ViewBag.personalID = new SelectList(db.Personal, "Id", "Codigo");
             return View();
         }
-       
+
 
 
         // POST: InscripcionActividadAcompanamientos/Create
@@ -262,12 +293,12 @@ namespace Monitoreo.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ID,personalID,actividadAcompanamientoID,fecha,horas")] InscripcionActividadAcompanamiento inscripcionActividadAcompanamiento)
+        public ActionResult Create([Bind(Include = "ID,personalID,actividadAcompanamientoID,fecha,horas")] InscripcionActividadAcompanamiento inscripcionActividadAcompanamiento)
         {
             if (ModelState.IsValid)
             {
                 db.InscripcionesActividadesAcompanamiento.Add(inscripcionActividadAcompanamiento);
-                db.SaveChanges();               
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -324,54 +355,86 @@ namespace Monitoreo.Controllers
                 response = "ERROR";
             }
             InscripcionActividadAcompanamiento inscripcionActividadAcompanamiento = await db.InscripcionesActividadesAcompanamiento.FindAsync(inscripcionId);
+            ActividadAcompanamiento actividad = inscripcionActividadAcompanamiento.ActividadAcompanamiento;
+
+
             if (inscripcionActividadAcompanamiento == null)
             {
                 response = "ERROR";
             }
-            try {
+            try
+            {
 
                 bool hasRespuestasEvaluaciones = await db.EvaluacionAcompanamientoRespuestas.AsNoTracking().Select(x => new { x.InscripcionActividadAcompanamientoId, x.Id }).AnyAsync(p => p.InscripcionActividadAcompanamientoId == inscripcionId);
                 if (hasRespuestasEvaluaciones)
                 {
                     List<EvaluacionAcompanamientoRespuesta> respuestasAcompanamiento = new List<EvaluacionAcompanamientoRespuesta>();
                     respuestasAcompanamiento = await db.EvaluacionAcompanamientoRespuestas.Where(p => p.InscripcionActividadAcompanamientoId == inscripcionId).ToListAsync();
-                    foreach(var respA in respuestasAcompanamiento){
+                    foreach (var respA in respuestasAcompanamiento)
+                    {
                         db.EvaluacionAcompanamientoRespuestas.Remove(respA);
                         await db.SaveChangesAsync();
                     }
                 }
 
-                ActividadAcompanamiento actividad = await db.ActividadAcompanamientoes.FindAsync(inscripcionActividadAcompanamiento.actividadAcompanamientoID);
+                //ActividadAcompanamiento actividad = await db.ActividadAcompanamientoes.FindAsync(inscripcionActividadAcompanamiento.actividadAcompanamientoID);
                 cicloId = actividad.SuperCicloFormativoId;
                 tipo = actividad.TipoAcompanamiento.ToString();
                 docenteId = inscripcionActividadAcompanamiento.personalID;
                 superCicloFormativoNombre = actividad.SuperCicloFormativo.nombre;
-
                 db.InscripcionesActividadesAcompanamiento.Remove(inscripcionActividadAcompanamiento);
                 await db.SaveChangesAsync();
 
+
+                //Envia por Email Verificacion
+                dynamic email = new Email("EmailActividadBorrar");
+                email.IdInscripcion = inscripcionId;
+                email.TipoAcompanamiento = actividad.TipoAcompanamiento;
+                email.cicloFormativo = actividad.SuperCicloFormativo.nombre;
+
+                var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail}).FirstOrDefault();
+                email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
+                Personal personal = await db.Personal.FindAsync(docenteId);
+                email.docente = personal.Persona.NombreCompleto.ToString();
+                email.escuela = personal.Centro.Nombre;
+                email.fecha = inscripcionActividadAcompanamiento.fecha;
+                email.horas = inscripcionActividadAcompanamiento.horas;
+                email.area = inscripcionActividadAcompanamiento.Area.ToString();
+                email.Subject = "Actividad de Acompañamiento " + actividad.TipoAcompanamiento + " Borrada" + " Centro " + personal.Centro.Nombre;
+
+                if (verifyEmail(persona.mail))
+                {
+                    email.To = "sismo@stat5.com" + "," + persona.mail;
+                }
+                else
+                {
+                    email.To = "sismo@stat5.com";
+                }
+                email.Send();
+
                 //Enviar por email
-                Personal personal = await db.Personal.FindAsync(inscripcionActividadAcompanamiento.personalID);
-                string tituloEmail = tipo;
-                StringBuilder textoEmail = new StringBuilder();
-                textoEmail.AppendLine("<h1>Ciclo Formativo: " + superCicloFormativoNombre + " " + tipo + "</h1>");
-                textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividadAcompanamiento.fecha + " horas: " + inscripcionActividadAcompanamiento.horas + " Area: " + inscripcionActividadAcompanamiento.Area + "</p>");
-                textoEmail.AppendLine("<h2>Borrada Por: " + User.Identity.Name + "</h2>");
-                await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " Borrada" + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
+                //Personal personal = await db.Personal.FindAsync(inscripcionActividadAcompanamiento.personalID);
+                //string tituloEmail = tipo;
+                //StringBuilder textoEmail = new StringBuilder();
+                //textoEmail.AppendLine("<h1>Ciclo Formativo: " + superCicloFormativoNombre + " " + tipo + "</h1>");
+                //textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividadAcompanamiento.fecha + " horas: " + inscripcionActividadAcompanamiento.horas + " Area: " + inscripcionActividadAcompanamiento.Area + "</p>");
+                //textoEmail.AppendLine("<h2>Borrada Por: " + User.Identity.Name + "</h2>");
+                //await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " Borrada" + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
                 //End Enviar por email
-                
+
             }
-            catch(Exception e){
+            catch (Exception e)
+            {
                 response = "ERROR";
                 var mj = e.Message;
             }
             var jsonData = new
             {
-               response,
-               cicloId = cicloId,
-               tipo = tipo,
-               docenteId = docenteId,
-               horas = inscripcionActividadAcompanamiento.horas
+                response,
+                cicloId = cicloId,
+                tipo = tipo,
+                docenteId = docenteId,
+                horas = inscripcionActividadAcompanamiento.horas
 
             };
 
@@ -380,7 +443,20 @@ namespace Monitoreo.Controllers
         }
 
 
-
+        private bool verifyEmail(string email)
+        {
+            bool result = true;
+            string emailRegex = @"^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$";
+            Regex re = new Regex(emailRegex);
+            if (email == null) {
+                return false;            
+            }
+            if (!re.IsMatch(email))
+            {
+                return false;
+            }
+            return result;
+        }
 
 
 
@@ -409,7 +485,7 @@ namespace Monitoreo.Controllers
 
             try
             {
-                
+
                 if (ModelState.IsValid)
                 {
                     db.InscripcionesActividadesAcompanamiento.Remove(inscripcionActividadAcompanamiento);

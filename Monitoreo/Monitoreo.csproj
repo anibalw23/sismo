@@ -94,6 +94,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.17\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
     </Reference>
+    <Reference Include="Postal, Version=1.0.0.0, Culture=neutral, PublicKeyToken=45719375b8b4d528, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Postal.Mvc4.1.2.0\lib\net40\Postal.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.3.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RazorEngine.3.3.0\lib\net40\RazorEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -105,6 +113,30 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -122,32 +154,8 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.1\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <Private>True</Private>
@@ -233,6 +241,7 @@
     <Compile Include="Controllers\CoordinadorController.cs" />
     <Compile Include="Controllers\DistritoController.cs" />
     <Compile Include="Controllers\DocenteController.cs" />
+    <Compile Include="Controllers\EmailsController.cs" />
     <Compile Include="Controllers\EstudianteController.cs" />
     <Compile Include="Controllers\EvaluacionAcompanamientoController.cs" />
     <Compile Include="Controllers\EvaluacionAcompanamientoPreguntaController.cs" />
@@ -337,6 +346,7 @@
     <Compile Include="Models\BO\ViewModels\DocenteDetailsAcompananteVM.cs" />
     <Compile Include="Models\BO\ViewModels\EstadisticaCentro.cs" />
     <Compile Include="Models\BO\ViewModels\EvaluacionAcompanamientoVM.cs" />
+    <Compile Include="Models\BO\ViewModels\EvaluacionAcompanamientoVm\EvaluacionAcompanamientoRespuestasVM.cs" />
     <Compile Include="Models\BO\ViewModels\EvaluacionPersonalVM.cs" />
     <Compile Include="Models\BO\ViewModels\InscripcionAcompanamientoVM.cs" />
     <Compile Include="Models\BO\ViewModels\InscripcionCicloFormativoVm\InscripcionCicloFormativoVm.cs" />
@@ -373,7 +383,9 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\CustomModelBinder.cs" />
     <Compile Include="Utility\EnumCheckBoxList.cs" />
-    <Compile Include="Utility\EnumDropDownList.cs" />
+    <Compile Include="Utility\EnumDropDownList.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utility\Validation.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -398,7 +410,9 @@
     <Content Include="Content\css\fullcalendar.min.css" />
     <Content Include="Content\css\fullcalendar.print.css" />
     <Content Include="Content\css\hover.css" />
+    <Content Include="Content\css\jquery.dataTables.min.css" />
     <Content Include="Content\css\languages.min.css" />
+    <Content Include="Content\css\responsive.dataTables.min.css" />
     <Content Include="Content\css\select2-bootstrap.css" />
     <Content Include="Content\css\select2.css" />
     <Content Include="Content\css\styles.css" />
@@ -433,6 +447,7 @@
     <Content Include="Content\js\chosen.jquery.js" />
     <Content Include="Content\js\chosen.proto.js" />
     <Content Include="Content\js\dataTables.bootstrap.js" />
+    <Content Include="Content\js\dataTables.responsive.min.js" />
     <Content Include="Content\js\daypilot-all.min.js" />
     <Content Include="Content\js\jquery.appendGrid\jquery.appendGrid-1.6.0.css" />
     <Content Include="Content\js\jquery.appendGrid\jquery.appendGrid-1.6.0.js" />
@@ -443,6 +458,7 @@
     <Content Include="Content\js\jquery.appendGrid\test\Basic01.html" />
     <Content Include="Content\js\jquery.appendGrid\test\SubGrid01.html" />
     <Content Include="Content\js\jquery.dataTables.js" />
+    <Content Include="Content\js\jquery.dataTables.min.js" />
     <Content Include="Content\js\justgage-1.1.0.js" />
     <Content Include="Content\js\justgage-1.1.0.min.js" />
     <Content Include="Content\js\justgage.1.0.1.js" />
@@ -1204,6 +1220,12 @@
     <Content Include="Views\CicloFormativo\CicloInscripcionesVerificarDuplicado.cshtml" />
     <Content Include="Views\InscripcionActividadAcompanamiento\MisInscripcionesAcompanamiento.cshtml" />
     <Content Include="Views\InscripcionActividadAcompanamiento\InscripcionesPorFecha.cshtml" />
+    <Content Include="Views\CicloFormativo\CicloInscripcionesImportarFrom.cshtml" />
+    <Content Include="Views\Emails\Web.config" />
+    <Content Include="Views\Emails\EmailActividadAcompanamiento.cshtml" />
+    <Content Include="Views\Emails\_ViewStart.cshtml" />
+    <Content Include="Views\Emails\EmailActividadBorrar.cshtml" />
+    <Content Include="Views\Emails\EmailEvaluacionAcompanamiento.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1222,6 +1244,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\themes\base\minified\images\" />
+    <Folder Include="Views\PreviewEmail\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201504211955307_Initial.resx">

@@ -59,7 +59,8 @@ namespace Monitoreo.Models
         [Display(Name = "Tanda", ResourceType = typeof(Resources.T))]
         public PersonalTanda Tanda { get; set; }
 
-        public bool isActive { get; set; } // indica si el docente esta o no activo
+        [Display(Name = "Debe Cursar Ciclos Formativos")]
+        public bool isActive { get; set; } // indica si el docente debe cursar los Ciclos Formativos del Programa
 
 
         public virtual ICollection<InscripcionActividadAcompanamiento> inscripcionesActividadesacompanamiento { get; set; }

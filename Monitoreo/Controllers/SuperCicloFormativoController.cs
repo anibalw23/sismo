@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Monitoreo.Models;
 using Monitoreo.Models.DAL;
+using System.Threading.Tasks;
 
 namespace Monitoreo.Controllers
 {
@@ -41,6 +42,13 @@ namespace Monitoreo.Controllers
 
              return View(supercicloformativoes.OrderBy(c => c.nombre).ToList());
         }
+
+       
+
+
+
+
+
 
         // POST: SuperCicloFormativos
         [Route("SuperCiclosFormativos/GetDataJson")]

@@ -13,6 +13,9 @@ using Monitoreo.Models.BO;
 using System.Text;
 using Monitoreo.Helpers;
 using System.Threading.Tasks;
+using Monitoreo.Models.BO.ViewModels.EvaluacionAcompanamientoVm;
+using Postal;
+using System.Text.RegularExpressions;
 
 namespace Monitoreo.Controllers
 {
@@ -353,6 +356,9 @@ namespace Monitoreo.Controllers
             var respuestaTemp = new EvaluacionAcompanamientoRespuesta();
             string resultado = "OK";
             StringBuilder textoEmail = new StringBuilder();
+            List<EvaluacionAcompanamientoRespuestasVM> evaluacionAcompanamientoRespuestas = new List<EvaluacionAcompanamientoRespuestasVM>();
+
+
             if (evaluacion.RespuestasAcomp != null)
             {
                 string respuestasEvalRequest = Request.Form["respuestas"];
@@ -381,7 +387,9 @@ namespace Monitoreo.Controllers
                     {
                         db.Entry(resp).State = EntityState.Modified;
                     }
-                    textoEmail.AppendLine("<li> Pregunta: " + db.EvaluacionAcompanamientoPreguntas.Find(respuesta.PreguntaAcompId).Descripcion + " Respuesta: " + respuesta.Valor + "</li>");
+
+                    evaluacionAcompanamientoRespuestas.Add(new EvaluacionAcompanamientoRespuestasVM { pregunta = db.EvaluacionAcompanamientoPreguntas.Find(respuesta.PreguntaAcompId).Descripcion, respuesta = respuesta.Valor });
+                    //textoEmail.AppendLine("<li> Pregunta: " + db.EvaluacionAcompanamientoPreguntas.Find(respuesta.PreguntaAcompId).Descripcion + " Respuesta: " + respuesta.Valor + "</li>");
 
                 }
                 textoEmail.AppendLine("</ul>");
@@ -390,18 +398,71 @@ namespace Monitoreo.Controllers
             }
             InscripcionActividadAcompanamiento inscripcionActividad = await db.InscripcionesActividadesAcompanamiento.FindAsync(respuestaTemp.InscripcionActividadAcompanamientoId);
 
+
+            /*Enviar por Email de Verificacion*/
+            //Envia por Email Verificacion
+            dynamic email = new Email("EmailEvaluacionAcompanamiento");
+            email.IdInscripcion = inscripcionActividad.ID;
+            email.IdEvaluacion = evaluacion.Id;
+            email.TipoAcompanamiento = inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento;
+            email.cicloFormativo = inscripcionActividad.ActividadAcompanamiento.SuperCicloFormativo.nombre;
+            email.respuestas = evaluacionAcompanamientoRespuestas;
+
+            var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail }).FirstOrDefault();
+            email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
+            Personal personal = await db.Personal.FindAsync(inscripcionActividad.personalID);
+            email.docente = personal.Persona.NombreCompleto.ToString();
+            email.escuela = personal.Centro.Nombre;
+            email.fecha = inscripcionActividad.fecha;
+            email.horas = inscripcionActividad.horas;
+            email.area = inscripcionActividad.Area.ToString();
+            email.Subject = "Evaluación de Acompañamiento " + inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento + " Creada" + " Centro " + personal.Centro.Nombre;
+
+            if (verifyEmail(persona.mail))
+            {
+                email.To = "sismo@stat5.com" + "," + persona.mail;
+            }
+            else
+            {
+                email.To = "sismo@stat5.com";
+            }
+            email.Send();
+            /*End Enviar por email*/
+
+
             //Enviar por email
-            Personal personal = db.Personal.Find(inscripcionActividad.personalID);
-            string tituloEmail = inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString();
-            textoEmail.AppendLine("<h1>Ciclo Formativo: " + inscripcionActividad.ActividadAcompanamiento.SuperCicloFormativo.nombre + " " + inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString() + "</h1>");
-            textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividad.fecha + " horas: " + inscripcionActividad.horas + " Area: " + inscripcionActividad.Area + "</p>");
-            textoEmail.AppendLine("<h1>Creado Por: " + User.Identity.Name + "</h1>");
-            await Logger.LogEvent(User.Identity.Name, "Evaluacion de " + tituloEmail + " Creada", textoEmail.ToString(), "", DateTime.Now);
+            //Personal personal = db.Personal.Find(inscripcionActividad.personalID);
+            //string tituloEmail = inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString();
+            //textoEmail.AppendLine("<h1>Ciclo Formativo: " + inscripcionActividad.ActividadAcompanamiento.SuperCicloFormativo.nombre + " " + inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString() + "</h1>");
+            //textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividad.fecha + " horas: " + inscripcionActividad.horas + " Area: " + inscripcionActividad.Area + "</p>");
+            //textoEmail.AppendLine("<h1>Creado Por: " + User.Identity.Name + "</h1>");
+            //await Logger.LogEvent(User.Identity.Name, "Evaluacion de " + tituloEmail + " Creada", textoEmail.ToString(), "", DateTime.Now);
             //End Enviar por email
 
             return RedirectToAction("DocenteDetailsAcompanante", "Docente", new { id = inscripcionActividad.personalID });
 
         }
+
+
+        private bool verifyEmail(string email)
+        {
+            bool result = true;
+            string emailRegex = @"^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$";
+            Regex re = new Regex(emailRegex);
+            if (email == null)
+            {
+                return false;
+            }
+            if (!re.IsMatch(email))
+            {
+                return false;
+            }
+            return result;
+        }
+
+
+
+
 
 
 

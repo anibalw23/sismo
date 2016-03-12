@@ -1,0 +1,58 @@
+﻿
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Evaluacion de Acompañamiento </title>
+</head>
+<body>
+
+    <div style="max-width:1500px;border-style:solid;">
+        <div><h1 style="text-align:center">Evaluacion de Acompañamiento</h1></div>
+
+
+        <div style="background-color:#E3E6E3; max-width:1000px;padding:20px; margin: auto;">
+            <h2> Número de Identificación Acompañamiento : <span style="text-decoration: underline;">  @ViewBag.IdInscripcion</span> </h2>
+            <h2> Número de Identificación Evaluacion : <span style="text-decoration: underline;">  @ViewBag.IdEvaluacion</span> </h2>
+            <h2> Actividad de Acompañamiento: <span style="text-decoration: underline;"> @ViewBag.TipoAcompanamiento </span></h2>
+            <h2>Ciclo Formativo: <span style="text-decoration: underline;"> @ViewBag.cicloFormativo</span></h2>
+            <h2>Acompañante:<span style="text-decoration: underline;"> @ViewBag.acompanante </span></h2>
+            <h2>Docente: <span style="text-decoration: underline;"> @ViewBag.docente </span></h2>
+        </div>
+
+        <div style="margin:auto;max-width:1000px;">
+            <h3>Escuela: @ViewBag.escuela</h3>
+            <h3>Fecha: @ViewBag.fecha</h3>
+            <h3>Horas: @ViewBag.horas</h3>
+            <h3>Area: @ViewBag.area</h3>
+        </div>
+
+        <table style="border: 1px solid black;width: 100%">
+            <tr>
+                <th style="border: 1px solid black;text-align: left;padding: 15px;background-color: #DC381F;color: white;">Pregunta</th>
+                <th style="border: 1px solid black;text-align: left;padding: 15px;background-color: #DC381F;color: white;">Respuesta</th>
+            </tr>
+            <tbody>
+
+                @if (@ViewBag.respuestas != null)
+                {
+                    foreach (var eval in @ViewBag.respuestas)
+                    {
+                        <tr><td style="border: 1px solid black;padding: 15px;">@eval.pregunta</td><td>@eval.respuesta</td></tr>
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+    <p style=""> Esta solicitud fue enviada a las @DateTime.Now</p>
+
+
+</body>
+</html>
+
+
+
+

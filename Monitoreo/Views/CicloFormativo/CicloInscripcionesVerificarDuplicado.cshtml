@@ -1,5 +1,12 @@
 ﻿@model Monitoreo.Models.CicloFormativo
 
+<style type="text/css">
+    .participanteRepetido {
+        color:red;
+   }
+
+</style>
+
 <div class="panel-body">
     <div id="msjPanel"></div>
 
@@ -63,6 +70,10 @@
                 data: JSON.stringify({ ciclosIds: selectedCiclos, docentesIds: selectedDocentes }),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
+                    $('#CreateModal').modal('toggle');
+                    $(data).each(function (k, v) {
+                        $("#tr_participante_" + v.Id).addClass('participanteRepetido');
+                    });
                     //$('#modalBody').html(data);
                     //$('#CreateModal').modal({ show: true, backdrop: true });
                 }

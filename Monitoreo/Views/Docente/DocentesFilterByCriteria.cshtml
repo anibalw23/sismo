@@ -155,7 +155,7 @@
                 success: function (data) {
                     $("#loadingDiv").hide();
                     $.each(data.data, function (i, data) {
-                        $("#tblDocentes").append("<tr><td>   <input type='checkbox' id='participante_'" + data.id + " value=" + data.id + " /> </td> <td>" + data.cedula + "</td> <td> " + data.nombre + "</td> <td>" + data.areas + "</td> <td>" + data.grados + " </td>  </tr>");
+                        $("#tblDocentes").append("<tr id='tr_participante_" + data.id + "'><td>   <input type='checkbox' id='participante_'" + data.id + " value=" + data.id + " /> </td> <td>" + data.cedula + "</td> <td> " + data.nombre + "</td> <td>" + data.areas + "</td> <td>" + data.grados + " </td>  </tr>");
                     });
                 }
             });

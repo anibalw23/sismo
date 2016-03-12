@@ -1,0 +1,35 @@
+﻿
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Actividad de Acompañamiento Borrada </title>
+</head>
+<body>
+
+    <img style="position:absolute; " src="https://www.google.com/a/ceed.edu.do/images/logo.gif?alpha=1&service=google_default" />
+    <div style="max-width:1500px;border-style:solid;">
+        <div><h1 style="text-align:center">Actividad de Acompañamiento</h1></div>
+
+
+        <div style="background-color:#E3E6E3; max-width:1000px;padding:20px; margin: auto;">
+            <h2> Número de Identificación : <span style="text-decoration: underline;">  @ViewBag.IdInscripcion</span> </h2>
+            <h2> Actividad de Acompañamiento: <span style="text-decoration: underline;"> @ViewBag.TipoAcompanamiento </span></h2>
+            <h2>Ciclo Formativo: <span style="text-decoration: underline;"> @ViewBag.cicloFormativo</span></h2>
+            <h2>Acompañante:<span style="text-decoration: underline;"> @ViewBag.acompanante </span></h2>
+            <h2>Docente: <span style="text-decoration: underline;"> @ViewBag.docente </span></h2>
+        </div>
+
+        <div style="margin:auto;max-width:1000px;">
+            <h3>Escuela: @ViewBag.escuela</h3>
+            <h3>Fecha: @ViewBag.fecha</h3>
+            <h3>Horas: @ViewBag.horas</h3>
+            <h3>Area: @ViewBag.area</h3>
+        </div>
+    </div>
+    <p style=""> Esta solicitud fue enviada a las @DateTime.Now</p>
+
+
+</body>
+</html>
+
+

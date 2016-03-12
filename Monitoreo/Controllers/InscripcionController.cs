@@ -260,16 +260,7 @@ namespace Monitoreo.Controllers
                         }
 
                         db.Inscripciones.Add(inscripcion);
-                        await db.SaveChangesAsync();
-                        //Enviar por email
-                        string tituloEmail = "Inscripción Actividad Presencial";
-                        StringBuilder textoEmail = new StringBuilder();
-                        CicloFormativo ciclo = db.CiclosFormativos.Find(inscripcion.CicloFormativoId);
-                        textoEmail.AppendLine("<h1>Actividad Formativa: " + ciclo.Tema + "</h1>");
-                        textoEmail.AppendLine("<h2>Creado Por: " + User.Identity.Name + "</h2>");
-                        textoEmail.AppendLine("<p>" + "ParticipanteId: " + inscripcion.ParticipanteId + "</p>");
-                        await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " creada " + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
-                        //End Enviar por email
+                        await db.SaveChangesAsync();                        
                     }
                     catch(Exception e){
                         var msj = e.Message;
@@ -321,17 +312,7 @@ namespace Monitoreo.Controllers
                 try
                 {
                     db.Inscripciones.Remove(inscripcionDelete);
-                    await db.SaveChangesAsync();
-
-                    //Enviar por email
-                    string tituloEmail = "Desinscripción Actividad Presencial";
-                    StringBuilder textoEmail = new StringBuilder();
-                    CicloFormativo ciclo = db.CiclosFormativos.Find(inscripcionDelete.CicloFormativoId);
-                    textoEmail.AppendLine("<h1>Actividad Formativa: " + ciclo.Tema + "</h1>");
-                    textoEmail.AppendLine("<h2>Creado Por: " + User.Identity.Name + "</h2>");
-                    textoEmail.AppendLine("<p>" + "Nombre: " + inscripcionDelete.ParticipanteId + "</p>");
-                    await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " borrada " + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
-                    //End Enviar por email
+                    await db.SaveChangesAsync();                 
                 }
                 catch (Exception e)
                 {
