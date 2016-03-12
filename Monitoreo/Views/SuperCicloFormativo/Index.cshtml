@@ -4,12 +4,30 @@
     ViewBag.Title = "Lista de Ciclos Formativos";
 }
 
+
+<style type="text/css">
+
+    #group-id-dataTable_docentes {
+        background-color:#ffd800;
+        color:black;
+    }
+    #group-id-dataTable_gestion {
+        background-color:#488AC7;
+        color:white;
+    }
+    #group-id-dataTable_transversal {
+        background-color:#C78548;
+        color:white;
+    }
+      
+</style>
+
 <div class="panel-heading">
     <h3><i class="fa fa-retweet" style="font-size: 1.5em; color:white;margin-left:auto;margin-right:auto;"></i> @ViewBag.Title</h3>
 </div>
 
 <div class="panel-body">
-    <table id="dataTable" class="table table-bordered table-striped table-hover">
+    <table id="dataTable" class="table table-bordered">
         <thead>
             <tr>
                 <th>
@@ -114,18 +132,30 @@
 
 @section Styles {
     @Styles.Render("~/bundles/dataTables/css")
+
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/dataTables/js")
-
+    <script src="~/Content/js/jquery.dataTables.rowGrouping.js"></script>
     <script type="text/javascript">
         (function ($) {
+           
             var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
                                <a href="@Url.Action("Edit", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Editar")</a>\
                                <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Borrar")</a>';
 
-            $('#dataTable').dataTable();
+            $('#dataTable').dataTable().rowGrouping({
+                bExpandableGrouping: true,
+                iGroupingColumnIndex: 5,
+                sGroupingColumnSortDirection: "asc",
+                iGroupingOrderByColumnIndex: 5,
+                sGroupLabelPrefix: "Tipo de Ciclo Formativo ",
+                oHideEffect: { method: "hide", duration: "slow", easing: "linear" },
+                oShowEffect: { method: "show", duration: "slow", easing: "linear" },                asExpandedGroups: [],
+            });
+
+
         })(jQuery);
     </script>
 }

@@ -417,6 +417,9 @@
     <Content Include="Content\css\select2.css" />
     <Content Include="Content\css\styles.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\sort_asc.png" />
+    <Content Include="Content\images\sort_both.png" />
+    <Content Include="Content\images\sort_desc.png" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\img\centrosLabel.png" />
     <Content Include="Content\img\centros_educativos.png" />
@@ -459,6 +462,7 @@
     <Content Include="Content\js\jquery.appendGrid\test\SubGrid01.html" />
     <Content Include="Content\js\jquery.dataTables.js" />
     <Content Include="Content\js\jquery.dataTables.min.js" />
+    <Content Include="Content\js\jquery.dataTables.rowGrouping.js" />
     <Content Include="Content\js\justgage-1.1.0.js" />
     <Content Include="Content\js\justgage-1.1.0.min.js" />
     <Content Include="Content\js\justgage.1.0.1.js" />
