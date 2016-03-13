@@ -16,7 +16,7 @@
     <div class="panel-body">
         <div class="form-horizontal">
             @Html.ValidationSummary(true)
-
+              
                 @Html.EditorFor(model => model.nombre)
                 @Html.EditorFor(model => model.FechaInicio)
                 @Html.EditorFor(model => model.FechaFinalizacion)
@@ -24,6 +24,7 @@
                 @Html.EditorFor(model => model.Nivel)
                 @Html.EditorFor(model => model.Area)
                 @Html.EditorFor(model => model.Ciclo)
+                <input type="checkbox" name="createActividadesAcompanamiento" checked /> Crear Actividades de Acompañamiento Automaticamente
                
         </div>
     </div>

@@ -374,9 +374,23 @@ namespace Monitoreo.Controllers
                 ModelState.AddModelError("Error2345", "no se encontró el usuario");
             }
 
-            var ciclosFormativos = await db.SuperCicloFormativoes.AsNoTracking().Select(x => new { x.Id, x.nombre, x.CategoriaSuperCiclo, x.FechaFinalizacion, x.FechaInicio }).Where(s => s.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes).Where(f => f.FechaInicio < DateTime.Now).Where(f => f.FechaFinalizacion > DateTime.Now).OrderBy(f => f.FechaInicio.Year).ThenBy(y => y.FechaInicio.Month).ThenBy(y => y.FechaInicio.Day).ToListAsync();
+            var ciclosFormativos = await db.SuperCicloFormativoes.AsNoTracking().Select(x => new { x.Id, x.nombre, x.CategoriaSuperCiclo, x.FechaFinalizacion, x.FechaInicio, x.CiclosFormativos }).Where(s => s.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes).Where(f => f.FechaInicio < DateTime.Now).Where(f => f.FechaFinalizacion > DateTime.Now).OrderBy(f => f.FechaInicio.Year).ThenBy(y => y.FechaInicio.Month).ThenBy(y => y.FechaInicio.Day).ToListAsync();
             List<SuperCicloFormativoVM> ciclosFormativosVm = new List<SuperCicloFormativoVM>();
-            foreach (var ciclo in ciclosFormativos)
+
+            /*Esto lo agrege para poner solo los ciclos formativos en que esta inscrito el docente*/
+            List<int> superIds = new List<int>();
+            var inscripcionesParticipante = personal != null ? db.Inscripciones.AsNoTracking().Select(x => new { x.CicloFormativo.SuperCicloFormativoId, x.ParticipanteId }).Where(p => p.ParticipanteId == personal.PersonaId).ToList(): null;
+
+            if (inscripcionesParticipante != null) {
+                var superCiclosIds = inscripcionesParticipante.Select(x => new { x.SuperCicloFormativoId }).Distinct().ToList();
+                foreach (var super in superCiclosIds)
+                {
+                    superIds.Add(super.SuperCicloFormativoId);
+                }
+            }            
+            /*End*/
+
+            foreach (var ciclo in ciclosFormativos.Where(s => superIds.Contains(s.Id)))
             {
                 ciclosFormativosVm.Add(new SuperCicloFormativoVM { Id = ciclo.Id, nombre = ciclo.nombre });
             }
@@ -413,7 +427,23 @@ namespace Monitoreo.Controllers
             }
             var ciclosFormativos = db.SuperCicloFormativoes.AsNoTracking().Select(x => new { x.Id, x.nombre, x.CategoriaSuperCiclo, x.FechaFinalizacion, x.FechaInicio }).Where(s => s.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes).Where(f => f.FechaInicio < DateTime.Now).Where(f => f.FechaFinalizacion > DateTime.Now).OrderBy(f => f.FechaInicio.Year).ThenBy(y => y.FechaInicio.Month).ThenBy(y => y.FechaInicio.Day).ToList();
             List<SuperCicloFormativoVM> ciclosFormativosVm = new List<SuperCicloFormativoVM>();
-            foreach (var ciclo in ciclosFormativos)
+
+            /*Esto lo agrege para poner solo los ciclos formativos en que esta inscrito el docente*/
+            List<int> superIds = new List<int>();
+            var inscripcionesParticipante = db.Inscripciones.AsNoTracking().Select(x => new { x.CicloFormativo.SuperCicloFormativoId, x.ParticipanteId }).Where(p => p.ParticipanteId == docente.PersonaId).ToList();
+
+            if (inscripcionesParticipante != null)
+            {
+                var superCiclosIds = inscripcionesParticipante.Select(x => new { x.SuperCicloFormativoId }).Distinct().ToList();
+                foreach (var super in superCiclosIds)
+                {
+                    superIds.Add(super.SuperCicloFormativoId);
+                }
+            }
+            /*End*/
+
+
+            foreach (var ciclo in ciclosFormativos.Where(s => superIds.Contains(s.Id)))
             {
                 ciclosFormativosVm.Add(new SuperCicloFormativoVM { Id = ciclo.Id, nombre = ciclo.nombre });
             }
@@ -447,7 +477,23 @@ namespace Monitoreo.Controllers
 
             var ciclosFormativos = await db.SuperCicloFormativoes.AsNoTracking().Select(x => new { x.Id, x.nombre, x.CategoriaSuperCiclo, x.FechaFinalizacion, x.FechaInicio }).Where(s => s.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes).Where(f => f.FechaInicio < DateTime.Now).Where(f => f.FechaFinalizacion > DateTime.Now).OrderBy(f => f.FechaInicio.Year).ThenBy(y => y.FechaInicio.Month).ThenBy(y => y.FechaInicio.Day).ToListAsync();
             List<SuperCicloFormativoVM> ciclosFormativosVm = new List<SuperCicloFormativoVM>();
-            foreach (var ciclo in ciclosFormativos)
+
+            /*Esto lo agrege para poner solo los ciclos formativos en que esta inscrito el docente*/
+            List<int> superIds = new List<int>();
+            var inscripcionesParticipante = db.Inscripciones.AsNoTracking().Select(x => new { x.CicloFormativo.SuperCicloFormativoId, x.ParticipanteId }).Where(p => p.ParticipanteId == docente.PersonaId).ToList();
+
+            if (inscripcionesParticipante != null)
+            {
+                var superCiclosIds = inscripcionesParticipante.Select(x => new { x.SuperCicloFormativoId }).Distinct().ToList();
+                foreach (var super in superCiclosIds)
+                {
+                    superIds.Add(super.SuperCicloFormativoId);
+                }
+            }
+            /*End*/
+
+
+            foreach (var ciclo in ciclosFormativos.Where(s => superIds.Contains(s.Id)))
             {
                 ciclosFormativosVm.Add(new SuperCicloFormativoVM { Id = ciclo.Id, nombre = ciclo.nombre });
             }

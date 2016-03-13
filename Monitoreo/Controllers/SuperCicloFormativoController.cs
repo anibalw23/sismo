@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Monitoreo.Models;
 using Monitoreo.Models.DAL;
 using System.Threading.Tasks;
+using Monitoreo.Models.BO;
 
 namespace Monitoreo.Controllers
 {
@@ -183,10 +184,23 @@ namespace Monitoreo.Controllers
         {
 
             superCicloFormativo.CreadoPor = User.Identity.Name;
+            string createActividadesAcompanamiento = Request.Form["createActividadesAcompanamiento"];            
+
             if (ModelState.IsValid)
             {
+                if (createActividadesAcompanamiento != null) //Crea las actividades de Acompañamiento Correspondientes
+                {
+                    var tiposAcompanamientos = Enum.GetValues(typeof(TipoAcompanamiento)).Cast<TipoAcompanamiento>();
+                    superCicloFormativo.ActividadesAcompanamiento = new List<ActividadAcompanamiento>();
+                    foreach (var tipo in tiposAcompanamientos)
+                    {
+                        ActividadAcompanamiento actividad = new ActividadAcompanamiento { TipoAcompanamiento = tipo, SuperCicloFormativo = superCicloFormativo };
+                        superCicloFormativo.ActividadesAcompanamiento.Add(actividad);
+                    }
+                }                
                 db.SuperCicloFormativoes.Add(superCicloFormativo);
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 

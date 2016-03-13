@@ -11,6 +11,8 @@ using Monitoreo.Models.DAL;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Text.RegularExpressions;
+using Monitoreo.Models.BO.ViewModels;
+using Monitoreo.Models.BO.ViewModels.SuperCicloFormativoVm;
 
 namespace Monitoreo.Controllers
 {
@@ -75,7 +77,59 @@ namespace Monitoreo.Controllers
         }
 
 
+        public async Task<ActionResult> PersonalAdministrativoDetailsAcompanante(int id)
+        {
+            DocenteDetailsAcompananteVM docenteDetails = new DocenteDetailsAcompananteVM();
+            string cedula = User.Identity.Name;
+            List<Inscripcion> inscripciones = new List<Inscripcion>();
+            List<CicloFormativo> ciclosDocente = new List<CicloFormativo>();
+            Acompanante acompanante = new Acompanante();
 
+            List<AsistenciaAcompanamientoVM> asistenciasActividadesAcompanamiento = new List<AsistenciaAcompanamientoVM>();
+            docenteDetails.asistenciasAcompanamientos = asistenciasActividadesAcompanamiento;
+
+
+            PersonalAdministrativo personal = await db.PersonalAdministrativo.FindAsync(id);  //Cambie esto ahora (probar *)            
+            if (personal != null)
+            {
+                docenteDetails.cedula = personal.Persona.Cedula;
+                docenteDetails.nombreDocente = personal.Persona.NombreCompleto;
+                docenteDetails.sexo = personal.Persona.Sexo.ToString();
+                docenteDetails.tanda = personal.Tanda.ToString();
+                docenteDetails.telefono = personal.Persona.Telefono.Celular;
+                docenteDetails.edad = personal.Persona.Edad;
+
+            }
+            else
+            {
+                ModelState.AddModelError("Error2345", "no se encontró el usuario");
+            }
+
+            var ciclosFormativos = await db.SuperCicloFormativoes.AsNoTracking().Select(x => new { x.Id, x.nombre, x.CategoriaSuperCiclo, x.FechaFinalizacion, x.FechaInicio, x.CiclosFormativos }).Where(s => s.CategoriaSuperCiclo == CategoriaSuperCiclo.Gestion).Where(f => f.FechaInicio < DateTime.Now).Where(f => f.FechaFinalizacion > DateTime.Now).OrderBy(f => f.FechaInicio.Year).ThenBy(y => y.FechaInicio.Month).ThenBy(y => y.FechaInicio.Day).ToListAsync();
+            List<SuperCicloFormativoVM> ciclosFormativosVm = new List<SuperCicloFormativoVM>();
+
+            /*Esto lo agrege para poner solo los ciclos formativos en que esta inscrito el docente*/
+            List<int> superIds = new List<int>();
+            var inscripcionesParticipante = personal != null ? db.Inscripciones.AsNoTracking().Select(x => new { x.CicloFormativo.SuperCicloFormativoId, x.ParticipanteId }).Where(p => p.ParticipanteId == personal.PersonaId).ToList() : null;
+
+            if (inscripcionesParticipante != null)
+            {
+                var superCiclosIds = inscripcionesParticipante.Select(x => new { x.SuperCicloFormativoId }).Distinct().ToList();
+                foreach (var super in superCiclosIds)
+                {
+                    superIds.Add(super.SuperCicloFormativoId);
+                }
+            }
+            /*End*/
+
+            foreach (var ciclo in ciclosFormativos.Where(s => superIds.Contains(s.Id)))
+            {
+                ciclosFormativosVm.Add(new SuperCicloFormativoVM { Id = ciclo.Id, nombre = ciclo.nombre });
+            }
+            docenteDetails.ciclosFormativos.AddRange(ciclosFormativosVm);
+
+            return View(docenteDetails);
+        }
 
 
 

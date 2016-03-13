@@ -1,4 +1,5 @@
-﻿using Monitoreo.Models.BO.EvaluacionAcompanamiento;
+﻿using Monitoreo.Models.BO;
+using Monitoreo.Models.BO.EvaluacionAcompanamiento;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,6 +26,7 @@ namespace Monitoreo.Models
         public virtual ICollection<CicloFormativo> CiclosFormativos { get; set; }
 
         public virtual ICollection<EvaluacionAcompanamiento> EvaluacionAcompanamiento { get; set; }
+        public virtual ICollection<ActividadAcompanamiento> ActividadesAcompanamiento { get; set; }
 
         [Display(Name = "Nivel", ResourceType = typeof(Resources.T))]
         [System.ComponentModel.DataAnnotations.UIHint("Enum")]
