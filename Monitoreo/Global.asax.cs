@@ -59,6 +59,49 @@ namespace Monitoreo
                 configuration.For<AccountController>(x => x.EditRol(default(string))).RequireAnyRole("Administrador");
                 configuration.For<AccountController>(x => x.GetUsersJson(null)).RequireAnyRole("Administrador");
 
+                //DocenteController
+                configuration.For<DocenteController>(x => x.Index()).RequireAnyRole(new[] { "Administrador", "Acompanante", "EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.GetDataJson(null)).RequireAnyRole(new[] { "Administrador", "Acompanante", "EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.DocentesFilterByCriteria()).RequireAnyRole(new[] { "Administrador","Acompanante","AdministradorTransversal","Coordinador","Visualizador","EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.GetDocenteByCentrosAreasGrados(null, null, null, true)).RequireAnyRole(new[] { "Administrador","Acompanante","AdministradorTransversal","Coordinador","Visualizador","EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.GetActividadesAcompompanamientoIds(0)).RequireAnyRole(new[] { "Administrador","Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.GetActividadesPresencialesByCicloByPersona(0,0)).RequireAnyRole(new[] { "Administrador","Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.GetInscripcionesActividadByCicloPersonaId(0, 0, 0, 0)).RequireAnyRole(new[] { "Administrador","Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.InsripcionActividadesAcompanamientoByCicloPersonaId(0, 0, null, null, 0)).RequireAnyRole(new[] { "Administrador","Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.DocenteDetailsAcompanante(0)).RequireAnyRole(new[] { "Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.DocenteDetailsCoordinador(0)).RequireAnyRole(new[] { "Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.DocenteDetailsCoordinadorInicial(0, 0)).RequireAnyRole(new[] { "Acompanante","Coordinador" });
+                configuration.For<DocenteController>(x => x.CentroDocentes(0)).RequireAnyRole(new[] { "Administrador","EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.Details(0)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular", "Acompanante" });
+                configuration.For<DocenteController>(x => x.CreateModal()).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.CreateModal(null)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.Create()).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.Create(null)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.CreatePersonalMateria(0)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.CreatePersonalMateria(null)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.EditPersonalMateria(null, null)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.EditModal(0)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<DocenteController>(x => x.setActive(0, false)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<DocenteController>(x => x.Delete(null, null)).RequireAnyRole(new[] { "Administrador" });
+
+                //CentrosController
+                configuration.For<CentroController>(x => x.Index()).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<CentroController>(x => x.GetDataJson(null)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<CentroController>(x => x.DistritoCentros(0)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<CentroController>(x => x.Details(0)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<CentroController>(x => x.Create()).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<CentroController>(x => x.Edit(0)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<CentroController>(x => x.Delete(0)).RequireAnyRole(new[] { "Administrador" });
+                
+                //RedesController
+                configuration.For<RedController>(x => x.Index()).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<RedController>(x => x.GetDataJson(null)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<RedController>(x => x.DistritoRedes(0)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<RedController>(x => x.Details(0)).RequireAnyRole(new[] { "Administrador", "EspecialistaCurricular" });
+                configuration.For<RedController>(x => x.Edit(0)).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<RedController>(x => x.Create()).RequireAnyRole(new[] { "Administrador" });
+                configuration.For<RedController>(x => x.Delete(null)).RequireAnyRole(new[] { "Administrador" });
+
 
             });
 

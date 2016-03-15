@@ -18,7 +18,13 @@
         @Html.EditorFor(model => model.fecha, new { @class = "col-xs-3" })
         @Html.EditorFor(model => model.horas, new { @class = "col-xs-3" })
         @Html.EditorFor(model => model.Area, new { @class = "col-xs-3" })
+        @Html.EditorFor(model => model.Grado, new { @class = "col-xs-3" })
+        <div class="form-group">
+            @Html.EditorFor(model => model.comentario, new { @class = "form-control" })
+        </div>
+       
     </div>
+
     <div class="msjError" style="color:red;"></div>
 </div>
 
@@ -41,6 +47,8 @@
             var fecha = $("#fecha").val();
             var horas = Number($("#horas").val());
             var Area = $("#Area").val();
+            var Comentario = $("#comentario").val();
+            var Grado = $("#Grado").val();
 
             if (horas > 0 && horas < 10) {
                 $(".msjError").hide();
@@ -51,6 +59,8 @@
                     "fecha": fecha,
                     "horas": horas,
                     "Area": Area,
+                    "comentario": Comentario,
+                    "Grado": Grado,
                 }
                 $.ajax({
                     type: "POST",

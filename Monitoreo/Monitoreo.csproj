@@ -1231,6 +1231,7 @@
     <Content Include="Views\Emails\EmailActividadBorrar.cshtml" />
     <Content Include="Views\Emails\EmailEvaluacionAcompanamiento.cshtml" />
     <Content Include="Views\PersonalAdministrativo\PersonalAdministrativoDetailsAcompanante.cshtml" />
+    <Content Include="Views\Emails\EmailDocenteIsActive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

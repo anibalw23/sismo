@@ -50,9 +50,11 @@
             @Html.EditorFor(model => model.Nombres)
             @Html.EditorFor(model => model.PrimerApellido)
             @Html.EditorFor(model => model.SegundoApellido)
+            @Html.EditorFor(model => model.mail)
             @Html.EditorFor(model => model.FechaNacimiento)
             @Html.EditorFor(model => model.LugarNacimiento)
             @Html.EditorFor(model => model.Sexo)
+            
             <div class="form-group">
                 @Html.LabelFor(model => model.GrupoEtnicoId, Resources.T.ResourceManager.GetString("GrupoEtnico"), new { @class = "control-label col-sm-3" })
                 <div class="col-sm-4">

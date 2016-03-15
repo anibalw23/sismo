@@ -464,6 +464,10 @@ namespace Monitoreo.Controllers
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
             List<PersonalCentroViewModel> pcsFinal = new List<PersonalCentroViewModel>();
             List<PersonalCentroViewModel> pcsFinalRemoved = new List<PersonalCentroViewModel>();
+            if (redID == null) {
+                redID = 0;
+            }
+
 
             var docentes = db.Docentes.Include(p => p.Persona).Where(c => c.Centro.RedId == redID).ToList();
             foreach (var d in docentes)

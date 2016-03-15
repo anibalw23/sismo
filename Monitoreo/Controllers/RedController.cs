@@ -18,7 +18,7 @@ namespace Monitoreo.Controllers
 
         // GET: Redes
         [Route("Redes")]
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador")]
         public ActionResult Index()
         {
             //var redes = db.Redes.Include(r => r.CentroSede).Include(r => r.Distrito);
@@ -27,7 +27,7 @@ namespace Monitoreo.Controllers
 
         // POST: Redes
         [HttpPost]
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador")]
         public ActionResult GetDataJson(DatatablesParams values)
         {
             var redes = db.Redes.Select(x => new { DT_RowId = x.Id, x.Codigo, x.Nombre, Distrito = x.Distrito.Nombre, CentroSede = x.CentroSede.Nombre });
@@ -69,7 +69,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: RedCentros
-        [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador,Acompanante,Coordinador")]
         public ActionResult DistritoRedes(int DistritoId)
         {
             var centros = db.Redes.Include(r => r.Distrito).Where(s => s.DistritoId == DistritoId);
@@ -81,7 +81,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Red/5/Details
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -152,7 +152,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Red/5/Edit
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -267,7 +267,7 @@ namespace Monitoreo.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
         public JsonResult GetRedesByDistritosIds(int[] ints)
         {
 

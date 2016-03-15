@@ -4,6 +4,7 @@
     ViewBag.Title = @Resources.T.ResourceManager.GetString("Docentes");
 }
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <div class="panel-heading">
     <h3>@ViewBag.Title</h3>
@@ -30,6 +31,10 @@
 </a>*@
 
 
+<div id="dialog" title="Confirmation Required">
+    Desea Cambiar el estado de este docente?
+</div>
+
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -50,10 +55,15 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/dataTables/js")
+    @Scripts.Render("~/bundles/jqueryui")
 
     <script type="text/javascript">
     var table;
-    (function ($) {
+      (function ($) {
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
         var actionsTemplate = '<a href="@Url.Action("Details", new { id = "ID_Holder" })" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")</a>\
                                <a onclick="" id="editDocenteModal" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editar</a>\
                                <a href="@Url.Action("Delete", new { id = "ID_Holder" })" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Desinscribir</a>';
@@ -74,12 +84,11 @@
                     {
                         data: 'isActive',
                         "render": function (data, type, row) {
-                            console.log(data);
                             if (data == true) {
-                                return '<div style="text-align:center;"><i style="color:green" class="fa fa-check"></i></div>';
+                                return '<div style="text-align:center;" onclick="setActive(' + row.DT_RowId + ',false, this)"><i style="color:green" class="fa fa-check"></i></div>';
                             }
                             else {
-                                return '<div style="text-align:center;"><i style="color:red;" class="fa fa-arrows-alt"></i></div>';
+                                return '<div style="text-align:center;" onclick="setActive(' + row.DT_RowId + ',true, this)"><i style="color:red;" class="fa fa-arrows-alt"></i></div>';
                             }                            
                         },
                     },
@@ -106,6 +115,54 @@
 
     })(jQuery);
 
+        function setActive(docenteId ,state, element) {
+            var estadoEnviar;
+            var iElement = $(element).find("i");
+
+            iElementClass = $(iElement).attr('class');
+            console.log(iElementClass);
+            if (iElementClass == 'fa fa-arrows-alt') {
+                state = true;
+            }
+            else {
+                state = false;
+            }
+
+            $("#dialog").dialog('option', 'buttons', {
+                "Confirm": function () {
+                    $.ajax({
+                        url: '@Url.Action("setActive","Docente")' + "?docenteId=" + docenteId + "&state=" + state,
+                        type: 'POST',
+                        success: function (result) {                           
+                            if (result.result == "OK") {
+                                if (state == true) {                                    
+                                    iElement.switchClass("fa-arrows-alt", "fa-check", 200, "easeInOutQuad").css('color', 'green');
+                                }
+                                else {
+                                    iElement.switchClass("fa-check", "fa-arrows-alt", 200, "easeInOutQuad").css('color', 'red');
+                                }
+                            }
+                            if (result.result == "ERROR") {
+                                alert("Ha ocurrido un error cambiando el estado, favo contacte a su administrador!!");
+                            }
+
+                            $("#dialog").dialog("close");
+
+                        }
+                    });
+
+
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            });
+
+            $("#dialog").dialog("open");
+
+                  
+        
+   }
 
 
     function showBLPopup(url, title) {

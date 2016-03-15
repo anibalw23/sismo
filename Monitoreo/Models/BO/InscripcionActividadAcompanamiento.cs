@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -20,5 +21,14 @@ namespace Monitoreo.Models.BO
 
         [System.ComponentModel.DataAnnotations.UIHint("Enum")]
         public DocenteArea Area { get; set; }
+
+        [System.ComponentModel.DataAnnotations.UIHint("Enum")]
+        public Grado Grado { get; set; }
+        
+        //[DataType(DataType.MultilineText)]
+        public string comentario { get; set; }
+
+        public string userId { get; set; }
+
     }
 }

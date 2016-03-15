@@ -53,7 +53,7 @@ namespace Monitoreo.Controllers
             }
             if (centroID == 0)
             {
-                ViewBag.centroList = db.Centros.Select(x => new { x.Id, x.Nombre }).ToList();
+                ViewBag.centroList = new SelectList(db.Centros.Select(x => new { x.Id, x.Nombre }).ToList(), "Id", "Nombre");
             }
 
             return View();
@@ -215,7 +215,7 @@ namespace Monitoreo.Controllers
             {
                 try
                 {
-
+                    inscripcion.userId = User.Identity.Name;
                     inscripcion.horas = Math.Abs(inscripcion.horas); // para evitar valores negativos
                     db.InscripcionesActividadesAcompanamiento.Add(inscripcion);
                     await db.SaveChangesAsync();
@@ -240,6 +240,8 @@ namespace Monitoreo.Controllers
                     email.fecha = inscripcion.fecha;
                     email.horas = inscripcion.horas;
                     email.area = inscripcion.Area;
+                    email.comentario = inscripcion.comentario;
+                    email.grado = inscripcion.Grado;
                     email.Subject = "Actividad de Acompañamiento " + actividad.TipoAcompanamiento + " Creada" + " Centro " + personal.Centro.Nombre;
                     if (verifyEmail(persona.mail))
                     {

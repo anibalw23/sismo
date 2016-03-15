@@ -19,7 +19,7 @@ namespace Monitoreo.Controllers
         private MonitoreoContext db = new MonitoreoContext();
 
         // GET: Centros
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador")]
         [Route("Centros")]
         public ActionResult Index()
         {
@@ -76,7 +76,7 @@ namespace Monitoreo.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
+        //[Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
         public JsonResult GetCentrosByRedesIds(int[] ints)
         {
 
@@ -200,7 +200,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Centro/5/Edit
-        [Authorize(Roles = "Administrador")]       
+        //[Authorize(Roles = "Administrador")]       
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -243,7 +243,7 @@ namespace Monitoreo.Controllers
 
             return View(centro);
         }
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         // GET: /Centro/5/Delete
         //[OutputCache(Duration = int.MaxValue, VaryByParam = "id")]
         public ActionResult Delete(int? id)

@@ -18,6 +18,7 @@ using System.Data.Entity.Validation;
 using Monitoreo.Models.BO.ViewModels.SuperCicloFormativoVm;
 using Monitoreo.Models.BO.ViewModels.CalendarioCicloFormativoVm;
 using System.Text;
+using Postal;
 
 namespace Monitoreo.Controllers
 {
@@ -29,7 +30,7 @@ namespace Monitoreo.Controllers
 
         // GET: Docentes
         [Route("Docentes")]
-        [Authorize(Roles = "Administrador, Acompanante")]
+        //[Authorize(Roles = "Administrador,Acompanante,EspecialistaCurricular")]
         public ActionResult Index()
         {
             var personal = db.Docentes.Take(10).Include(d => d.Centro).Include(d => d.Persona);
@@ -60,8 +61,8 @@ namespace Monitoreo.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
-        public async Task<JsonResult> GetDocenteByCentrosAreasGrados(int[] centrosIds, int[] areasIds, int[] gradosIDs)
+        //[Authorize(Roles = "Administrador,Acompanante,Coordinador")]
+        public async Task<JsonResult> GetDocenteByCentrosAreasGrados(int[] centrosIds, int[] areasIds, int[] gradosIDs, bool isActive)
         {     
             //Areas
             DocenteArea docArea = new DocenteArea();
@@ -91,11 +92,26 @@ namespace Monitoreo.Controllers
            
 
             List<Docente> docentes = new List<Docente>();
-            docentes = await db.Docentes.Where(c => centrosIds.Contains(c.CentroId))
+           
+            if (isActive == true) //Los Docentes que deben cursar los Ciclos Formativos Incluidos
+            {
+                docentes = await db.Docentes.Where(c => centrosIds.Contains(c.CentroId))
                                         .Where(m => m.Materias.Any(x => (x.Area & (docArea)) != 0))
                                         .Where(m => m.Materias.Any(x => (x.Grados & (docGrado)) != 0))
+                                        .Where(a => a.isActive == true)
                                         .Distinct()
                                         .ToListAsync();
+            }
+            else { //Todos los Docentes
+                docentes = await db.Docentes.Where(c => centrosIds.Contains(c.CentroId))
+                                          .Where(m => m.Materias.Any(x => (x.Area & (docArea)) != 0))
+                                          .Where(m => m.Materias.Any(x => (x.Grados & (docGrado)) != 0))
+                                          .Distinct()
+                                          .ToListAsync();
+            
+            }
+
+            
 
             var jsonData = new
             {
@@ -148,7 +164,52 @@ namespace Monitoreo.Controllers
                     recordsFiltered = data.Count();
                 }
             }
-            data = data.OrderBy(n => n.Nombre);
+
+
+            // Ordenando
+            var sorting = false;
+            if (values.order != null && values.order.Count() > 0)
+            {
+                foreach (var item in values.order)
+                {
+                    string sortById = (item["column"] as string[])[0];
+                    string sortBy = (values.columns[int.Parse(sortById)]["data"] as string[])[0];
+
+                    switch (sortBy)
+                    {
+                        case "Nombre":
+                            if ((item["dir"] as string[])[0] == "desc")
+                            {
+                                data = data.OrderByDescending(s => s.Nombre);
+                            }
+                            else
+                            {
+                                data = data.OrderBy(s => s.Nombre);
+                            }
+                            sorting = true;
+                            break;
+                        case "Centro":
+                            if ((item["dir"] as string[])[0] == "desc")
+                            {
+                                data = data.OrderByDescending(s => s.Centro);
+                            }
+                            else
+                            {
+                                data = data.OrderBy(s => s.Centro);
+                            }
+                            sorting = true;
+                            break;
+                    }
+                }
+            }
+
+            // Ordenando por el primer campo mostrado
+            if (!sorting)
+            {
+                data = data.OrderBy(s => s.Nombre);
+            }
+
+
 
             // Preparando respuesta y ejecutando consulta
             var jsonData = new
@@ -163,7 +224,7 @@ namespace Monitoreo.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador,Acompanante,Coordinador")]
         public async Task<JsonResult> GetActividadesAcompompanamientoIds(int superCicloFormativoId)
         {
 
@@ -181,7 +242,7 @@ namespace Monitoreo.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador,Acompanante,Coordinador")]
         //[OutputCache(Duration = 1800, VaryByCustom = "User", VaryByParam = "superCicloFormativoId;docenteId", Location = OutputCacheLocation.Server)]
         public async Task<JsonResult> GetActividadesPresencialesByCicloByPersona(int superCicloFormativoId, int docenteId)
         {
@@ -235,7 +296,7 @@ namespace Monitoreo.Controllers
 
 
 
-        [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
+        //[Authorize(Roles = "Administrador,Acompanante,Coordinador")]
         //[OutputCache(Duration = 1800, VaryByCustom = "User", SqlDependency = "SysmoDbv4:InscripcionActividadAcompanamiento", VaryByParam = "superCicloFormativoId;docenteId;tipoEval;tipoActividad", Location = OutputCacheLocation.Server)]
         public async Task<JsonResult> GetInscripcionesActividadByCicloPersonaId(int superCicloFormativoId, int? docenteId, int tipoEval, int tipoActividad)
         {
@@ -508,7 +569,7 @@ namespace Monitoreo.Controllers
 
 
 
-        [Authorize(Roles = "Administrador, Acompanante")]
+        //[Authorize(Roles = "Administrador, Acompanante")]
         public ActionResult CentroDocentes(int CentroId)
         {
             List<Docente> docentesList = new List<Docente>();
@@ -522,7 +583,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Docente/5/Details
-        [Authorize(Roles = "Administrador, Acompanante")]
+        //[Authorize(Roles = "Administrador, Acompanante")]
         public async Task<ActionResult> Details(int? id)
         {
 
@@ -552,7 +613,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: Docentes/Create
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         public ActionResult CreateModal()
         {
             ViewBag.CentroId = new SelectList(db.Centros.Select(x => new { x.Id, x.Nombre }).OrderBy(n => n.Nombre), "Id", "Nombre");
@@ -676,7 +737,7 @@ namespace Monitoreo.Controllers
 
         // GET: Docentes/Create
         [Route("Docentes/Create")]
-        [Authorize(Roles = "Administrador, Acompanante")]
+        //[Authorize(Roles = "Administrador, Acompanante")]
         public ActionResult Create()
         {
             ViewBag.CentroId = new SelectList(db.Centros, "Id", "Nombre");
@@ -794,7 +855,7 @@ namespace Monitoreo.Controllers
 
 
         // GET: Docentes/Create
-        [Authorize(Roles = "Administrador, Acompanante")]
+        //[Authorize(Roles = "Administrador, Acompanante")]
         public ActionResult CreatePersonalMateria(int MasterId)
         {
 
@@ -1022,7 +1083,34 @@ namespace Monitoreo.Controllers
         }
 
 
+        public JsonResult setActive(int docenteId, bool state) {
+            var result = "OK";
+            Docente docente =  db.Docentes.Find(docenteId);
+            dynamic email = new Email("EmailDocenteIsActive");
+            if (docente != null)
+            {
+                docente.isActive = state;
+                db.SaveChanges();
+                email.docente = docente.Persona.Nombres + " " + docente.Persona.PrimerApellido;
+                email.isActive = docente.isActive.ToString();
+                email.userModified = User.Identity.Name;
+                email.Subject = "Docente " + docente.Persona.Nombres + " " + docente.Persona.PrimerApellido + " isActive cambiado a " + docente.isActive.ToString();
+            }
+            else {
+                result = "ERROR";
+            }
+            var jsonData = new
+            {
+                result = result,               
+            };
 
+            //Envia por Email Verificacion
+            email.To = "sismo@stat5.com";  
+            email.Send();
+
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+
+        }
 
 
 
