@@ -150,7 +150,7 @@ namespace Monitoreo.Controllers
 
         [HttpPost]
         //[OutputCache(Duration = 43200, VaryByParam = "cicloId;centroId;redId")]
-        public JsonResult GetAsistenciaByCicloCentro(string cicloId, int? centroId, int? redId, bool? horasPresenciales)
+        public JsonResult GetAsistenciaByCicloCentro(string cicloId, int? centroId, int? redId, bool? horasPresenciales, bool includeActive)
         {
             List<InscripcionActividadAcompanamiento> inscripcionesAcompanamiento = new List<InscripcionActividadAcompanamiento>();
             List<Inscripcion> inscripcionesPresenciales = new List<Inscripcion>();
@@ -163,14 +163,30 @@ namespace Monitoreo.Controllers
             List<Inscripcion> inscripcionesPresencialesTemp = new List<Inscripcion>();
             if (centroId == 0 && redId != 0 && cicloId != "") //Busca los docentes por Red
             {
-                docentesCentro = db.Docentes.Include("Centro").AsNoTracking().Where(c => c.Centro.RedId == redId).ToList();
+                if (includeActive)
+                {
+                    docentesCentro = db.Docentes.Include("Centro").AsNoTracking().Where(c => c.Centro.RedId == redId).Where(a => a.isActive == true).ToList();
+                }
+                else {
+                    docentesCentro = db.Docentes.Include("Centro").AsNoTracking().Where(c => c.Centro.RedId == redId).ToList();
+                }
+                
                 searchByRed = true;
             }
             else
             {
                 if (centroId != 0 && redId != 0 && cicloId != "") // Busca los docentes por centro
                 {
-                    docentesCentro = db.Docentes.AsNoTracking().Where(c => c.CentroId == centroId).ToList();
+
+                    if (includeActive)
+                    {
+                        docentesCentro = db.Docentes.AsNoTracking().Where(c => c.CentroId == centroId).Where(a => a.isActive == true).ToList();
+                    }
+                    else
+                    {
+                        docentesCentro = db.Docentes.AsNoTracking().Where(c => c.CentroId == centroId).ToList();
+                    }
+                    
                     searchByRed = false;
                 }
                 else

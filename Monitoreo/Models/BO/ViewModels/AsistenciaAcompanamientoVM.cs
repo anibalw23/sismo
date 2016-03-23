@@ -15,6 +15,8 @@ namespace Monitoreo.Models.BO.ViewModels
         public int horas { get; set; }
         public bool asistio { get; set; }
         public string Area { get; set; }
+        public string Grado { get; set; }
+        public string comentario { get; set; }
 
         public string emptyRow { get; set; }
 

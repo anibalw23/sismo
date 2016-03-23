@@ -15,6 +15,7 @@ using Monitoreo.Models;
 using System.Threading.Tasks;
 using Postal;
 using System.Text.RegularExpressions;
+using Microsoft.AspNet.Identity;
 
 namespace Monitoreo.Controllers
 {
@@ -202,26 +203,29 @@ namespace Monitoreo.Controllers
             ViewBag.actividadAcompanamientoID = actividadAcompanamientoID;
             ViewBag.personalID = personalID;
             ViewBag.tipo = tipo;
-            return PartialView();
+
+           return PartialView();
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateModal(InscripcionActividadAcompanamiento inscripcion)
+        public JsonResult CreateModal(InscripcionActividadAcompanamiento inscripcion)
         {
             int cicloId = 0;
             int docenteId = 0;
             string tipo = Request.QueryString["tipo"];
             if (ModelState.IsValid)
             {
+
+                inscripcion.userName = User.Identity.Name; //Nombre del usuario que la creo (cedula)
+                inscripcion.userId = User.Identity.GetUserId(); //Id del usuario que la creo
+                inscripcion.TimeStamp = DateTime.Now; //fecha en que fue creada
+                inscripcion.horas = Math.Abs(inscripcion.horas); // para evitar valores negativos
+                db.InscripcionesActividadesAcompanamiento.Add(inscripcion);
+                db.SaveChanges();
+
                 try
                 {
-                    inscripcion.userId = User.Identity.Name;
-                    inscripcion.horas = Math.Abs(inscripcion.horas); // para evitar valores negativos
-                    db.InscripcionesActividadesAcompanamiento.Add(inscripcion);
-                    await db.SaveChangesAsync();
-
-
-                    ActividadAcompanamiento actividad = await db.ActividadAcompanamientoes.FindAsync(inscripcion.actividadAcompanamientoID);
+                    ActividadAcompanamiento actividad =  db.ActividadAcompanamientoes.Find(inscripcion.actividadAcompanamientoID);
                     cicloId = actividad.SuperCicloFormativoId;
                     tipo = actividad.TipoAcompanamiento.ToString();
                     docenteId = inscripcion.personalID;
@@ -234,7 +238,7 @@ namespace Monitoreo.Controllers
 
                     var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail }).FirstOrDefault();
                     email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
-                    Personal personal = await db.Personal.FindAsync(inscripcion.personalID);
+                    Personal personal =  db.Personal.Find(inscripcion.personalID);
                     email.docente = persona != null ? personal.Persona.NombreCompleto.ToString() : "";
                     email.escuela = personal.Centro.Nombre;
                     email.fecha = inscripcion.fecha;
@@ -247,28 +251,32 @@ namespace Monitoreo.Controllers
                     {
                         email.To = "sismo@stat5.com" + "," + persona.mail;
                     }
-                    else {
+                    else
+                    {
                         email.To = "sismo@stat5.com";
-                    }                   
+                    }
                     email.Send();
-
                 }
                 catch (Exception e)
                 {
                     var msj = e.Message;
-                    return Json(new { success = false });
                 }
-
-                // return RedirectToAction("DocenteDetailsAcompanante", "Docente", new { id = inscripcion.personalID});
             }
+            else
+            {
+                return Json(new { success = false }); //Si el modelo no es valido
+            }
+
             return Json(new
             {
                 success = true,
                 cicloId = cicloId,
                 docenteId = docenteId,
-                tipo = tipo
+                tipo = tipo,
+                inscripcionId = inscripcion.ID,
+
             });
-            //return View(inscripcion);
+
         }
 
 
@@ -345,7 +353,7 @@ namespace Monitoreo.Controllers
         }
 
 
-        public async Task<JsonResult> DeleteModal(int? inscripcionId)
+        public JsonResult DeleteModal(int? inscripcionId)
         {
             var response = "OK";
             int cicloId = 0;
@@ -356,7 +364,7 @@ namespace Monitoreo.Controllers
             {
                 response = "ERROR";
             }
-            InscripcionActividadAcompanamiento inscripcionActividadAcompanamiento = await db.InscripcionesActividadesAcompanamiento.FindAsync(inscripcionId);
+            InscripcionActividadAcompanamiento inscripcionActividadAcompanamiento =  db.InscripcionesActividadesAcompanamiento.Find(inscripcionId);
             ActividadAcompanamiento actividad = inscripcionActividadAcompanamiento.ActividadAcompanamiento;
 
 
@@ -367,15 +375,15 @@ namespace Monitoreo.Controllers
             try
             {
 
-                bool hasRespuestasEvaluaciones = await db.EvaluacionAcompanamientoRespuestas.AsNoTracking().Select(x => new { x.InscripcionActividadAcompanamientoId, x.Id }).AnyAsync(p => p.InscripcionActividadAcompanamientoId == inscripcionId);
+                bool hasRespuestasEvaluaciones = db.EvaluacionAcompanamientoRespuestas.AsNoTracking().Select(x => new { x.InscripcionActividadAcompanamientoId, x.Id }).Any(p => p.InscripcionActividadAcompanamientoId == inscripcionId);
                 if (hasRespuestasEvaluaciones)
                 {
                     List<EvaluacionAcompanamientoRespuesta> respuestasAcompanamiento = new List<EvaluacionAcompanamientoRespuesta>();
-                    respuestasAcompanamiento = await db.EvaluacionAcompanamientoRespuestas.Where(p => p.InscripcionActividadAcompanamientoId == inscripcionId).ToListAsync();
+                    respuestasAcompanamiento = db.EvaluacionAcompanamientoRespuestas.Where(p => p.InscripcionActividadAcompanamientoId == inscripcionId).ToList();
                     foreach (var respA in respuestasAcompanamiento)
                     {
                         db.EvaluacionAcompanamientoRespuestas.Remove(respA);
-                        await db.SaveChangesAsync();
+                        db.SaveChanges();
                     }
                 }
 
@@ -385,7 +393,7 @@ namespace Monitoreo.Controllers
                 docenteId = inscripcionActividadAcompanamiento.personalID;
                 superCicloFormativoNombre = actividad.SuperCicloFormativo.nombre;
                 db.InscripcionesActividadesAcompanamiento.Remove(inscripcionActividadAcompanamiento);
-                await db.SaveChangesAsync();
+                db.SaveChanges();
 
 
                 //Envia por Email Verificacion
@@ -394,9 +402,9 @@ namespace Monitoreo.Controllers
                 email.TipoAcompanamiento = actividad.TipoAcompanamiento;
                 email.cicloFormativo = actividad.SuperCicloFormativo.nombre;
 
-                var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail}).FirstOrDefault();
+                var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail }).FirstOrDefault();
                 email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
-                Personal personal = await db.Personal.FindAsync(docenteId);
+                Personal personal = db.Personal.Find(docenteId);
                 email.docente = personal.Persona.NombreCompleto.ToString();
                 email.escuela = personal.Centro.Nombre;
                 email.fecha = inscripcionActividadAcompanamiento.fecha;
@@ -412,17 +420,7 @@ namespace Monitoreo.Controllers
                 {
                     email.To = "sismo@stat5.com";
                 }
-                email.Send();
-
-                //Enviar por email
-                //Personal personal = await db.Personal.FindAsync(inscripcionActividadAcompanamiento.personalID);
-                //string tituloEmail = tipo;
-                //StringBuilder textoEmail = new StringBuilder();
-                //textoEmail.AppendLine("<h1>Ciclo Formativo: " + superCicloFormativoNombre + " " + tipo + "</h1>");
-                //textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividadAcompanamiento.fecha + " horas: " + inscripcionActividadAcompanamiento.horas + " Area: " + inscripcionActividadAcompanamiento.Area + "</p>");
-                //textoEmail.AppendLine("<h2>Borrada Por: " + User.Identity.Name + "</h2>");
-                //await Logger.LogEvent(User.Identity.Name, "Actividad de " + tituloEmail + " Borrada" + User.Identity.Name, textoEmail.ToString(), "", DateTime.Now);
-                //End Enviar por email
+                email.Send();              
 
             }
             catch (Exception e)
@@ -450,8 +448,9 @@ namespace Monitoreo.Controllers
             bool result = true;
             string emailRegex = @"^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$";
             Regex re = new Regex(emailRegex);
-            if (email == null) {
-                return false;            
+            if (email == null)
+            {
+                return false;
             }
             if (!re.IsMatch(email))
             {

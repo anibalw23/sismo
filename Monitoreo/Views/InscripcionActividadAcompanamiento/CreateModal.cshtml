@@ -4,7 +4,6 @@
     ViewBag.Title = String.Format(Resources.T.ResourceManager.GetString("CreandoX"), Resources.T.ResourceManager.GetString("InscripcionActividadAcompanamiento"));
 }
 
-<script src="~/Scripts/jquery.validate.js"></script>
 <div class="panel-heading">
     <h3>Añadir Fecha sd</h3>
 </div>
@@ -17,7 +16,7 @@
         @Html.HiddenFor(model => model.actividadAcompanamientoID)
         @Html.EditorFor(model => model.fecha, new { @class = "col-xs-3" })
         @Html.EditorFor(model => model.horas, new { @class = "col-xs-3" })
-        @Html.EditorFor(model => model.Area, new { @class = "col-xs-3" })
+        @Html.EditorFor(model => model.Area, new { @class = "col-xs-3" }) 
         @Html.EditorFor(model => model.Grado, new { @class = "col-xs-3" })
         <div class="form-group">
             @Html.EditorFor(model => model.comentario, new { @class = "form-control" })
@@ -72,23 +71,27 @@
                         if (data.success == true) {
                             $('#CreateModal').modal("hide");
                             if (data.tipo == "AcompanamientoAula") {
-                                $("#dataTableActividadesAcompanamiento").html("");
-                                generarTablaAcompanamiento("#dataTableActividadesAcompanamiento", 1, data.cicloId, data.docenteId); // Acompañamiento en Aula
+                                addInscripcionAcompanamientoDocente(1, data.inscripcionId, fecha, horas, Grado, Comentario ,data.docenteId);                               
+                                //$("#dataTableActividadesAcompanamiento").html("");
+                               // generarTablaAcompanamiento("#dataTableActividadesAcompanamiento", 1, data.cicloId, data.docenteId); // Acompañamiento en Aula
                             }
 
                             if (data.tipo == "AcompanamientoTutorial") {
-                                $("#dataTableAcompanamientoPractica").html("");
-                                generarTablaAcompanamiento("#dataTableAcompanamientoPractica", 2, data.cicloId, data.docenteId); // Acompañamiento Reflexivo
+                                addInscripcionAcompanamientoDocente(2, data.inscripcionId, fecha, horas, Grado, Comentario, data.docenteId);
+                                //$("#dataTableAcompanamientoPractica").html("");
+                                //generarTablaAcompanamiento("#dataTableAcompanamientoPractica", 2, data.cicloId, data.docenteId); // Acompañamiento Reflexivo
                             }
                             if (data.tipo == "ClaseModelo") {
-                                $("#dataTableAcompanamientoModelo").html("");
-                                generarTablaAcompanamiento("#dataTableAcompanamientoModelo", 3, data.cicloId, data.docenteId); // Clase Modelo
+                                addInscripcionAcompanamientoDocente(3, data.inscripcionId, fecha, horas,Grado, Comentario, data.docenteId);
+                                //$("#dataTableAcompanamientoModelo").html("");
+                                //generarTablaAcompanamiento("#dataTableAcompanamientoModelo", 3, data.cicloId, data.docenteId); // Clase Modelo
                             }
                             if (data.tipo == "GrupoPedagogico") {
-                                $("#dataTableAcompanamientoComunidad").html("");
-                                generarTablaAcompanamiento("#dataTableAcompanamientoComunidad", 4, data.cicloId, data.docenteId); // Comunidad Aprendizaje
+                                addInscripcionAcompanamientoDocente(4, data.inscripcionId, fecha, horas,Grado, Comentario, data.docenteId);
+                                //$("#dataTableAcompanamientoComunidad").html("");
+                                //generarTablaAcompanamiento("#dataTableAcompanamientoComunidad", 4, data.cicloId, data.docenteId); // Comunidad Aprendizaje
                             }
-                            alert("Actividad de Acompañamineto creada exitosamente!");
+                           // alert("Actividad de Acompañamineto creada exitosamente!");
                         }
                         else {
                             alert("No se creo la inscripción correctamente!, contacte su administrador");

@@ -48,6 +48,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coypu">
+      <HintPath>..\packages\Coypu.2.10.0\lib\net40\Coypu.dll</HintPath>
+    </Reference>
+    <Reference Include="Coypu.NUnit">
+      <HintPath>..\packages\Coypu.NUnit.1.1.0\lib\net40\Coypu.NUnit.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -93,6 +99,9 @@
     <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.17.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.17\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Postal, Version=1.0.0.0, Culture=neutral, PublicKeyToken=45719375b8b4d528, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -163,6 +172,12 @@
     </Reference>
     <Reference Include="WebActivatorEx">
       <HintPath>..\packages\WebActivatorEx.2.0.1\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver">
+      <HintPath>..\packages\Selenium.WebDriver.2.48.0\lib\net40\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support">
+      <HintPath>..\packages\Selenium.Support.2.48.0\lib\net40\WebDriver.Support.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -317,6 +332,7 @@
     <Compile Include="Models\BO\PlanMejora\PlanMejoraCentro.cs" />
     <Compile Include="Models\BO\SeccionAula.cs" />
     <Compile Include="Models\BO\SeccionPersonalMateria.cs" />
+    <Compile Include="Models\BO\ViewModels\Acompanante\AcompananteDocenteHorasAcompanadaVMs.cs" />
     <Compile Include="Models\BO\ViewModels\Acompanante\AcompananteDocentesVM.cs" />
     <Compile Include="Models\BO\ViewModels\AsistenciaAcompanamientoVM.cs" />
     <Compile Include="Models\BO\ViewModels\AsistenciaDocenteDetailsVM.cs" />
@@ -432,6 +448,7 @@
     <Content Include="Content\img\logosistema.png" />
     <Content Include="Content\img\logo_intec.png" />
     <Content Include="Content\img\logo_top.jpg" />
+    <Content Include="Content\img\misDocentes.png" />
     <Content Include="Content\img\monitoreo-01.png" />
     <Content Include="Content\img\redLabel.png" />
     <Content Include="Content\img\select2-spinner.gif" />
@@ -452,6 +469,7 @@
     <Content Include="Content\js\dataTables.bootstrap.js" />
     <Content Include="Content\js\dataTables.responsive.min.js" />
     <Content Include="Content\js\daypilot-all.min.js" />
+    <Content Include="Content\js\gauge.min.js" />
     <Content Include="Content\js\jquery.appendGrid\jquery.appendGrid-1.6.0.css" />
     <Content Include="Content\js\jquery.appendGrid\jquery.appendGrid-1.6.0.js" />
     <Content Include="Content\js\jquery.appendGrid\jquery.appendGrid-1.6.0.min.css" />
@@ -1250,6 +1268,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\themes\base\minified\images\" />
+    <Folder Include="Views\InscripcionAcompanamientoTest\" />
     <Folder Include="Views\PreviewEmail\" />
   </ItemGroup>
   <ItemGroup>

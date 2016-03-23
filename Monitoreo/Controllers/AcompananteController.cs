@@ -49,7 +49,27 @@ namespace Monitoreo.Controllers
             var nombreCentro = db.Centros.Select(x => new { x.Id, x.Nombre }).Where(i => i.Id == acompanante.centroId).FirstOrDefault();
             foreach (var docente in docentesAcompanante)
             {
-                acompananteDocentes.Add(new AcompananteDocentesVM { cedula = docente.Cedula, Id = docente.Id, Materias = docente.Materias, nombre = docente.Nombres + " "  + docente.PrimerApellido + " " + docente.SegundoApellido});
+
+                var inscripcionesCicloActual = db.InscripcionesActividadesAcompanamiento.AsNoTracking()
+                                                     .Include(a => a.ActividadAcompanamiento)
+                                                    .Where(s => s.ActividadAcompanamiento.SuperCicloFormativo.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes)
+                                                    .Where(f => f.ActividadAcompanamiento.SuperCicloFormativo.FechaInicio < DateTime.Now)
+                                                    .Where(f => f.ActividadAcompanamiento.SuperCicloFormativo.FechaFinalizacion > DateTime.Now)
+                                                    .OrderBy(f => f.ActividadAcompanamiento.SuperCicloFormativo.FechaInicio.Year)
+                                                    .ThenBy(y => y.ActividadAcompanamiento.SuperCicloFormativo.FechaInicio.Month)
+                                                    .ThenBy(y => y.ActividadAcompanamiento.SuperCicloFormativo.FechaInicio.Day);
+                int horasAcompanadasCicloActual = 0;
+                if(inscripcionesCicloActual != null){
+                    var inscripcionesCount = inscripcionesCicloActual.Count();
+                    if(inscripcionesCount > 0){
+                        horasAcompanadasCicloActual = inscripcionesCicloActual.Sum(h => h.horas);
+                    }
+                }
+
+                AcompananteDocenteHorasAcompanadaVMs horasTotalesAcompanadas = new AcompananteDocenteHorasAcompanadaVMs();
+                horasTotalesAcompanadas.horasAcompanamientoTotal =   horasAcompanadasCicloActual;
+
+                acompananteDocentes.Add(new AcompananteDocentesVM { cedula = docente.Cedula, Id = docente.Id, Materias = docente.Materias, nombre = docente.Nombres + " " + docente.PrimerApellido + " " + docente.SegundoApellido, horasAcompanadas = horasTotalesAcompanadas });
             }
             ViewBag.Centro = nombreCentro.Nombre;
             return View(acompananteDocentes);

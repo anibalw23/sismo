@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace Monitoreo.Controllers
 {
     //[Authorize(Roles = "Administrador, Acompanante")]
+    [Authorize]
     public class AusenciaReportesController : BaseController
     {
         private MonitoreoContext db = new MonitoreoContext();

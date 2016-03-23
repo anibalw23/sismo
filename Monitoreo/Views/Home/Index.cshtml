@@ -163,60 +163,73 @@
 
             <div class="row">
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-users" style="font-size: 4em; color:#bd1c4c;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Mis Docentes</h3>
-                    @*<p style="text-align: center;color:black">Aqui puede ver los docentes que acompaña</p>*@
-                    <p><a class="btn btn-warning" href="~/Acompanante/AcompananteDocentes">Ver más &raquo;</a></p>
+                    <a href="~/Acompanante/AcompananteDocentes">
+                        <i class="fa fa-users" style="font-size: 4em; color:#bd1c4c;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Mis Docentes</h3>
+                        @*<p style="text-align: center;color:black">Aqui puede ver los docentes que acompaña</p>*@
+
+                    </a>
+                    <p><a name="misDocentes" class="btn btn-warning" href="~/Acompanante/AcompananteDocentes">Ver más &raquo;</a></p>
+
                 </div>
 
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-male" style="font-size: 4em; color:#bd1c4c;"></i>
-                    <h3 style="color:black; font-size: 2.7vmin;">Mi Personal Administrativo</h3>
-                    @*<p style="text-align: center;color:black">Aqui puede ver el personal administrativo que acompaña</p>*@
-                    <p><a class="btn btn-warning" href="~/Acompanante/AcompanantePersonalAdministrativo">Ver más &raquo;</a></p>
+                    <a href="~/Acompanante/AcompanantePersonalAdministrativo">
+                        <i class="fa fa-male" style="font-size: 4em; color:#bd1c4c;"></i>
+                        <h3 style="color:black; font-size: 2.7vmin;">Mi Personal Administrativo</h3>
+                    </a>
+                    <p><a name="miPersonalAdmin" class="btn btn-warning" href="~/Acompanante/AcompanantePersonalAdministrativo">Ver más &raquo;</a></p>
                 </div>
 
 
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-retweet" style="font-size: 4em; color:#BF00FF;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Ejecución del Proyecto</h3>
-                    @*<p style="text-align: center;color:black">Aqui se maneja la ejecución del proyecto</p>*@
+                    <a href="~/PlanMejoraCentro/IndexByAcompanante">
+                        <i class="fa fa-retweet" style="font-size: 4em; color:#BF00FF;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Ejecución del Proyecto</h3>
+                    </a>                   
                     <p><a class="btn btn-success" style="background-color:#BF00FF; border-style:none;" href="~/PlanMejoraCentro/IndexByAcompanante">Ver más &raquo;</a></p>
                 </div>
+
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-bar-chart" style="font-size: 4em; color:#2f4f4f;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Reportes Básicos</h3>
-                    @*<p style="text-align: center;color:black">Visualización de reportes básicos..</p>*@
+                    <a href="~/Reporte">
+                        <i class="fa fa-bar-chart" style="font-size: 4em; color:#2f4f4f;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Reportes Básicos</h3>
+                    </a>
                     <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/Reporte">Ver más &raquo;</a></p>
                 </div>
             </div>
-            <div class="row" style="margin-top:20px;">
+            <div class="row" style="margin-top:20px;">              
 
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-share-alt-square" style="font-size: 4em; color:#FFA500;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Mis Acompañamientos</h3>
-                    @*<p style="text-align: center;color:black">Reporte de Horas cursadas por Ciclo Formativo y Centro Educativo</p>*@
+                    <a href="~/InscripcionActividadAcompanamiento/MisInscripcionesAcompanamiento">
+                        <i class="fa fa-share-alt-square" style="font-size: 4em; color:#FFA500;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Mis Acompañamientos</h3>
+                    </a>
                     <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/InscripcionActividadAcompanamiento/MisInscripcionesAcompanamiento">Ver más &raquo;</a></p>
                 </div>
 
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-calendar" style="font-size: 4em; color:#1569C7;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Acompañamientos por fecha</h3>
+                    <a href="~/InscripcionActividadAcompanamiento/InscripcionesPorFecha">
+                        <i class="fa fa-calendar" style="font-size: 4em; color:#1569C7;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Acompañamientos por fecha</h3>
+                    </a>
                     <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/InscripcionActividadAcompanamiento/InscripcionesPorFecha">Ver más &raquo;</a></p>
                 </div>
 
                
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-tachometer" style="font-size: 4em; color:#2f4f4f;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Reportes de Asistencia de Ciclos Formativos</h3>
-                    @*<p style="text-align: center;color:black">Reporte de Horas cursadas por Ciclo Formativo y Centro Educativo</p>*@
+                    <a href="~/Reporte/ReporteAsistenciaByCiclo">
+                        <i class="fa fa-tachometer" style="font-size: 4em; color:#2f4f4f;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Reportes de Asistencia de Ciclos Formativos</h3>
+                    </a>
                     <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/Reporte/ReporteAsistenciaByCiclo">Ver más &raquo;</a></p>
                 </div>
 
                 <div class="col-xs-3 hvr-pop" style="text-align: center;">
-                    <i class="fa fa-line-chart" style="font-size: 4em; color:green;margin-left:auto;margin-right:auto;"></i>
-                    <h3 style="color:black;font-size: 2.7vmin;">Reportes de Formularios Acompanamiento</h3>
-                    @*<p style="text-align: center;color:black">Reporte de Horas cursadas por Ciclo Formativo y Centro Educativo</p>*@
+                    <a href="~/Reporte/ReporteEvaluacionesByCiclo">
+                        <i class="fa fa-line-chart" style="font-size: 4em; color:green;margin-left:auto;margin-right:auto;"></i>
+                        <h3 style="color:black;font-size: 2.7vmin;">Reportes de Formularios Acompanamiento</h3>
+                    </a>
                     <p><a style="background-color:#2f4f4f; border-style:none;" class="btn btn-info" href="~/Reporte/ReporteEvaluacionesByCiclo">Ver más &raquo;</a></p>
                 </div>               
             </div>
@@ -420,7 +433,6 @@
             </div>
 
         </div>
-        
         <div class="row">
             <div class="col-xs-4 hvr-pop" style="text-align: center;">
                 <i class="fa fa-pie-chart" style="font-size: 4em; color:blue;margin-left:auto;margin-right:auto;"></i>

@@ -328,15 +328,20 @@ namespace Monitoreo.Controllers
 
             }
 
-            var evaluacionesAcompanamiento = await db.EvaluacionAcompanamientoes.AsNoTracking().Where(s => s.SuperCicloFormativo.Any(x => x.Id == superCicloFormativoId)).Select(x => new { x.Id, x.Titulo, x.TipoEvaluacionAcomp }).Where(t => t.TipoEvaluacionAcomp == tipoEvaluacion).ToListAsync();
+            var evaluacionesAcompanamiento = await db.EvaluacionAcompanamientoes.AsNoTracking().Where(s => s.SuperCicloFormativo.Any(x => x.Id == superCicloFormativoId)).Select(x => new { x.Id, x.Titulo, x.TipoEvaluacionAcomp }).Where(t => t.TipoEvaluacionAcomp == tipoEvaluacion).Distinct().ToListAsync();
 
 
             Personal persona = new Personal();
 
             var personaVar = await db.Personal.AsNoTracking().Select(x => new { inscripcionesActividadesacompanamiento = x.inscripcionesActividadesacompanamiento.Where(t => t.ActividadAcompanamiento.TipoAcompanamiento == tipoActividadAcomp).Where(s => s.ActividadAcompanamiento.SuperCicloFormativoId == superCicloFormativoId).ToList(), x.Id }).Where(p => p.Id == docenteId).SingleOrDefaultAsync();
             persona.Id = personaVar.Id;
-            persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento;
-
+            if (User.IsInRole("Coordinador")) //Si es coordinador puede ver todas las inscripciones
+            {
+                persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento.OrderByDescending(i => i.ID).ToList();
+            }
+            else { //Si es acompanante solo las que ha registrado con su usuario
+                persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento.Where(u => u.userName == User.Identity.Name).OrderByDescending(i => i.ID).ToList();
+           }
             if (persona != null)
             {
                 inscripciones = persona.inscripcionesActividadesacompanamiento.ToList();//.Where(t => t.ActividadAcompanamiento.TipoAcompanamiento == tipoActividadAcomp).Where(s => s.ActividadAcompanamiento.SuperCicloFormativoId == superCicloFormativoId).ToList();
@@ -351,9 +356,18 @@ namespace Monitoreo.Controllers
                     asistencia.fecha = ins.fecha;
                     asistencia.horas = ins.horas;
                     asistencia.asistio = true;
+                    asistencia.Grado = ins.Grado.ToString();
+                    asistencia.comentario = ins.comentario;
                     //asistencia.evaluacionesAcompanamiento = evaluacionesAcompanamiento; 
                     asistenciasActividadesAcompanamiento.Add(asistencia);
                 }
+            }
+            if (asistenciasActividadesAcompanamiento.Count == 0) {
+                var jsonData1 = new
+                {
+                    data = new { evals = evaluacionesAcompanamiento.Select(x => new { idEval = x.Id, Titulo = x.Titulo }) }  
+                };
+                return Json(jsonData1, JsonRequestBehavior.AllowGet);
             }
 
             var jsonData = new
@@ -368,7 +382,9 @@ namespace Monitoreo.Controllers
                     inscripcionId = y.inscripcionID,
                     actividadAcompId = y.actividadAcompId,
                     empty = y.emptyRow,
-                    area = y.Area
+                    area = y.Area,
+                    grado = y.Grado,
+                    comentario = y.comentario
                     //tipoAcompanamientoNum = y.tipoAcompanamientoNum
                 }),
             };

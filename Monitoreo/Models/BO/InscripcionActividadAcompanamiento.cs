@@ -23,12 +23,15 @@ namespace Monitoreo.Models.BO
         public DocenteArea Area { get; set; }
 
         [System.ComponentModel.DataAnnotations.UIHint("Enum")]
-        public Grado Grado { get; set; }
+        public Grado? Grado { get; set; }
         
         //[DataType(DataType.MultilineText)]
         public string comentario { get; set; }
 
+        /*Campos de verificacion adicionales*/
+        public string userName { get; set; }
         public string userId { get; set; }
+        public DateTime TimeStamp { get; set; }
 
     }
 }

@@ -11,7 +11,7 @@ using Monitoreo.Models.DAL;
 
 namespace Monitoreo.Controllers
 {
-
+    [Authorize]
     public class ObjetivoController : BaseController
     {
         private MonitoreoContext db = new MonitoreoContext();

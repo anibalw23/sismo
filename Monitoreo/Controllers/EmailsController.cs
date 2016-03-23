@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Monitoreo.Controllers
 {
+    [Authorize]
     public class EmailsController : Controller
     {
         // GET: Emails

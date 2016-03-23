@@ -19,6 +19,10 @@
 
 <script src="~/Content/js/dataTables.responsive.min.js"></script>
 
+<script src="~/Content/js/raphael.2.1.0.min.js"></script>
+<script src="~/Content/js/justgage.1.0.1.min.js"></script>
+
+
 <div class="panel-heading">
     <h3>Docentes del Centro @ViewBag.Centro</h3>
 </div>
@@ -41,6 +45,9 @@
                 </th>
                 <th>
                     Niveles/Ciclo
+                </th>
+                <th>
+                    Estatus
                 </th>
 
                 <th>@Resources.T.ResourceManager.GetString("Acciones")</th>
@@ -89,6 +96,13 @@
                         </ul>
                     </td>
 
+                    <td id="horasAcompanadas_@item.Id">
+                        
+                        <div id="gauge_@item.Id"  style="width:80px; height:60px">
+                            <input name="gaugeValue" type="hidden" value="@item.horasAcompanadas.horasAcompanamientoTotal" />
+                        </div>
+                    </td>
+
                     <td class="row-actions">
                         <a href="@Url.Action("DocenteDetailsAcompanante", "Docente", new { id = item.Id })" class="btn btn-default">
                             <span class="glyphicon glyphicon-list" aria-hidden="true"></span> @Resources.T.ResourceManager.GetString("Detalles")
@@ -101,6 +115,7 @@
 
         <tfoot>
             <tr>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -131,7 +146,6 @@
     <script type="text/javascript">
         (function ($) {
 
-
             var table = $('#dataTable').dataTable(
                 {
                     autoWidth: false,
@@ -139,7 +153,12 @@
                     ordering: true,
                     lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
                     'iDisplayLength': 100,
-                    paging: false
+                    paging: false,
+                    columnDefs: [
+                        { responsivePriority: 1, targets: 0 },
+                        { responsivePriority: 2, targets: 1 },
+                        { responsivePriority: 3, targets: 5 },
+                    ]
                 }
             ).columnFilter({
                 aoColumns: [
@@ -148,12 +167,29 @@
                             { type: "select", values: ['I', 'Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto', 'Sexto', 'Septimo', 'Octavo', 'PrimeroSecundaria', 'SegundoSecundaria', 'TerceroSecundaria', 'CuartoSecundaria'] },
                             { type: "select", values: ['CuatroBasicas', 'Matemática', 'Inicial', 'Sociales', 'Lengua_Española', 'Educación_Artística', 'Ciencias_Naturales', 'Educación_Física', 'Lenguas_Extranjeras', 'Formación_Humana', 'Informática', 'Agropecuaria', 'NA', 'Biblioteca', 'Todos'] },
 
-                         { type: "text" }, 
+                         { type: "text" },
                          null,
-                 { type: "select" }
+                        { type: "select" },
+                        null
                 ]
 
             });
+
+            var gauges =  $("div[id^='gauge_']");
+            $(gauges).each(function (index, value) {
+                var gaugeId = $(this).attr('id');
+                var value = $(this).find("input[name='gaugeValue']").val();
+                var g = new JustGage({
+                    id: gaugeId,
+                    value: value,
+                    min: 0,
+                    max: 36,
+                    title: "Estatus"
+                });
+            })
+
+
+
 
         })(jQuery);
     </script>

@@ -549,7 +549,7 @@ namespace Monitoreo.Controllers
         }
 
         [Authorize(Roles = "Administrador, AdministradorTransversal,EspecialistaCurricular")]
-        public async Task<JsonResult> InscribirPersonalAdministrativo(int cicloId, int[] centrosIds, int[] tiposPersonalIds)
+        public JsonResult InscribirPersonalAdministrativo(int cicloId, int[] centrosIds, int[] tiposPersonalIds)
         {
 
             Array personalFunciones = Enum.GetValues(typeof(PersonalFuncion)); 
@@ -563,11 +563,11 @@ namespace Monitoreo.Controllers
                 GrupoCicloFormativo grupo = new GrupoCicloFormativo();
                 grupo.CentroID = centroId;
                 grupo.CicloFormativoId = cicloId;
-                var grupoCiclo = await db.GruposCiclosFormativos.AsNoTracking().Select(x => new { x.ID, x.CicloFormativoId, x.CentroID }).Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == grupo.CentroID).SingleOrDefaultAsync();
+                var grupoCiclo =  db.GruposCiclosFormativos.AsNoTracking().Select(x => new { x.ID, x.CicloFormativoId, x.CentroID }).Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == grupo.CentroID).SingleOrDefault();
                 if (grupoCiclo == null)
                 {
                     db.GruposCiclosFormativos.Add(grupo);
-                    await db.SaveChangesAsync();
+                    db.SaveChanges();
                 }
                 else {
                     grupo.ID = grupoCiclo.ID;
@@ -577,11 +577,11 @@ namespace Monitoreo.Controllers
 
                 foreach (var tipo in tiposPersonalIds)
                 {
-                    personalInscribir = await db.PersonalAdministrativo.AsNoTracking().Where(d => d.CentroId ==  centroId).Where(t => t.FuncionesEjerce.HasFlag((PersonalFuncion)tipo)).ToListAsync();
+                    personalInscribir =  db.PersonalAdministrativo.AsNoTracking().Where(d => d.CentroId ==  centroId).Where(t => t.FuncionesEjerce.HasFlag((PersonalFuncion)tipo)).ToList();
                     foreach (var personal in personalInscribir)
                     {
 
-                        bool isRepeatedInscripcion =  await db.Inscripciones.Where(c => c.CicloFormativoId == cicloId).Where(g => g.GrupoCicloFormativoId == grupo.ID).AnyAsync(p => p.ParticipanteId == personal.Persona.Id);
+                        bool isRepeatedInscripcion =   db.Inscripciones.Where(c => c.CicloFormativoId == cicloId).Where(g => g.GrupoCicloFormativoId == grupo.ID).Any(p => p.ParticipanteId == personal.Persona.Id);
                         if (!isRepeatedInscripcion)
                         {
                             Inscripcion inscripcionDocente = new Inscripcion();
@@ -602,7 +602,7 @@ namespace Monitoreo.Controllers
 
             }
             db.Inscripciones.AddRange(inscripcionesPersonal);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             var jsonData = new
             {

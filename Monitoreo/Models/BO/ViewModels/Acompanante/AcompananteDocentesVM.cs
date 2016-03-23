@@ -11,5 +11,6 @@ namespace Monitoreo.Models.BO.ViewModels.Acompanante
         public string cedula { get; set; }
         public string nombre { get; set; }
         public List<DocenteMateria> Materias { get; set; }
+        public AcompananteDocenteHorasAcompanadaVMs horasAcompanadas { get; set; }
     }
 }

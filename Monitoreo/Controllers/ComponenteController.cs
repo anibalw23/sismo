@@ -12,6 +12,7 @@ using Monitoreo.Models.DAL;
 namespace Monitoreo.Controllers
 {
     //[Authorize(Roles = "Administrador")]
+    [Authorize]
     public class ComponenteController : BaseController
     {
         private MonitoreoContext db = new MonitoreoContext();

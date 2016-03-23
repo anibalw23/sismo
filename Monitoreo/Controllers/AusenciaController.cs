@@ -13,6 +13,7 @@ using Monitoreo.Helpers;
 
 namespace Monitoreo.Controllers
 {
+    [Authorize]
     public class AusenciaController : BaseController
     {
         private MonitoreoContext db = new MonitoreoContext();

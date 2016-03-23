@@ -47,34 +47,43 @@
     <div class="form-horizontal">
         <div class="form-group">
             <div class="form-group">
-                @Html.Label("Red", new { @class = "control-label col-sm-3" })
-                <div class="col-sm-4">
+                @Html.Label("Red", new { @class = "control-label col-xs-3" })
+                <div class="col-xs-4">
                     @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.RedId, "Seleccione la Red..", new { @class = "form-control", @id = "RedDropDownList" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.Label("Centro Educativo", new { @class = "control-label col-sm-3" })
-                <div class="col-sm-4">
+                @Html.Label("Centro Educativo", new { @class = "control-label col-xs-3" })
+                <div class="col-xs-4">
                     @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.CentroId, "Seleccione Centro..", new { @class = "form-control", @id = "CentroDropDownList" })
                 </div>
             </div>
 
 
             <div class="form-group">
-                @Html.Label("Ciclo Formativo", new { @class = "control-label col-sm-3" })
-                <div class="col-sm-4">
+                @Html.Label("Ciclo Formativo", new { @class = "control-label col-xs-3" })
+                <div class="col-xs-4">
                     @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.SuperCicloFormativoId, "Seleccione el Ciclo..", new { @class = "selectpicker", @data_live_search = "true", @multiple = "multiple", @id = "SuperCicloDropDownList" })
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-4">
-                    <input type="checkbox" id="getDatosDocentesCheck" name="getDatosDocentes" />Incluir Sesion Presencial? 
+                <div class="col-xs-4">
+                    <input type="checkbox" id="getDatosDocentesCheck" name="getDatosDocentes" />Incluir Sesion Presencial?
                 </div>
             </div>
+
             <div class="form-group">
-                <div class="col-sm-4">
+                <div class="col-xs-4">
+                    <input type="checkbox" id="isActiveCheck" name="isActiveCheck" checked />Solo Docentes que deben Participar en Ciclos?
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <div class="col-xs-4">
                     <button id="btnReporte" class="btn btn-success">Generar Reporte</button>
                 </div>
             </div>
@@ -244,6 +253,7 @@
 
         function getAsistenciaByCiclo(cicloId, centroId, redId) {
             var getDatosDocentes = $('#getDatosDocentesCheck').is(":checked");
+            var docentesActive = $('#isActiveCheck').is(":checked");
             if (cicloId != 0) {
                 $("#tableReport > tbody").html("");
                 var dataArr = new Array();
@@ -252,7 +262,7 @@
                 $("loading-indicator").fadeIn("fast");
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("GetAsistenciaByCicloCentro", "Reporte")' + '?cicloId=' + cicloId + "&centroId=" + centroId + "&redId=" + redId + "&horasPresenciales=" + getDatosDocentes,
+                    url: '@Url.Action("GetAsistenciaByCicloCentro", "Reporte")' + '?cicloId=' + cicloId + "&centroId=" + centroId + "&redId=" + redId + "&horasPresenciales=" + getDatosDocentes + "&includeActive=" + docentesActive,
                     //data: {cicloId: cicloId, centroId: centroId, redId: redId, horasPresenciales: getDatosDocentes  },
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
