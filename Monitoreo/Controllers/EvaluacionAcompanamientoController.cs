@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using Monitoreo.Models.BO.ViewModels.EvaluacionAcompanamientoVm;
 using Postal;
 using System.Text.RegularExpressions;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Monitoreo.Controllers
 {
@@ -95,7 +97,12 @@ namespace Monitoreo.Controllers
         [Route("EvaluacionAcompanamientos/Create")]
         public ActionResult Create()
         {
-            ViewBag.ActividadAcompanamientoId = new SelectList(db.ActividadAcompanamientoes, "ID", "TipoAcompanamiento");
+            ViewBag.ActividadAcompanamientoId = new SelectList(db.ActividadAcompanamientoes.Select(x => new { x.ID, x.TipoAcompanamiento}), "ID", "TipoAcompanamiento");
+            var personalFunciones = from PersonalFuncion d in Enum.GetValues(typeof(PersonalFuncion))
+            select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.PersonalFunciones = new SelectList(personalFunciones, "ID", "Name");
+
+
             return View();
         }
 
@@ -105,10 +112,11 @@ namespace Monitoreo.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Titulo,TipoEvaluacionAcomp,ActividadAcompanamientoId,creadoPor")] EvaluacionAcompanamiento evaluacionAcompanamiento)
+        public ActionResult Create([Bind(Include = "Id,Titulo,TipoEvaluacionAcomp,ActividadAcompanamientoId,creadoPor,PersonalFuncion")] EvaluacionAcompanamiento evaluacionAcompanamiento)
         {
             if (ModelState.IsValid)
             {
+                evaluacionAcompanamiento.creadoPor = User.Identity.Name;
                 db.EvaluacionAcompanamientoes.Add(evaluacionAcompanamiento);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -130,7 +138,25 @@ namespace Monitoreo.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.ActividadAcompanamientoId = new SelectList(db.ActividadAcompanamientoes, "ID", "ID", evaluacionAcompanamiento.ActividadAcompanamientoId);
+            var personalFunciones = from PersonalFuncion d in Enum.GetValues(typeof(PersonalFuncion))
+                                    select new { Id = (int)d, Name = d.ToString() };
+
+            Array values = Enum.GetValues(typeof(PersonalFuncion));
+            List<ListItem> items = new List<ListItem>(values.Length);
+            foreach (var i in values)
+            {
+                items.Add(new ListItem
+                {
+                    Text = Enum.GetName(typeof(PersonalFuncion), i),
+                    Value = i.ToString(),
+                    Selected = evaluacionAcompanamiento.PersonalFuncion.Value.ToString() == Enum.GetName(typeof(PersonalFuncion), i).ToString()
+                });
+            }
+
+
+            
+            ViewBag.PersonalFunciones = new SelectList(items);
+
             return View(evaluacionAcompanamiento);
         }
 
@@ -139,7 +165,7 @@ namespace Monitoreo.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Titulo,TipoEvaluacionAcomp,ActividadAcompanamientoId,creadoPor")] EvaluacionAcompanamiento evaluacionAcompanamiento)
+        public ActionResult Edit([Bind(Include = "Id,Titulo,TipoEvaluacionAcomp,ActividadAcompanamientoId,creadoPor,PersonalFuncion")] EvaluacionAcompanamiento evaluacionAcompanamiento)
         {
             if (ModelState.IsValid)
             {
@@ -147,6 +173,7 @@ namespace Monitoreo.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             //ViewBag.ActividadAcompanamientoId = new SelectList(db.ActividadAcompanamientoes, "ID", "ID", evaluacionAcompanamiento.ActividadAcompanamientoId);
             return View(evaluacionAcompanamiento);
         }
@@ -183,21 +210,39 @@ namespace Monitoreo.Controllers
         }
 
 
+        //id = id de la evaluacion, seeAll=1 ver todos los superCiclos
+        public ActionResult EvaluacionCiclos(int id, int ? seeAll) {
+            List<SuperCicloFormativo> superCiclosFormativos = new List<SuperCicloFormativo>();
 
-        public ActionResult EvaluacionCiclos(int id) {
-            
-            List<SuperCicloFormativo> superCiclosFormativos = db.SuperCicloFormativoes.ToList(); // Lista de SuperCiclos Formativos
-            var dropDownCiclos = new List<SelectListItem>();
+            if (id == 0 || id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EvaluacionAcompanamiento evaluacion = db.EvaluacionAcompanamientoes.Find(id);
 
-            EvaluacionAcompanamiento evaluacion =  db.EvaluacionAcompanamientoes.Find(id);
+            if (seeAll == 1)
+            {
+                superCiclosFormativos = db.SuperCicloFormativoes.ToList();
+            }
+            else {
+                superCiclosFormativos = db.SuperCicloFormativoes.Where(f => f.FechaInicio < DateTime.Now)
+                                                                   .Where(f => f.FechaFinalizacion > DateTime.Now)
+                                                                   .OrderBy(f => f.FechaInicio.Year)
+                                                                   .ThenBy(y => y.FechaInicio.Month)
+                                                                   .ThenBy(y => y.FechaInicio.Day).ToList();
+            }
+
+           
+           
+            var dropDownCiclos = new List<SelectListItem>();            
             foreach (var superCiclo in superCiclosFormativos)
             {
                    dropDownCiclos.Add(
                     new SelectListItem
                     {
                         Selected = evaluacion.SuperCicloFormativo.Any(i => i.Id == superCiclo.Id),
-                        Text = superCiclo.nombre,
-                        Value = Convert.ToString(superCiclo.Id)
+                        Text = superCiclo.nombre + " - " + superCiclo.CategoriaSuperCiclo.ToString(),
+                        Value = Convert.ToString(superCiclo.Id),                       
                     }
 
                    );
@@ -291,7 +336,6 @@ namespace Monitoreo.Controllers
 
 
 
-        [AllowAnonymous]
         public async Task<ActionResult> ParticipanteRespuestas(int evaluacionId, int participanteId, int inscripcionAcompid)
         {
 
@@ -351,18 +395,15 @@ namespace Monitoreo.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador,Acompanante,Coordinador")]
-        public async Task<ActionResult> ParticipanteRespuestas(EvaluacionAcompanamiento evaluacion)
+        public ActionResult ParticipanteRespuestas(EvaluacionAcompanamiento evaluacion)
         {
             var respuestaTemp = new EvaluacionAcompanamientoRespuesta();
-            string resultado = "OK";
-            StringBuilder textoEmail = new StringBuilder();
-            List<EvaluacionAcompanamientoRespuestasVM> evaluacionAcompanamientoRespuestas = new List<EvaluacionAcompanamientoRespuestasVM>();
 
+            List<EvaluacionAcompanamientoRespuestasVM> evaluacionAcompanamientoRespuestas = new List<EvaluacionAcompanamientoRespuestasVM>();
 
             if (evaluacion.RespuestasAcomp != null)
             {
                 string respuestasEvalRequest = Request.Form["respuestas"];
-                textoEmail.AppendLine("<ul>");
                 foreach (var respuesta in evaluacion.RespuestasAcomp)
                 {
                     var resp = new EvaluacionAcompanamientoRespuesta
@@ -376,7 +417,7 @@ namespace Monitoreo.Controllers
                     respuestaTemp = resp;
                     if (respuesta.Id == 0)
                     {
-                        bool isRepeated = await db.EvaluacionAcompanamientoRespuestas.Where(e => e.EvaluacionAcompId == resp.EvaluacionAcompId).AnyAsync(i => i.InscripcionActividadAcompanamientoId == resp.InscripcionActividadAcompanamientoId);
+                        bool isRepeated = db.EvaluacionAcompanamientoRespuestas.Where(e => e.EvaluacionAcompId == resp.EvaluacionAcompId).Any(i => i.InscripcionActividadAcompanamientoId == resp.InscripcionActividadAcompanamientoId);
                         if (!isRepeated) // Para asegurarse que no se repitan por inscripcionId ni evaluacionID
                         {
                             db.EvaluacionAcompanamientoRespuestas.Add(resp);
@@ -389,14 +430,11 @@ namespace Monitoreo.Controllers
                     }
 
                     evaluacionAcompanamientoRespuestas.Add(new EvaluacionAcompanamientoRespuestasVM { pregunta = db.EvaluacionAcompanamientoPreguntas.Find(respuesta.PreguntaAcompId).Descripcion, respuesta = respuesta.Valor });
-                    //textoEmail.AppendLine("<li> Pregunta: " + db.EvaluacionAcompanamientoPreguntas.Find(respuesta.PreguntaAcompId).Descripcion + " Respuesta: " + respuesta.Valor + "</li>");
-
                 }
-                textoEmail.AppendLine("</ul>");
 
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
-            InscripcionActividadAcompanamiento inscripcionActividad = await db.InscripcionesActividadesAcompanamiento.FindAsync(respuestaTemp.InscripcionActividadAcompanamientoId);
+            InscripcionActividadAcompanamiento inscripcionActividad = db.InscripcionesActividadesAcompanamiento.Find(respuestaTemp.InscripcionActividadAcompanamientoId);
 
 
             /*Enviar por Email de Verificacion*/
@@ -410,7 +448,7 @@ namespace Monitoreo.Controllers
 
             var persona = db.Personas.AsNoTracking().Where(p => p.Cedula == User.Identity.Name).Select(x => new { x.Cedula, x.Nombres, x.PrimerApellido, x.mail }).FirstOrDefault();
             email.acompanante = persona != null ? persona.Nombres + " " + persona.PrimerApellido : "";
-            Personal personal = await db.Personal.FindAsync(inscripcionActividad.personalID);
+            Personal personal = db.Personal.Find(inscripcionActividad.personalID);
             email.docente = personal.Persona.NombreCompleto.ToString();
             email.escuela = personal.Centro.Nombre;
             email.fecha = inscripcionActividad.fecha;
@@ -428,16 +466,6 @@ namespace Monitoreo.Controllers
             }
             email.Send();
             /*End Enviar por email*/
-
-
-            //Enviar por email
-            //Personal personal = db.Personal.Find(inscripcionActividad.personalID);
-            //string tituloEmail = inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString();
-            //textoEmail.AppendLine("<h1>Ciclo Formativo: " + inscripcionActividad.ActividadAcompanamiento.SuperCicloFormativo.nombre + " " + inscripcionActividad.ActividadAcompanamiento.TipoAcompanamiento.ToString() + "</h1>");
-            //textoEmail.AppendLine("<p>" + "Nombre: " + personal.Persona.Nombres + " fecha:" + inscripcionActividad.fecha + " horas: " + inscripcionActividad.horas + " Area: " + inscripcionActividad.Area + "</p>");
-            //textoEmail.AppendLine("<h1>Creado Por: " + User.Identity.Name + "</h1>");
-            //await Logger.LogEvent(User.Identity.Name, "Evaluacion de " + tituloEmail + " Creada", textoEmail.ToString(), "", DateTime.Now);
-            //End Enviar por email
 
             return RedirectToAction("DocenteDetailsAcompanante", "Docente", new { id = inscripcionActividad.personalID });
 

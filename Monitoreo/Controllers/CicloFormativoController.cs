@@ -46,7 +46,7 @@ namespace Monitoreo.Controllers
 
 
         // GET: /CicloFormativo/5/Details
-       
+
         [Route("CicloFormativo/Details")]
         [Authorize(Roles = "Administrador, AdministradorTransversal,EspecialistaCurricular")]
         public ActionResult Details(int? id)
@@ -61,7 +61,7 @@ namespace Monitoreo.Controllers
                 return HttpNotFound();
             }
             ViewBag.Grupos = db.GruposCiclosFormativos.AsNoTracking().Include(c => c.Centro).Include(c => c.CicloFormativo).Where(c => c.CicloFormativoId == id).ToList();
-               
+
             return View(cicloFormativo);
         }
 
@@ -107,40 +107,40 @@ namespace Monitoreo.Controllers
             if (ModelState.IsValid)
             {
 
-                    cicloFormativo.CreadoPor = User.Identity.Name;
-                    db.CiclosFormativos.Add(cicloFormativo);
-                    await  db.SaveChangesAsync();
+                cicloFormativo.CreadoPor = User.Identity.Name;
+                db.CiclosFormativos.Add(cicloFormativo);
+                await db.SaveChangesAsync();
 
-                    calendarioCiclo.CicloFormativoID = cicloFormativo.Id;
-                    calendarioCiclo.Fecha = cicloFormativo.FechaInicio;
-                    calendarioCiclo.horas = cicloFormativo.DuracionTotal;
-                    calendarioCiclo.TipoEvento = cicloFormativo.tipo;
-                    db.CalendarioCicloFormativoes.Add(calendarioCiclo);
-                    await db.SaveChangesAsync();
+                calendarioCiclo.CicloFormativoID = cicloFormativo.Id;
+                calendarioCiclo.Fecha = cicloFormativo.FechaInicio;
+                calendarioCiclo.horas = cicloFormativo.DuracionTotal;
+                calendarioCiclo.TipoEvento = cicloFormativo.tipo;
+                db.CalendarioCicloFormativoes.Add(calendarioCiclo);
+                await db.SaveChangesAsync();
 
-                    //if (escuelaID != "" && escuelaID != null)
-                    //{
-                    //    var escuelasID = escuelaID.Split(',');
-                    //    foreach (var esc in escuelasID)
-                    //    {
-                    //        int idEscuela = Convert.ToInt32(esc);
-                    //        GrupoCicloFormativo grupo = new GrupoCicloFormativo();
-                    //        grupo.CentroID = idEscuela;
-                    //        grupo.CicloFormativoId = cicloFormativo.Id;
+                //if (escuelaID != "" && escuelaID != null)
+                //{
+                //    var escuelasID = escuelaID.Split(',');
+                //    foreach (var esc in escuelasID)
+                //    {
+                //        int idEscuela = Convert.ToInt32(esc);
+                //        GrupoCicloFormativo grupo = new GrupoCicloFormativo();
+                //        grupo.CentroID = idEscuela;
+                //        grupo.CicloFormativoId = cicloFormativo.Id;
 
 
-                    //        bool isRepeated = await db.GruposCiclosFormativos.AsNoTracking().Select(x => new {x.ID,  x.CicloFormativoId, x.CentroID}).Where(i => i.CicloFormativoId == cicloFormativo.Id).AnyAsync(p => p.CentroID == grupo.CentroID);
-                    //        if (!isRepeated)
-                    //        {
-                    //            db.GruposCiclosFormativos.Add(grupo);
-                    //            await db.SaveChangesAsync();
-                    //        }
+                //        bool isRepeated = await db.GruposCiclosFormativos.AsNoTracking().Select(x => new {x.ID,  x.CicloFormativoId, x.CentroID}).Where(i => i.CicloFormativoId == cicloFormativo.Id).AnyAsync(p => p.CentroID == grupo.CentroID);
+                //        if (!isRepeated)
+                //        {
+                //            db.GruposCiclosFormativos.Add(grupo);
+                //            await db.SaveChangesAsync();
+                //        }
 
-                    //    }
+                //    }
 
-                    //}
-               ViewBag.SuperCicloFormativoId = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
-               //ViewBag.CentrosId = new SelectList(db.Centros.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");
+                //}
+                ViewBag.SuperCicloFormativoId = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
+                //ViewBag.CentrosId = new SelectList(db.Centros.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");
 
                 //db.SaveChanges();
 
@@ -164,7 +164,7 @@ namespace Monitoreo.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.SuperCicloFormativoId = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre}), "Id", "nombre");
+            ViewBag.SuperCicloFormativoId = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
             //ViewBag.CentrosId = new SelectList(db.Centros, "Id", "Nombre");
 
             var tipoModuloFormativo = new Dictionary<int, string>();
@@ -200,8 +200,9 @@ namespace Monitoreo.Controllers
             if (ModelState.IsValid)
             {
 
-                CalendarioCicloFormativo cal =  db.CalendarioCicloFormativoes.Where(c => c.CicloFormativoID == cicloFormativo.Id).FirstOrDefault();
-                if(cal != null){
+                CalendarioCicloFormativo cal = db.CalendarioCicloFormativoes.Where(c => c.CicloFormativoID == cicloFormativo.Id).FirstOrDefault();
+                if (cal != null)
+                {
                     cal.Fecha = cicloFormativo.FechaInicio;
                     db.Entry(cal).State = EntityState.Modified;
                     db.SaveChanges();
@@ -256,31 +257,15 @@ namespace Monitoreo.Controllers
 
             try
             {
-                if (User.IsInRole("Administrador") || User.IsInRole("Coordinador"))
-                {
-                    cicloFormativo = db.CiclosFormativos.Find(id);
-                    List<GrupoCicloFormativo> gruposCiclo = db.GruposCiclosFormativos.Where(c => c.CicloFormativoId == cicloFormativo.Id).ToList();
-                    foreach (GrupoCicloFormativo g in gruposCiclo)
-                    {
-                        db.GruposCiclosFormativos.Remove(g);
-                    }
 
-                    db.CiclosFormativos.Remove(cicloFormativo);
-                }
-                if (User.IsInRole("Acompanante") || User.IsInRole("Formador"))
+                cicloFormativo = db.CiclosFormativos.Find(id);
+                List<GrupoCicloFormativo> gruposCiclo = db.GruposCiclosFormativos.Where(c => c.CicloFormativoId == cicloFormativo.Id).ToList();
+                foreach (GrupoCicloFormativo g in gruposCiclo)
                 {
-                    cicloFormativo = db.CiclosFormativos.Find(id);
-                    db.CiclosFormativos.Remove(cicloFormativo);
-
-                    Persona participante = new Persona();
-                    participante = db.Personas.Where(p => p.Cedula == User.Identity.Name).SingleOrDefault();
-                    if (participante != null)
-                    {
-                        GrupoCicloFormativo grupo = db.GruposCiclosFormativos.Where(c => c.CicloFormativoId == cicloFormativo.Id).Where(p => p.inscripciones.Any(u => u.ParticipanteId == participante.Id)).SingleOrDefault();
-                        db.GruposCiclosFormativos.Remove(grupo);
-                    }
+                    db.GruposCiclosFormativos.Remove(g);
                 }
 
+                db.CiclosFormativos.Remove(cicloFormativo);
                 db.SaveChanges();
                 return Redirect("/SuperCicloFormativo/Details/" + superCicloId.ToString());
             }
@@ -296,12 +281,13 @@ namespace Monitoreo.Controllers
         }
 
 
-        public ActionResult CicloInscripcionesImportarFrom(int cicloId) {
+        public ActionResult CicloInscripcionesImportarFrom(int cicloId)
+        {
             ViewBag.cicloId = cicloId;
             ViewBag.superCiclosDest = new SelectList(db.SuperCicloFormativoes.Select(x => new { x.Id, x.nombre }), "Id", "nombre");
 
             return View();
-        
+
         }
 
 
@@ -310,10 +296,10 @@ namespace Monitoreo.Controllers
         {
             List<Inscripcion> inscripciones = new List<Inscripcion>();
             inscripciones = db.Inscripciones.AsNoTracking().Include(i => i.CicloFormativo).Include(i => i.Participante).Include(i => i.GrupoCicloFormativo).Where(s => s.CicloFormativoId == CicloFormativoId).Take(1).ToList();
-           
+
             ViewBag.MasterType = "CicloFormativo";
             ViewBag.MasterId = CicloFormativoId;
-            ViewBag.CalendarioId = new SelectList(db.CalendarioCicloFormativoes.Select(x => new {x.CicloFormativoID, x.Id, x.Fecha }).Where(c => c.CicloFormativoID == CicloFormativoId), "Id", "Fecha");
+            ViewBag.CalendarioId = new SelectList(db.CalendarioCicloFormativoes.Select(x => new { x.CicloFormativoID, x.Id, x.Fecha }).Where(c => c.CicloFormativoID == CicloFormativoId), "Id", "Fecha");
 
             return PartialView(inscripciones.ToList());
         }
@@ -328,22 +314,25 @@ namespace Monitoreo.Controllers
 
         /*Nota: El CicloId es el SupercicloID*/
         [HttpPost]
-        public async Task<ActionResult> CicloInscripcionesVerificarDuplicados(int[] ciclosIds, int[] docentesIds){
+        public async Task<ActionResult> CicloInscripcionesVerificarDuplicados(int[] ciclosIds, int[] docentesIds)
+        {
 
-           List<Docente> docentesRepeated = new List<Docente>();
-           foreach(var docente in docentesIds){
-               Docente docenteTemp = await db.Docentes.FindAsync(docente);
-               int participanteId = docenteTemp.PersonaId;
-               foreach (var ciclo in ciclosIds) {
-                   bool isRepeated = await db.Inscripciones.Select(x => new { x.Id, x.CicloFormativoId, x.CicloFormativo, x.ParticipanteId, x.Participante.Cedula }).Where(c => c.CicloFormativo.SuperCicloFormativoId == ciclo).AnyAsync(p => p.ParticipanteId == participanteId);
-                   if (isRepeated)
-                   {
-                       docentesRepeated.Add(docenteTemp);
-                   }         
-               }                   
-           }
+            List<Docente> docentesRepeated = new List<Docente>();
+            foreach (var docente in docentesIds)
+            {
+                Docente docenteTemp = await db.Docentes.FindAsync(docente);
+                int participanteId = docenteTemp.PersonaId;
+                foreach (var ciclo in ciclosIds)
+                {
+                    bool isRepeated = await db.Inscripciones.Select(x => new { x.Id, x.CicloFormativoId, x.CicloFormativo, x.ParticipanteId, x.Participante.Cedula }).Where(c => c.CicloFormativo.SuperCicloFormativoId == ciclo).AnyAsync(p => p.ParticipanteId == participanteId);
+                    if (isRepeated)
+                    {
+                        docentesRepeated.Add(docenteTemp);
+                    }
+                }
+            }
 
-           return Json(docentesRepeated.Select(x => new {Id =  x.Id, Cedula = x.Persona.Cedula }), JsonRequestBehavior.AllowGet);
+            return Json(docentesRepeated.Select(x => new { Id = x.Id, Cedula = x.Persona.Cedula }), JsonRequestBehavior.AllowGet);
         }
 
 
@@ -351,48 +340,56 @@ namespace Monitoreo.Controllers
         public ActionResult CicloInscripcionesBatch(int? id)
         {
             var cicloFormativo = db.CiclosFormativos.Find(id);
-            ViewBag.Distrito = new SelectList(db.Distritos.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");                       
+            ViewBag.Distrito = new SelectList(db.Distritos.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");
             return View(cicloFormativo);
         }
 
         [HttpPost]
-        public async Task<ActionResult> InscribirDocentesBatch(int cicloId,  int[] docentesIds  ) {
+        public async Task<ActionResult> InscribirDocentesBatch(int cicloId, int[] docentesIds)
+        {
             List<GrupoCicloFormativo> grupos = new List<GrupoCicloFormativo>();
             List<Inscripcion> inscripcionesNew = new List<Inscripcion>();
-            if (cicloId != 0) {
+            if (cicloId != 0)
+            {
                 var inscripciones = await db.Inscripciones.AsNoTracking().Where(c => c.CicloFormativoId == cicloId).ToListAsync();
                 var docentes = db.Docentes.AsNoTracking().Where(i => docentesIds.Contains(i.Id));
-                var centros =  docentes.Select(x => new { x.Centro, x.CentroId }).Distinct(); //Distintos centros de los docentes a inscribir
-                
+                var centros = docentes.Select(x => new { x.Centro, x.CentroId }).Distinct(); //Distintos centros de los docentes a inscribir
+
                 //Anade los Grupos al Ciclo Formativo
-                foreach (var centro in centros) {                    
-                        GrupoCicloFormativo grupo = new GrupoCicloFormativo();
-                        bool isRepeated = db.GruposCiclosFormativos.Select(x => new { x.CicloFormativoId, x.CentroID}).Where(i => i.CicloFormativoId == cicloId).Any(p => p.CentroID == centro.CentroId);
-                        if (!isRepeated) {
-                            grupo.CentroID = centro.CentroId;
-                            grupo.CicloFormativoId = cicloId;
-                            grupos.Add(grupo);  
-                        }
-                         
+                foreach (var centro in centros)
+                {
+                    GrupoCicloFormativo grupo = new GrupoCicloFormativo();
+                    bool isRepeated = db.GruposCiclosFormativos.Select(x => new { x.CicloFormativoId, x.CentroID }).Where(i => i.CicloFormativoId == cicloId).Any(p => p.CentroID == centro.CentroId);
+                    if (!isRepeated)
+                    {
+                        grupo.CentroID = centro.CentroId;
+                        grupo.CicloFormativoId = cicloId;
+                        grupos.Add(grupo);
+                    }
+
                 }
                 db.GruposCiclosFormativos.AddRange(grupos);
                 await db.SaveChangesAsync();
 
                 //Anade los Docoentes a cada grupo del Ciclo Formativo
-                foreach(var doc in docentes){
+                foreach (var doc in docentes)
+                {
                     bool isRepeatedInscripcion = inscripciones.Any(p => p.ParticipanteId == doc.PersonaId);
-                    if (!isRepeatedInscripcion) {
+                    if (!isRepeatedInscripcion)
+                    {
                         GrupoCicloFormativo grupo = grupos.Where(c => c.CentroID == doc.CentroId).FirstOrDefault();
-                        if (grupo == null) {
+                        if (grupo == null)
+                        {
                             grupo = db.GruposCiclosFormativos.Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == doc.CentroId).FirstOrDefault();
                         }
-                        if (grupo != null) {
-                            inscripcionesNew.Add(new Inscripcion { CicloFormativoId = cicloId, GrupoCicloFormativoId = grupo.ID, Rol = InscripcionRol.Participante, ParticipanteId = doc.PersonaId, Fecha = DateTime.Now }); 
+                        if (grupo != null)
+                        {
+                            inscripcionesNew.Add(new Inscripcion { CicloFormativoId = cicloId, GrupoCicloFormativoId = grupo.ID, Rol = InscripcionRol.Participante, ParticipanteId = doc.PersonaId, Fecha = DateTime.Now });
                         }
                     }
                 }
                 db.Inscripciones.AddRange(inscripcionesNew);
-                await db.SaveChangesAsync();                
+                await db.SaveChangesAsync();
                 return Json("OK", JsonRequestBehavior.AllowGet);
 
             }
@@ -542,7 +539,8 @@ namespace Monitoreo.Controllers
         }
 
         [Authorize(Roles = "Administrador, AdministradorTransversal,EspecialistaCurricular")]
-        public ActionResult CicloInscripcionAdministrativo(int cicloId) {
+        public ActionResult CicloInscripcionAdministrativo(int cicloId)
+        {
             CicloFormativo ciclo = db.CiclosFormativos.Find(cicloId);
             ViewBag.Distritos = new SelectList(db.Distritos.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");
             return PartialView(ciclo);
@@ -552,24 +550,26 @@ namespace Monitoreo.Controllers
         public JsonResult InscribirPersonalAdministrativo(int cicloId, int[] centrosIds, int[] tiposPersonalIds)
         {
 
-            Array personalFunciones = Enum.GetValues(typeof(PersonalFuncion)); 
+            Array personalFunciones = Enum.GetValues(typeof(PersonalFuncion));
             List<PersonalAdministrativo> personalInscribir = new List<PersonalAdministrativo>();
             List<Inscripcion> inscripcionesPersonal = new List<Inscripcion>();
 
             string result = "OK";
-            
+
             //Grupo de Ciclo Formativo
-            foreach(var centroId in centrosIds){
+            foreach (var centroId in centrosIds)
+            {
                 GrupoCicloFormativo grupo = new GrupoCicloFormativo();
                 grupo.CentroID = centroId;
                 grupo.CicloFormativoId = cicloId;
-                var grupoCiclo =  db.GruposCiclosFormativos.AsNoTracking().Select(x => new { x.ID, x.CicloFormativoId, x.CentroID }).Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == grupo.CentroID).SingleOrDefault();
+                var grupoCiclo = db.GruposCiclosFormativos.AsNoTracking().Select(x => new { x.ID, x.CicloFormativoId, x.CentroID }).Where(i => i.CicloFormativoId == cicloId).Where(p => p.CentroID == grupo.CentroID).SingleOrDefault();
                 if (grupoCiclo == null)
                 {
                     db.GruposCiclosFormativos.Add(grupo);
                     db.SaveChanges();
                 }
-                else {
+                else
+                {
                     grupo.ID = grupoCiclo.ID;
                     grupo.CentroID = grupoCiclo.CentroID;
                     grupo.CicloFormativoId = grupoCiclo.CicloFormativoId;
@@ -577,11 +577,11 @@ namespace Monitoreo.Controllers
 
                 foreach (var tipo in tiposPersonalIds)
                 {
-                    personalInscribir =  db.PersonalAdministrativo.AsNoTracking().Where(d => d.CentroId ==  centroId).Where(t => t.FuncionesEjerce.HasFlag((PersonalFuncion)tipo)).ToList();
+                    personalInscribir = db.PersonalAdministrativo.AsNoTracking().Where(d => d.CentroId == centroId).Where(t => t.FuncionesEjerce.HasFlag((PersonalFuncion)tipo)).ToList();
                     foreach (var personal in personalInscribir)
                     {
 
-                        bool isRepeatedInscripcion =   db.Inscripciones.Where(c => c.CicloFormativoId == cicloId).Where(g => g.GrupoCicloFormativoId == grupo.ID).Any(p => p.ParticipanteId == personal.Persona.Id);
+                        bool isRepeatedInscripcion = db.Inscripciones.Where(c => c.CicloFormativoId == cicloId).Where(g => g.GrupoCicloFormativoId == grupo.ID).Any(p => p.ParticipanteId == personal.Persona.Id);
                         if (!isRepeatedInscripcion)
                         {
                             Inscripcion inscripcionDocente = new Inscripcion();
@@ -592,10 +592,10 @@ namespace Monitoreo.Controllers
                             inscripcionDocente.Fecha = DateTime.Now;
                             inscripcionDocente.GrupoCicloFormativoId = grupo.ID;
                             inscripcionesPersonal.Add(inscripcionDocente);
-                      
+
                         }
 
-                        
+
                     }
                 }
 
@@ -624,56 +624,56 @@ namespace Monitoreo.Controllers
             int cicloId = 0;
             int calendarioId = 0;
 
-                cicloId = Convert.ToInt32(Request["id"]);
-                calendarioId = Convert.ToInt32(Request["calendarioId"]);
-                if (uploadFile.ContentLength > 0)
+            cicloId = Convert.ToInt32(Request["id"]);
+            calendarioId = Convert.ToInt32(Request["calendarioId"]);
+            if (uploadFile.ContentLength > 0)
+            {
+                string filePath = Path.Combine(HttpContext.Server.MapPath("../"), Path.GetFileName(uploadFile.FileName));
+                uploadFile.SaveAs(filePath);
+                DataSet ds = new DataSet();
+                string ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";Extended Properties=Excel 12.0;";
+
+                using (OleDbConnection conn = new System.Data.OleDb.OleDbConnection(ConnectionString))
                 {
-                    string filePath = Path.Combine(HttpContext.Server.MapPath("../"), Path.GetFileName(uploadFile.FileName));
-                    uploadFile.SaveAs(filePath);
-                    DataSet ds = new DataSet();
-                    string ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";Extended Properties=Excel 12.0;";
-
-                    using (OleDbConnection conn = new System.Data.OleDb.OleDbConnection(ConnectionString))
+                    conn.Open();
+                    using (DataTable dtExcelSchema = conn.GetSchema("Tables"))
                     {
-                        conn.Open();
-                        using (DataTable dtExcelSchema = conn.GetSchema("Tables"))
+                        string sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                        string query = "SELECT * FROM [" + sheetName + "]";
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(query, conn);
+                        //DataSet ds = new DataSet();
+                        adapter.Fill(ds, "Items");
+                        if (ds.Tables.Count > 0)
                         {
-                            string sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
-                            string query = "SELECT * FROM [" + sheetName + "]";
-                            OleDbDataAdapter adapter = new OleDbDataAdapter(query, conn);
-                            //DataSet ds = new DataSet();
-                            adapter.Fill(ds, "Items");
-                            if (ds.Tables.Count > 0)
+                            if (ds.Tables[0].Rows.Count > 0)
                             {
-                                if (ds.Tables[0].Rows.Count > 0)
+                                string cedula = "";
+                                string nombre = "";
+                                string actividadFormativa = "";
+                                string fecha = "";
+                                string asistio = "";
+                                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                                 {
-                                    string cedula = "";
-                                    string nombre = "";
-                                    string actividadFormativa = "";
-                                    string fecha = "";
-                                    string asistio = "";
-                                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                                    {
-                                        AssitenciaVM asistencia = new AssitenciaVM();
-                                        cedula = ds.Tables[0].Rows[i][0].ToString();
-                                        nombre = ds.Tables[0].Rows[i][1].ToString();
-                                        actividadFormativa = ds.Tables[0].Rows[i][2].ToString();
-                                        fecha = ds.Tables[0].Rows[i][3].ToString();
-                                        asistio = ds.Tables[0].Rows[i][4].ToString();
+                                    AssitenciaVM asistencia = new AssitenciaVM();
+                                    cedula = ds.Tables[0].Rows[i][0].ToString();
+                                    nombre = ds.Tables[0].Rows[i][1].ToString();
+                                    actividadFormativa = ds.Tables[0].Rows[i][2].ToString();
+                                    fecha = ds.Tables[0].Rows[i][3].ToString();
+                                    asistio = ds.Tables[0].Rows[i][4].ToString();
 
-                                        asistencia.participanteCedula = cedula;
-                                        asistencia.participanteNombre = nombre;
-                                        asistencia.asistio = true;
+                                    asistencia.participanteCedula = cedula;
+                                    asistencia.participanteNombre = nombre;
+                                    asistencia.asistio = true;
 
-                                        asistencias.Add(asistencia);
-                                    }
+                                    asistencias.Add(asistencia);
                                 }
                             }
                         }
                     }
-
                 }
- 
+
+            }
+
 
             List<Inscripcion> inscripciones = new List<Inscripcion>();
             inscripciones = db.Inscripciones.AsNoTracking().Where(c => c.CicloFormativoId == cicloId).ToList();

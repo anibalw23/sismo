@@ -180,7 +180,7 @@ namespace Monitoreo.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public ActionResult Create([Bind(Include="Id,Codigo,PersonaId,CentroId,FechaContratacion,FuncionesEjerce,Tanda")] PersonalAdministrativo personalAdministrativo)
+        public ActionResult Create([Bind(Include = "Id,Codigo,PersonaId,CentroId,FechaContratacion,FuncionesEjerce,Tanda")] PersonalAdministrativo personalAdministrativo)
         {
             ViewBag.MasterType = Request.Params["MasterType"];
             ViewBag.MasterId = Request.Params["MasterId"];
@@ -218,7 +218,7 @@ namespace Monitoreo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <ActionResult> CreateModal(PersonalAdministrativo personalAdmin)
+        public async Task<ActionResult> CreateModal(PersonalAdministrativo personalAdmin)
         {
             string result = "OK";
             //Crea una nueva persona si no existe
@@ -378,21 +378,17 @@ namespace Monitoreo.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            else {
-                try
-                {
-                    PersonalAdministrativo personalAdministrativo = db.PersonalAdministrativo.Find(id);
-                    db.PersonalAdministrativo.Remove(personalAdministrativo);
-                    db.SaveChanges();
-                }
-                catch (Exception e) {
-                    var msj = e.Message;
-                }
-                
-            }
-             return RedirectToAction("Details", "Centro", new { id = ViewBag.MasterId });
+            else
+            {
 
-           
+                PersonalAdministrativo personalAdministrativo = db.PersonalAdministrativo.Find(id);
+                db.PersonalAdministrativo.Remove(personalAdministrativo);
+                db.SaveChanges();
+
+            }
+            return RedirectToAction("Details", "Centro", new { id = ViewBag.MasterId });
+
+
         }
 
 
@@ -400,29 +396,29 @@ namespace Monitoreo.Controllers
         [Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
         public JsonResult GetPersonalAdminFunciones()
         {
-                Array values = Enum.GetValues(typeof(PersonalFuncion));
-                List<ListItem> items = new List<ListItem>(values.Length);
+            Array values = Enum.GetValues(typeof(PersonalFuncion));
+            List<ListItem> items = new List<ListItem>(values.Length);
 
-                foreach (var i in values)
+            foreach (var i in values)
+            {
+                items.Add(new ListItem
                 {
-                    items.Add(new ListItem
-                    {
-                        Text = Enum.GetName(typeof(PersonalFuncion), i),
-                        Value = ((int)i).ToString()
-                    });
-                }
+                    Text = Enum.GetName(typeof(PersonalFuncion), i),
+                    Value = ((int)i).ToString()
+                });
+            }
 
-               
-                var jsonData = new
+
+            var jsonData = new
+            {
+                data = items.Select(y => new
                 {
-                    data = items.Select(y => new
-                    {
-                        y.Text,
-                        y.Value
+                    y.Text,
+                    y.Value
 
-                    }),
-                };
-                return Json(jsonData, JsonRequestBehavior.AllowGet);           
+                }),
+            };
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
 

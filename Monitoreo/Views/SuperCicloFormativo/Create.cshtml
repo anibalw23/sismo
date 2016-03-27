@@ -9,23 +9,52 @@
 </div>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="panel-body">
         <div class="form-horizontal">
             @Html.ValidationSummary(true)
-              
-                @Html.EditorFor(model => model.nombre)
-                @Html.EditorFor(model => model.FechaInicio)
-                @Html.EditorFor(model => model.FechaFinalizacion)
-                @Html.EditorFor(model => model.CategoriaSuperCiclo)
-                @Html.EditorFor(model => model.Nivel)
-                @Html.EditorFor(model => model.Area)
-                @Html.EditorFor(model => model.Ciclo)
-                <input type="checkbox" name="createActividadesAcompanamiento" checked /> Crear Actividades de Acompañamiento Automaticamente
-               
+
+            @Html.EditorFor(model => model.nombre)
+            @Html.EditorFor(model => model.FechaInicio)
+            @Html.EditorFor(model => model.FechaFinalizacion)
+            @Html.EditorFor(model => model.CategoriaSuperCiclo)
+            @Html.EditorFor(model => model.Nivel)
+            @Html.EditorFor(model => model.Area)
+            @Html.EditorFor(model => model.Ciclo)
+
+            @Html.Label("Crear Actividades de Acompañamiento Automaticamente")
+            @Html.CheckBox("createActividadesAcompanamiento", true)
+
+            @*<div class="col-sm-4" style="margin-bottom:50px;">
+                <input type="checkbox" name="createActividadesAcompanamiento" checked /> 
+            </div>*@
+
+          
+            <div class="panel panel-default">
+                <div class="panel-heading">Evaluaciones de Acompanamiento Asociadas</div>
+                <div class="panel-body">
+                    @if (ViewBag.Evaluaciones != null)
+                    {
+                        var index = 0;
+                        foreach (var evaluacion in ViewBag.Evaluaciones)
+                        {
+                            <input value="@evaluacion.Id" type="checkbox" name="EvaluacionAcompanamiento" /> @evaluacion.Titulo
+                            index++;
+                        }
+                    }
+
+
+                </div>
+            </div>
+           
+         
+
+
+
+
         </div>
     </div>
     <div class="panel-footer">

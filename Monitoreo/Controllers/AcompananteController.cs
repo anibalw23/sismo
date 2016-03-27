@@ -50,8 +50,8 @@ namespace Monitoreo.Controllers
             foreach (var docente in docentesAcompanante)
             {
 
-                var inscripcionesCicloActual = db.InscripcionesActividadesAcompanamiento.AsNoTracking()
-                                                     .Include(a => a.ActividadAcompanamiento)
+                var inscripcionesCicloActual = db.InscripcionesActividadesAcompanamiento
+                    .Where(p => p.personalID == docente.Id)
                                                     .Where(s => s.ActividadAcompanamiento.SuperCicloFormativo.CategoriaSuperCiclo == CategoriaSuperCiclo.Docentes)
                                                     .Where(f => f.ActividadAcompanamiento.SuperCicloFormativo.FechaInicio < DateTime.Now)
                                                     .Where(f => f.ActividadAcompanamiento.SuperCicloFormativo.FechaFinalizacion > DateTime.Now)
@@ -65,7 +65,6 @@ namespace Monitoreo.Controllers
                         horasAcompanadasCicloActual = inscripcionesCicloActual.Sum(h => h.horas);
                     }
                 }
-
                 AcompananteDocenteHorasAcompanadaVMs horasTotalesAcompanadas = new AcompananteDocenteHorasAcompanadaVMs();
                 horasTotalesAcompanadas.horasAcompanamientoTotal =   horasAcompanadasCicloActual;
 
@@ -96,8 +95,7 @@ namespace Monitoreo.Controllers
 
 
         // GET: Acompanantes
-        [Authorize(Roles = "Administrador")]
-        //[OutputCache(Duration = 43200, VaryByParam = "none")]
+        [OutputCache(Duration = 300, VaryByParam = "none")] //5 minutos
         public ActionResult Index()
         {
             return View();
@@ -110,13 +108,13 @@ namespace Monitoreo.Controllers
         public async Task<JsonResult> GetDataJson(DatatablesParams values)
         {
 
-            int acompanantesCount = await db.Acompanantes.Select(x => new { x.Id }).CountAsync();
+            int acompanantesCount = await db.Acompanantes.AsNoTracking().Select(x => new { x.Id }).CountAsync();
             
             var recordsTotal = acompanantesCount;
             var recordsFiltered = recordsTotal;
             var limit = values.length > 0 ? values.length : recordsTotal;
             var from = values.start;
-            var acompanantes =  db.Acompanantes.Select(x => new { x.Id, cedula = x.Persona.Cedula, nombres = x.Persona.Nombres, apellido = x.Persona.PrimerApellido, x.Email, centro = x.Centro.Nombre }).OrderBy(n => n.nombres).Skip(from).Take(limit);
+            var acompanantes =  db.Acompanantes.AsNoTracking().Select(x => new { x.Id, cedula = x.Persona.Cedula, nombres = x.Persona.Nombres, apellido = x.Persona.PrimerApellido, x.Email, centro = x.Centro.Nombre }).OrderBy(n => n.nombres).Skip(from).Take(limit);
 
             // Seleccionando
             var data = acompanantes.Select(x => new { DT_RowId = x.Id, Persona = x.cedula, NombrePersona = x.nombres + " " + x.apellido, Email = x.Email, Centro = x.centro });
@@ -167,7 +165,6 @@ namespace Monitoreo.Controllers
 
         // GET: Acompanantes/Create
         [Route("Acompanante/Create")]
-        [Authorize(Roles = "Administrador")]
         //[OutputCache(Duration = 43200, VaryByParam = "none")]
         public ActionResult Create()
         {

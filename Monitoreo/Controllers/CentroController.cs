@@ -10,6 +10,7 @@ using Monitoreo.Models;
 using Monitoreo.Models.DAL;
 using Monitoreo.Models.BO.ViewModels;
 using System.Threading.Tasks;
+using System.Web.UI;
 
 namespace Monitoreo.Controllers
 {
@@ -19,14 +20,13 @@ namespace Monitoreo.Controllers
         private MonitoreoContext db = new MonitoreoContext();
 
         // GET: Centros
-        //[Authorize(Roles = "Administrador, Acompanante,Coordinador")]
         [Route("Centros")]
+        [OutputCache(Duration = 1800, Location = OutputCacheLocation.Server)] // Se almacena en cache por 30 minutos
         public ActionResult Index()
         {
             return View();
         }
 
-        //[Authorize(Roles = "Administrador, Acompanante")]
         [HttpPost]
         public async Task<JsonResult> GetDataJson(DatatablesParams values)
         {
@@ -52,7 +52,7 @@ namespace Monitoreo.Controllers
         }
 
         // GET: RedCentros
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server)] // Se almacena en cache por 5 minutos
         public ActionResult RedCentros(int RedId)
         {
             var centros = db.Centros.AsNoTracking().Include(c => c.Director).Include(c => c.Red).Where(s => s.RedId == RedId);
@@ -63,7 +63,7 @@ namespace Monitoreo.Controllers
             return PartialView(centros.ToList());
         }
 
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "DistritoId")] // Se almacena en cache por 5 minutos
         public  ActionResult DistritoCentros(int DistritoId)
         {
             var centros =  db.Centros.AsNoTracking().Include(c => c.Director).Include(c => c.Red).Where(s => s.Red.DistritoId == DistritoId);
@@ -76,7 +76,6 @@ namespace Monitoreo.Controllers
 
 
         [HttpPost]
-        //[Authorize(Roles = "Administrador, Acompanante,Coordinador, AdministradorTransversal")]
         public JsonResult GetCentrosByRedesIds(int[] ints)
         {
 
@@ -299,7 +298,7 @@ namespace Monitoreo.Controllers
             return View();
         }
 
-        //[OutputCache(Duration = 86400, VaryByParam = "id")]
+        [OutputCache(Duration = 1800, Location = OutputCacheLocation.Server, VaryByParam = "id")] // 30 minutos
         public ActionResult EstadisticasCentro(int id) //centroID
         {
             List<EstadisticaCentro> estadisticascentro = new List<EstadisticaCentro>();

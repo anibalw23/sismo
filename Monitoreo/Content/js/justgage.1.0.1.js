@@ -314,9 +314,9 @@ JustGage.prototype.refresh = function(val) {
 };
 
 var percentColors = [
-  "#a9d70b",
-  "#f9c802",
-  "#ff0000"
+    "#ff0000",
+    "#f9c802",
+    "#a9d70b",
 ]
 
 JustGage.prototype.generateShadow = function(svg, defs) {

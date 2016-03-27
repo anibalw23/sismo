@@ -328,20 +328,27 @@ namespace Monitoreo.Controllers
 
             }
 
-            var evaluacionesAcompanamiento = await db.EvaluacionAcompanamientoes.AsNoTracking().Where(s => s.SuperCicloFormativo.Any(x => x.Id == superCicloFormativoId)).Select(x => new { x.Id, x.Titulo, x.TipoEvaluacionAcomp }).Where(t => t.TipoEvaluacionAcomp == tipoEvaluacion).Distinct().ToListAsync();
 
 
             Personal persona = new Personal();
-
-            var personaVar = await db.Personal.AsNoTracking().Select(x => new { inscripcionesActividadesacompanamiento = x.inscripcionesActividadesacompanamiento.Where(t => t.ActividadAcompanamiento.TipoAcompanamiento == tipoActividadAcomp).Where(s => s.ActividadAcompanamiento.SuperCicloFormativoId == superCicloFormativoId).ToList(), x.Id }).Where(p => p.Id == docenteId).SingleOrDefaultAsync();
+            var personaVar = await db.Personal.AsNoTracking().Select(x => new { x.FuncionesEjerce, inscripcionesActividadesacompanamiento = x.inscripcionesActividadesacompanamiento.Where(t => t.ActividadAcompanamiento.TipoAcompanamiento == tipoActividadAcomp).Where(s => s.ActividadAcompanamiento.SuperCicloFormativoId == superCicloFormativoId).ToList(), x.Id }).Where(p => p.Id == docenteId).SingleOrDefaultAsync();
             persona.Id = personaVar.Id;
-            if (User.IsInRole("Coordinador")) //Si es coordinador puede ver todas las inscripciones
+            persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento.Where(u => u.userName == User.Identity.Name).OrderByDescending(i => i.ID).ToList();
+            var evaluacionesAcompanamiento = await db.EvaluacionAcompanamientoes.AsNoTracking().Where(s => s.SuperCicloFormativo.Any(x => x.Id == superCicloFormativoId)).Select(x => new { x.Id, x.Titulo, x.TipoEvaluacionAcomp, x.PersonalFuncion }).Where(t => t.TipoEvaluacionAcomp == tipoEvaluacion).Distinct().ToListAsync();
+
+            //Para verificar si esta evaluacion necesita ser filtrada a un personalFuncion especifico
+            var evaluacionesAcompanamientoTemp = evaluacionesAcompanamiento;
+            foreach (var eval in evaluacionesAcompanamiento.ToList())
             {
-                persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento.OrderByDescending(i => i.ID).ToList();
+                if (eval.PersonalFuncion != null) {
+                    if (personaVar.FuncionesEjerce != eval.PersonalFuncion) {
+                        evaluacionesAcompanamiento.Remove(eval);
+                    }
+                }
             }
-            else { //Si es acompanante solo las que ha registrado con su usuario
-                persona.inscripcionesActividadesacompanamiento = personaVar.inscripcionesActividadesacompanamiento.Where(u => u.userName == User.Identity.Name).OrderByDescending(i => i.ID).ToList();
-           }
+            //End
+
+
             if (persona != null)
             {
                 inscripciones = persona.inscripcionesActividadesacompanamiento.ToList();//.Where(t => t.ActividadAcompanamiento.TipoAcompanamiento == tipoActividadAcomp).Where(s => s.ActividadAcompanamiento.SuperCicloFormativoId == superCicloFormativoId).ToList();
@@ -430,9 +437,13 @@ namespace Monitoreo.Controllers
             List<Inscripcion> inscripciones = new List<Inscripcion>();
             List<CicloFormativo> ciclosDocente = new List<CicloFormativo>();
             Acompanante acompanante = new Acompanante();
-
+            
             List<AsistenciaAcompanamientoVM> asistenciasActividadesAcompanamiento = new List<AsistenciaAcompanamientoVM>();
             docenteDetails.asistenciasAcompanamientos = asistenciasActividadesAcompanamiento;
+
+            if (id == null) {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
 
             Personal personal = await db.Personal.FindAsync(id);  //Cambie esto ahora (probar *)
@@ -486,6 +497,11 @@ namespace Monitoreo.Controllers
 
             List<AsistenciaAcompanamientoVM> asistenciasActividadesAcompanamiento = new List<AsistenciaAcompanamientoVM>();
             docenteDetails.asistenciasAcompanamientos = asistenciasActividadesAcompanamiento;
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
             //coordinador = db.Coordinadors.Where(p => p.Persona.Cedula == cedula).SingleOrDefault();
             Docente docente = id != null ? db.Docentes.Find(id) : null;

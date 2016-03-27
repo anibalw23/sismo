@@ -1,4 +1,5 @@
-﻿
+﻿@model Monitoreo.Models.BO.EvaluacionAcompanamiento.EvaluacionAcompanamiento
+
 @{
     ViewBag.Title = "EvaluacionCiclos";
 }
@@ -34,9 +35,10 @@
        
 
         <div class="form-group" style="min-width:800px;">  
-            <h3 class="col-lg-10 col-lg-offset-4" > Lista de Ciclos Formativos</h3>    
+            <h3 class="col-lg-10 col-lg-offset-4" > Lista de Ciclos Formativos Vigentes
+                <a href="@Url.Action("EvaluacionCiclos", "EvaluacionAcompanamiento", new { id = Model.Id, seeAll = 1 })" class="btn btn-link">Ver Todos</a>
+            </h3>    
            
-            
             <div class="col-sm-4">
                <ul id="ciclosList">
                    @foreach (var ciclo in ViewBag.SuperCiclos)

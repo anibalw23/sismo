@@ -10,6 +10,7 @@ using Monitoreo.Models;
 using Monitoreo.Models.DAL;
 using System.Threading.Tasks;
 using Monitoreo.Models.BO;
+using Monitoreo.Models.BO.EvaluacionAcompanamiento;
 
 namespace Monitoreo.Controllers
 {
@@ -67,39 +68,7 @@ namespace Monitoreo.Controllers
             {
                  supercicloformativoes = db.SuperCicloFormativoes.ToList();
             }
-
-            if (User.IsInRole("Acompanante") || User.IsInRole("Formador"))
-            {
-                List<Inscripcion> inscripciones = new List<Inscripcion>();
-                Persona participante = new Persona();
-                try
-                {
-                    participante = db.Personas.Where(p => p.Cedula == User.Identity.Name).SingleOrDefault();
-                    if (participante != null)
-                    {
-                        inscripciones = db.Inscripciones.Where(p => p.Participante.Id == participante.Id).Include(p => p.Participante).ToList();
-                        List<CicloFormativo> ciclosFormativos = inscripciones.Select(c => c.CicloFormativo).ToList();
-                        foreach (CicloFormativo c in ciclosFormativos)
-                        {
-                            SuperCicloFormativo superCiclo = new SuperCicloFormativo();
-                            superCiclo.Id = c.SuperCicloFormativoId;
-                            superCiclo.Area = c.SuperCicloFormativo.Area;
-                            superCiclo.Nivel = c.SuperCicloFormativo.Nivel;
-                            superCiclo.Ciclo = c.SuperCicloFormativo.Ciclo;
-                            superCiclo.nombre = c.SuperCicloFormativo.nombre;
-                            superCiclo.CreadoPor = c.SuperCicloFormativo.CreadoPor;
-                            supercicloformativoes.Add(superCiclo);
-                        }
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    var msj = e.Message;
-                }
-
-            }
-                
+               
 
             var recordsTotal = supercicloformativoes.Count();
             var recordsFiltered = recordsTotal;
@@ -170,6 +139,7 @@ namespace Monitoreo.Controllers
         [Authorize(Roles = "Administrador,EspecialistaCurricular")]
         public ActionResult Create()
         {
+            ViewBag.Evaluaciones = db.EvaluacionAcompanamientoes.AsNoTracking().ToList();
             return View();
         }
 
@@ -184,8 +154,14 @@ namespace Monitoreo.Controllers
         {
 
             superCicloFormativo.CreadoPor = User.Identity.Name;
-            string createActividadesAcompanamiento = Request.Form["createActividadesAcompanamiento"];            
+            string createActividadesAcompanamiento = Request.Form["createActividadesAcompanamiento"];
+            string evaluacionesAcompanamiento = Request.Form["EvaluacionAcompanamiento"];
+            string[] evaluacionesAcompIds = {};
+            if (evaluacionesAcompanamiento != null && evaluacionesAcompanamiento !="") {
+                evaluacionesAcompIds = evaluacionesAcompanamiento.Split(',');
+            }
 
+             
             if (ModelState.IsValid)
             {
                 if (createActividadesAcompanamiento != null) //Crea las actividades de Acompañamiento Correspondientes
@@ -197,7 +173,23 @@ namespace Monitoreo.Controllers
                         ActividadAcompanamiento actividad = new ActividadAcompanamiento { TipoAcompanamiento = tipo, SuperCicloFormativo = superCicloFormativo };
                         superCicloFormativo.ActividadesAcompanamiento.Add(actividad);
                     }
-                }                
+                }
+                if (evaluacionesAcompIds != null)
+                {
+                    if (evaluacionesAcompIds.Count() > 0) {
+                        superCicloFormativo.EvaluacionAcompanamiento = new List<EvaluacionAcompanamiento>();
+                        foreach (var evalId in evaluacionesAcompIds) {
+                            int idEval = Convert.ToInt32(evalId);
+                            EvaluacionAcompanamiento eval = db.EvaluacionAcompanamientoes.Find(idEval);
+                            if (eval != null) {
+                                superCicloFormativo.EvaluacionAcompanamiento.Add(eval);
+                            }
+                        }
+                    }
+                
+                }
+
+
                 db.SuperCicloFormativoes.Add(superCicloFormativo);
                 db.SaveChanges();
 

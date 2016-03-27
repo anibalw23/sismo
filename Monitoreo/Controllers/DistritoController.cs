@@ -9,10 +9,10 @@ using System.Web.Mvc;
 using Monitoreo.Models;
 using Monitoreo.Models.DAL;
 using Monitoreo.Models.BO;
+using System.Web.UI;
 
 namespace Monitoreo.Controllers
 {
-    //[Authorize(Roles = "Administrador, Acompanante")]
     [Authorize]
     public class DistritoController : BaseController
     {
@@ -20,7 +20,7 @@ namespace Monitoreo.Controllers
 
         // GET: Distritos
         [Route("Distritos")]
-        //[Authorize(Roles = "Administrador")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server)] // 5 minutos
         public ActionResult Index()
         {
             return View();
@@ -28,7 +28,6 @@ namespace Monitoreo.Controllers
 
         // POST: Distritos
         [Route("Distritos/GetDataJson")]
-        //[Authorize(Roles = "Administrador")]
         [HttpPost]
         public ActionResult GetDataJson(DatatablesParams values)
         {
@@ -69,7 +68,6 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Distrito/5/Details
-         //[Authorize(Roles = "Administrador")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -86,7 +84,6 @@ namespace Monitoreo.Controllers
 
         // GET: Distritos/Create
         [Route("Distritos/Create")]
-        //[Authorize(Roles = "Administrador")]
         public ActionResult Create()
         {
             ViewBag.CentroSedeId = new SelectList(db.Centros.Select(x => new { x.Id, x.Nombre }), "Id", "Nombre");
@@ -97,7 +94,7 @@ namespace Monitoreo.Controllers
             items.AddRange(db.Provincias.ToList().Select(x => new SelectListItem { Value = Convert.ToString(x.Id), Text = x.Nombre }));
             ViewBag.ProvinciaId = items;
 
-            ViewBag.RegionalId = new SelectList(db.Regionales, "Id", "Nombre");
+            ViewBag.RegionalId = new SelectList(db.Regionales.Select(x => new { x.Id, x.Nombre}), "Id", "Nombre");
             return View();
         }
 
@@ -105,7 +102,6 @@ namespace Monitoreo.Controllers
         [Route("Distritos/Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Administrador")]
         public ActionResult Create([Bind(Include = "Id,Codigo,CentroSedeId,Nombre,RegionalId,ProvinciaId,MunicipioId,Sector,Calle,Telefono,CorreoElectronico,SitioWeb")] Distrito distrito)
         {
             if (ModelState.IsValid)
@@ -127,7 +123,6 @@ namespace Monitoreo.Controllers
         }
 
         // GET: /Distrito/5/Edit
-        [Authorize(Roles = "Administrador")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -153,7 +148,6 @@ namespace Monitoreo.Controllers
         // POST: /Distrito/5/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
         public ActionResult Edit([Bind(Include = "Id,Codigo,CentroSedeId,Nombre,RegionalId,ProvinciaId,MunicipioId,Sector,Calle,Telefono,CorreoElectronico,SitioWeb")] Distrito distrito)
         {
             if (ModelState.IsValid)
@@ -162,19 +156,18 @@ namespace Monitoreo.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CentroSede = new SelectList(db.Centros, "Id", "Nombre", distrito.CentroSedeId);
-            ViewBag.Municipio = new SelectList(db.Municipios, "Id", "Nombre", distrito.MunicipioId);
+            ViewBag.CentroSede = new SelectList(db.Centros.Select(x => new {x.Id, x.Nombre }), "Id", "Nombre", distrito.CentroSedeId);
+            ViewBag.Municipio = new SelectList(db.Municipios.Select(x => new { x.Id, x.Nombre}), "Id", "Nombre", distrito.MunicipioId);
 
             List<SelectListItem> items = new List<SelectListItem>();
             items.AddRange(db.Provincias.ToList().Select(x => new SelectListItem { Value = Convert.ToString(x.Id), Text = x.Nombre, Selected = x.Id == distrito.ProvinciaId }));
             ViewBag.Provincia = items;
 
-            ViewBag.Regional = new SelectList(db.Regionales, "Id", "Nombre", distrito.RegionalId);
+            ViewBag.Regional = new SelectList(db.Regionales.Select(x => new { x.Id, x.Nombre}), "Id", "Nombre", distrito.RegionalId);
             return View(distrito);
         }
 
         // GET: /Distrito/5/Delete
-        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -192,7 +185,6 @@ namespace Monitoreo.Controllers
         // POST: /Distrito/5/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
         public ActionResult DeleteConfirmed(int id)
         {
             Distrito distrito = db.Distritos.Find(id);
@@ -218,14 +210,14 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalAdmin")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server)] //5 minutos
         public JsonResult getPersonalAdmin()
         {
 
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
 
             var personal = db.Personal.Include(c => c.Persona).Where(p => p.FuncionesEjerce != PersonalFuncion.Docente).ToList();
-
+           
             foreach (var d in personal)
             {
                 PersonalCentroViewModel pc = new PersonalCentroViewModel();
@@ -252,11 +244,15 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalAdminByCentro")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "centroID")] //5 minutos
         public JsonResult getPersonalAdminByCentro(int centroID)
         {
 
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
+
+            if (centroID == 0) {
+                return Json(new { Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest), Records = pcs }, JsonRequestBehavior.AllowGet);
+            }
 
             var personal = db.Personal.Include(c => c.Persona).Where(p => p.FuncionesEjerce != PersonalFuncion.Docente).Where(c => c.CentroId == centroID).ToList();
 
@@ -288,7 +284,7 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalAdminByRed")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "redID")] //5 minutos
         public JsonResult getPersonalAdminByRed(int redID)
         {
 
@@ -324,8 +320,7 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalDocente")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
-        public JsonResult getPersonalDocente()
+         public JsonResult getPersonalDocente()
         {
 
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
@@ -369,7 +364,7 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalDocenteByCentro")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "centroID")] //5 minutos
         public JsonResult getPersonalDocenteByCentro(int centroID)
         {
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
@@ -413,7 +408,7 @@ namespace Monitoreo.Controllers
 
         [Route("Distrito/getPersonalDocenteByRed")]
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "redID")] //5 minutos
         public JsonResult getPersonalDocenteByRed(int redID)
         {
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();
@@ -458,7 +453,7 @@ namespace Monitoreo.Controllers
 
 
         [HttpGet]
-        //[Authorize(Roles = "Administrador, Acompanante")]
+        [OutputCache(Duration = 300, Location = OutputCacheLocation.Server, VaryByParam = "redID")] //5 minutos
         public JsonResult getDocentesPorGradoByRed(int redID)
         {
             List<PersonalCentroViewModel> pcs = new List<PersonalCentroViewModel>();

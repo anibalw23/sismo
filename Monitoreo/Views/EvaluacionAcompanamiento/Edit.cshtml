@@ -12,15 +12,22 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="panel-body">
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true)
-        @Html.HiddenFor(model => model.Id)
 
-                @Html.EditorFor(model => model.Titulo)
-                @Html.EditorFor(model => model.TipoEvaluacionAcomp)
-                @Html.EditorFor(model => model.creadoPor)
+    <div class="panel-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.Id)
+
+            @Html.EditorFor(model => model.Titulo)
+            @Html.EditorFor(model => model.TipoEvaluacionAcomp)
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-3">
+                   Asignar a Personal (Deje vacio para asiganr a todos) @Html.DropDownListFor(model => model.PersonalFuncion, (IEnumerable<SelectListItem>)ViewBag.PersonalFunciones, "", new { @class = "form-control" })
+                </div>
+            </div>
+
+                
+
         </div>
     </div>
     <div class="panel-footer">

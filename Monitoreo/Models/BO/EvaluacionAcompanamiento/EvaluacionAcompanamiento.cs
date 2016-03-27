@@ -28,11 +28,10 @@ namespace Monitoreo.Models.BO.EvaluacionAcompanamiento
         [System.ComponentModel.DataAnnotations.UIHint("Enum")]
         public TipoEvaluacionAcompanamiento TipoEvaluacionAcomp { get; set; }
 
-
-
         public virtual List<SuperCicloFormativo> SuperCicloFormativo { get; set; }
 
-               
+        public PersonalFuncion? PersonalFuncion { get; set; } //Para que solo pueda visualizarlo este personal
+
 
         [Display(Name = "Creado Por")]
         public string creadoPor { get; set; }

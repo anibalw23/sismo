@@ -175,7 +175,12 @@
 
             });
 
-            var gauges =  $("div[id^='gauge_']");
+            var gauges = $("div[id^='gauge_']");
+            var myColors = [
+                      "#ff0000",
+                      "#f9c802",
+                      "#a9d70b"
+                      ];
             $(gauges).each(function (index, value) {
                 var gaugeId = $(this).attr('id');
                 var value = $(this).find("input[name='gaugeValue']").val();
@@ -184,7 +189,9 @@
                     value: value,
                     min: 0,
                     max: 36,
-                    title: "Estatus"
+                    title: "Estatus",
+                    levelColorsGradient: false,
+                    levelColors: myColors
                 });
             })
 
